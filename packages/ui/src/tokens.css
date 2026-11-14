@@ -1,0 +1,56 @@
+/*
+ * Design tokens. Cores: paleta do logo oficial. Tipografia e espaçamentos: provisórios até o Figma (fase 6).
+ * Regra: componentes usam só estas variáveis, nunca cores/medidas soltas.
+ */
+:root {
+  /* Cores — extraídas do logo oficial (Saltão logo novo.pdf) */
+  --brand-azul: #4076b6;          /* azul Saltão (wordmark + arco central) */
+  --brand-azul-medio: #489ed2;    /* arco esquerdo — só decorativo (contraste 2,96:1) */
+  --brand-azul-claro: #a0c9e8;    /* arco direito — fundos e detalhes */
+  --brand-azul-escuro: #244a75;   /* derivado: textos e fundos fortes (9,1:1) */
+
+  --color-bg: #ffffff;
+  --color-surface: #eef5fb;       /* tom bem claro do azul claro */
+  --color-text: #17283d;
+  --color-text-muted: #4a5a6e;
+  --color-border: #d3e2f0;
+  --color-primary: var(--brand-azul);          /* links e destaques: 4,68:1 em branco (AA) */
+  --color-primary-strong: var(--brand-azul-escuro);
+  --color-on-primary: #ffffff;
+  --color-accent: var(--brand-azul);           /* botão Reservar */
+  --color-accent-strong: #2e5a8c;              /* hover: 7,1:1 */
+  --color-on-accent: #ffffff;
+  --color-focus: #f2a900;                      /* foco visível em fundo claro e escuro */
+
+  /* Tipografia (fontes do sistema até o Figma definir as famílias) */
+  --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-display: var(--font-sans);
+  --fs-100: 0.875rem;
+  --fs-200: 1rem;
+  --fs-300: 1.125rem;
+  --fs-400: clamp(1.25rem, 1.1rem + 0.6vw, 1.5rem);
+  --fs-500: clamp(1.5rem, 1.2rem + 1.2vw, 2rem);
+  --fs-600: clamp(1.875rem, 1.4rem + 2vw, 2.75rem);
+  --lh-tight: 1.2;
+  --lh-body: 1.6;
+
+  /* Espaçamento */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+  --space-8: 4rem;
+
+  /* Forma */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 16px;
+  --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.08);
+
+  /* Layout */
+  --container: 72rem;
+  --container-narrow: 46rem;
+}

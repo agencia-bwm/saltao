@@ -1,0 +1,17 @@
+{
+  "name": "saltao",
+  "private": true,
+  "description": "Site, painel e plataforma de reservas do Saltão — Parque de Ecoturismo",
+  "packageManager": "pnpm@10.28.0",
+  "engines": {
+    "node": ">=20.18 <23"
+  },
+  "scripts": {
+    "dev:site": "pnpm --filter @saltao/site dev",
+    "dev:painel": "npm --prefix apps/painel run develop",
+    "build:site": "pnpm --filter @saltao/site build",
+    "build:painel": "npm --prefix apps/painel run build",
+    "test": "pnpm --filter @saltao/site test && pnpm --filter @saltao/plataforma test",
+    "check": "pnpm -r --if-present check"
+  }
+}

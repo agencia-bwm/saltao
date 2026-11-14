@@ -1,0 +1,5 @@
+packages:
+  - "apps/site"
+  - "apps/plataforma"
+  - "packages/*"
+# apps/painel (Strapi) usa npm próprio: o Strapi recomenda npm/yarn e o build roda isolado no CI.
