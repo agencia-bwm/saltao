@@ -19,6 +19,6 @@ const imagem = doc.secoes.find((b) => b.__component === "blocks.imagem")?.imagem
   <article class="container-narrow section">
     <h1>{doc.titulo}</h1>
     <p class="lead">{doc.respostaDireta}</p>
-    <Blocos blocos={doc.secoes} indice={indice} locale={locale} estreito />
+    <Blocos blocos={doc.secoes} indice={indice} locale={locale} estreito prioridadeTopo />
   </article>
 </Base>

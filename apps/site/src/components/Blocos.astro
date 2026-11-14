@@ -18,8 +18,11 @@ interface Props {
   locale: Locale;
   /** Largura de leitura (artigos) ou de página (home). */
   estreito?: boolean;
+  /** Página sem hero (Institucional): a primeira imagem nos 2 primeiros blocos é a imagem LCP. */
+  prioridadeTopo?: boolean;
 }
-const { blocos, indice, locale, estreito = false } = Astro.props;
+const { blocos, indice, locale, estreito = false, prioridadeTopo = false } = Astro.props;
+const iImagemLcp = prioridadeTopo ? blocos.findIndex((b, i) => i <= 1 && b.__component === "blocks.imagem") : -1;
 const ui = t(locale);
 const sizesLargura = estreito ? "(min-width: 46rem) 46rem, 100vw" : "(min-width: 72rem) 72rem, 100vw";
 ---
@@ -32,7 +35,7 @@ const sizesLargura = estreito ? "(min-width: 46rem) 46rem, 100vw" : "(min-width:
       case "blocks.imagem":
         return (
           <figure class="bloco-imagem">
-            <Foto img={b.imagem} sizes={sizesLargura} />
+            <Foto img={b.imagem} sizes={sizesLargura} prioridade={i === iImagemLcp} />
             {b.imagem.caption && <figcaption>{b.imagem.caption}</figcaption>}
           </figure>
         );
