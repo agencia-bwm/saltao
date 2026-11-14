@@ -1,0 +1,31 @@
+{
+  "collectionName": "components_blocks_hero",
+  "info": {
+    "displayName": "Hero",
+    "icon": "landscape"
+  },
+  "options": {},
+  "attributes": {
+    "titulo": {
+      "type": "string",
+      "required": true,
+      "maxLength": 90
+    },
+    "respostaDireta": {
+      "type": "text",
+      "required": true,
+      "maxLength": 300
+    },
+    "imagem": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.image-alt",
+      "required": true
+    },
+    "cta": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.cta"
+    }
+  }
+}

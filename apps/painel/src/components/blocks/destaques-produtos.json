@@ -1,0 +1,19 @@
+{
+  "collectionName": "components_blocks_destaques_produtos",
+  "info": {
+    "displayName": "Destaques de produtos",
+    "icon": "apps"
+  },
+  "options": {},
+  "attributes": {
+    "titulo": {
+      "type": "string",
+      "maxLength": 90
+    },
+    "produtos": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::produto.produto"
+    }
+  }
+}

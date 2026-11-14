@@ -1,0 +1,14 @@
+{
+  "collectionName": "components_blocks_texto",
+  "info": {
+    "displayName": "Texto",
+    "icon": "feather"
+  },
+  "options": {},
+  "attributes": {
+    "conteudo": {
+      "type": "blocks",
+      "required": true
+    }
+  }
+}

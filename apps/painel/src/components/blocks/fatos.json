@@ -1,0 +1,19 @@
+{
+  "collectionName": "components_blocks_fatos",
+  "info": {
+    "displayName": "Fatos (números)",
+    "icon": "chartBubble"
+  },
+  "options": {},
+  "attributes": {
+    "titulo": {
+      "type": "string",
+      "maxLength": 90
+    },
+    "itens": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.key-value"
+    }
+  }
+}

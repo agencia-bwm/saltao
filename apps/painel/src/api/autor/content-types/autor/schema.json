@@ -1,0 +1,46 @@
+{
+  "kind": "collectionType",
+  "collectionName": "autores",
+  "info": {
+    "singularName": "autor",
+    "pluralName": "autores",
+    "displayName": "Autor",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "nome": {
+      "type": "string",
+      "required": true,
+      "maxLength": 80
+    },
+    "slug": {
+      "type": "uid",
+      "targetField": "nome",
+      "required": true
+    },
+    "foto": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.image-alt",
+      "required": true
+    },
+    "minibio": {
+      "type": "text",
+      "required": true,
+      "maxLength": 300
+    },
+    "link": {
+      "type": "string",
+      "maxLength": 300
+    },
+    "sameAs": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.url"
+    }
+  }
+}

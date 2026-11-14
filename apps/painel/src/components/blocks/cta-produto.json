@@ -1,0 +1,19 @@
+{
+  "collectionName": "components_blocks_cta_produto",
+  "info": {
+    "displayName": "CTA de produto",
+    "icon": "shoppingCart"
+  },
+  "options": {},
+  "attributes": {
+    "produto": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::produto.produto"
+    },
+    "textoChamada": {
+      "type": "string",
+      "maxLength": 160
+    }
+  }
+}

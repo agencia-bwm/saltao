@@ -1,0 +1,162 @@
+{
+  "kind": "singleType",
+  "collectionName": "globals",
+  "info": {
+    "singularName": "global",
+    "pluralName": "globals",
+    "displayName": "Configurações globais",
+    "description": "Dados do Saltão usados em todas as páginas (NAP, horários, redes, llms.txt)."
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {
+    "i18n": {
+      "localized": true
+    }
+  },
+  "attributes": {
+    "nomeOficial": {
+      "type": "string",
+      "required": true,
+      "maxLength": 120,
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "telefone": {
+      "type": "string",
+      "required": true,
+      "maxLength": 30,
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "whatsapp": {
+      "type": "string",
+      "required": true,
+      "maxLength": 15,
+      "regex": "^\\d{12,13}$",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "whatsappMensagemPadrao": {
+      "type": "string",
+      "maxLength": 200,
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "email": {
+      "type": "email",
+      "required": true,
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "endereco": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.endereco",
+      "required": true,
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "geo": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.geo",
+      "required": true,
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "horarios": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.horario",
+      "required": true,
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "redesSociais": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.rede-social",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "distancias": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.key-value",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "menuPrincipal": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.menu-item",
+      "max": 8,
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "rodape": {
+      "type": "blocks",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "resumoLlms": {
+      "type": "text",
+      "required": true,
+      "maxLength": 1000,
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "seoPadrao": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.seo",
+      "required": true,
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    }
+  }
+}

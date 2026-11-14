@@ -1,0 +1,44 @@
+{
+  "kind": "collectionType",
+  "collectionName": "audit_logs",
+  "info": {
+    "singularName": "audit-log",
+    "pluralName": "audit-logs",
+    "displayName": "Log de auditoria",
+    "description": "Gerado automaticamente: quem alterou o quê e quando. Somente leitura."
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "acao": {
+      "type": "string",
+      "required": true,
+      "maxLength": 30
+    },
+    "uid": {
+      "type": "string",
+      "required": true,
+      "maxLength": 120
+    },
+    "documentoId": {
+      "type": "string",
+      "maxLength": 60
+    },
+    "idioma": {
+      "type": "string",
+      "maxLength": 10
+    },
+    "usuario": {
+      "type": "string",
+      "maxLength": 200
+    },
+    "usuarioId": {
+      "type": "integer"
+    },
+    "resumo": {
+      "type": "json"
+    }
+  }
+}

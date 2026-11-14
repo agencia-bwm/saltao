@@ -1,0 +1,16 @@
+{
+  "collectionName": "components_shared_url",
+  "info": {
+    "displayName": "URL",
+    "icon": "link"
+  },
+  "options": {},
+  "attributes": {
+    "url": {
+      "type": "string",
+      "required": true,
+      "maxLength": 500,
+      "regex": "^https?://"
+    }
+  }
+}

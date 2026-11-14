@@ -1,0 +1,26 @@
+{
+  "collectionName": "components_blocks_video",
+  "info": {
+    "displayName": "Vídeo (fachada)",
+    "icon": "play"
+  },
+  "options": {},
+  "attributes": {
+    "url": {
+      "type": "string",
+      "required": true,
+      "maxLength": 300,
+      "regex": "^https://(www\\.)?(youtube\\.com|youtu\\.be)/"
+    },
+    "poster": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.image-alt",
+      "required": true
+    },
+    "titulo": {
+      "type": "string",
+      "maxLength": 120
+    }
+  }
+}

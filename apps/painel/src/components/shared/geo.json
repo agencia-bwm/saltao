@@ -1,0 +1,18 @@
+{
+  "collectionName": "components_shared_geo",
+  "info": {
+    "displayName": "Coordenadas",
+    "icon": "pinMap"
+  },
+  "options": {},
+  "attributes": {
+    "latitude": {
+      "type": "decimal",
+      "required": true
+    },
+    "longitude": {
+      "type": "decimal",
+      "required": true
+    }
+  }
+}

@@ -1,0 +1,80 @@
+{
+  "kind": "collectionType",
+  "collectionName": "paginas_institucionais",
+  "info": {
+    "singularName": "pagina-institucional",
+    "pluralName": "paginas-institucionais",
+    "displayName": "Página institucional",
+    "description": "Conheça o Saltão, Segurança, Como chegar, Políticas."
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {
+    "i18n": {
+      "localized": true
+    }
+  },
+  "attributes": {
+    "titulo": {
+      "type": "string",
+      "required": true,
+      "maxLength": 90,
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "slug": {
+      "type": "uid",
+      "targetField": "titulo",
+      "required": true,
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "respostaDireta": {
+      "type": "text",
+      "required": true,
+      "maxLength": 300,
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "secoes": {
+      "type": "dynamiczone",
+      "components": [
+        "blocks.texto",
+        "blocks.imagem",
+        "blocks.tabela",
+        "blocks.fatos",
+        "blocks.faq",
+        "blocks.mapa-estatico",
+        "blocks.video",
+        "blocks.cta-produto"
+      ],
+      "required": true,
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "seo": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.seo",
+      "required": true,
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    }
+  }
+}

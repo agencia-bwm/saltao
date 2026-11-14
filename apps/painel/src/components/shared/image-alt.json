@@ -1,0 +1,27 @@
+{
+  "collectionName": "components_shared_image_alt",
+  "info": {
+    "displayName": "Imagem com alt",
+    "icon": "picture"
+  },
+  "options": {},
+  "attributes": {
+    "imagem": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "images"
+      ],
+      "required": true
+    },
+    "alt": {
+      "type": "string",
+      "required": true,
+      "maxLength": 125
+    },
+    "legenda": {
+      "type": "string",
+      "maxLength": 200
+    }
+  }
+}

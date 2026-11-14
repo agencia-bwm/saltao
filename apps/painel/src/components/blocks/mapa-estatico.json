@@ -1,0 +1,22 @@
+{
+  "collectionName": "components_blocks_mapa_estatico",
+  "info": {
+    "displayName": "Mapa estático",
+    "icon": "pinMap"
+  },
+  "options": {},
+  "attributes": {
+    "imagem": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.image-alt",
+      "required": true
+    },
+    "linkMaps": {
+      "type": "string",
+      "required": true,
+      "maxLength": 500,
+      "regex": "^https://"
+    }
+  }
+}

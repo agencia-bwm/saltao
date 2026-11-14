@@ -1,0 +1,19 @@
+{
+  "collectionName": "components_blocks_faq",
+  "info": {
+    "displayName": "Perguntas frequentes",
+    "icon": "question"
+  },
+  "options": {},
+  "attributes": {
+    "titulo": {
+      "type": "string",
+      "maxLength": 90
+    },
+    "itens": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.faq-item"
+    }
+  }
+}

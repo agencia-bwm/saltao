@@ -1,0 +1,21 @@
+{
+  "collectionName": "components_shared_source_link",
+  "info": {
+    "displayName": "Fonte",
+    "icon": "link"
+  },
+  "options": {},
+  "attributes": {
+    "titulo": {
+      "type": "string",
+      "required": true,
+      "maxLength": 200
+    },
+    "url": {
+      "type": "string",
+      "required": true,
+      "maxLength": 500,
+      "regex": "^https?://"
+    }
+  }
+}

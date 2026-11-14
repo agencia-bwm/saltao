@@ -1,0 +1,28 @@
+{
+  "collectionName": "components_shared_horario",
+  "info": {
+    "displayName": "Horário",
+    "icon": "clock"
+  },
+  "options": {},
+  "attributes": {
+    "dias": {
+      "type": "string",
+      "required": true,
+      "maxLength": 30,
+      "regex": "^(Mo|Tu|We|Th|Fr|Sa|Su)([-,](Mo|Tu|We|Th|Fr|Sa|Su))*$"
+    },
+    "abre": {
+      "type": "string",
+      "required": true,
+      "maxLength": 5,
+      "regex": "^\\d{2}:\\d{2}$"
+    },
+    "fecha": {
+      "type": "string",
+      "required": true,
+      "maxLength": 5,
+      "regex": "^\\d{2}:\\d{2}$"
+    }
+  }
+}

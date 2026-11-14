@@ -1,0 +1,34 @@
+{
+  "collectionName": "components_shared_cta",
+  "info": {
+    "displayName": "Chamada (CTA)",
+    "icon": "cursor"
+  },
+  "options": {},
+  "attributes": {
+    "rotulo": {
+      "type": "string",
+      "required": true,
+      "maxLength": 40
+    },
+    "tipo": {
+      "type": "enumeration",
+      "enum": [
+        "produto",
+        "link",
+        "whatsapp"
+      ],
+      "required": true,
+      "default": "link"
+    },
+    "produto": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::produto.produto"
+    },
+    "url": {
+      "type": "string",
+      "maxLength": 500
+    }
+  }
+}

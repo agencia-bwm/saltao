@@ -1,0 +1,19 @@
+{
+  "collectionName": "components_blocks_avaliacoes",
+  "info": {
+    "displayName": "Avaliações em destaque",
+    "icon": "star"
+  },
+  "options": {},
+  "attributes": {
+    "titulo": {
+      "type": "string",
+      "maxLength": 90
+    },
+    "avaliacoes": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::avaliacao.avaliacao"
+    }
+  }
+}

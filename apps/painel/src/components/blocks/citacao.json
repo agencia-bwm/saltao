@@ -1,0 +1,19 @@
+{
+  "collectionName": "components_blocks_citacao",
+  "info": {
+    "displayName": "Citação",
+    "icon": "quote"
+  },
+  "options": {},
+  "attributes": {
+    "texto": {
+      "type": "text",
+      "required": true,
+      "maxLength": 500
+    },
+    "autor": {
+      "type": "string",
+      "maxLength": 120
+    }
+  }
+}

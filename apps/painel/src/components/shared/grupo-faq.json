@@ -1,0 +1,20 @@
+{
+  "collectionName": "components_shared_grupo_faq",
+  "info": {
+    "displayName": "Grupo de perguntas",
+    "icon": "question"
+  },
+  "options": {},
+  "attributes": {
+    "tituloGrupo": {
+      "type": "string",
+      "required": true,
+      "maxLength": 100
+    },
+    "itens": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.faq-item"
+    }
+  }
+}

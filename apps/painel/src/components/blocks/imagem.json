@@ -1,0 +1,16 @@
+{
+  "collectionName": "components_blocks_imagem",
+  "info": {
+    "displayName": "Imagem",
+    "icon": "picture"
+  },
+  "options": {},
+  "attributes": {
+    "imagem": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.image-alt",
+      "required": true
+    }
+  }
+}
