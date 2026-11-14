@@ -1,0 +1,77 @@
+# Publica o site estático na Hostinger.
+# Dispara em: merge na main, "Publicar" no painel (repository_dispatch enviado pelo Strapi) ou manualmente.
+name: Deploy do site
+
+on:
+  push:
+    branches: [main]
+    paths: ["apps/site/**", "packages/ui/**", ".github/workflows/deploy-site.yml"]
+  repository_dispatch:
+    types: [strapi_publish]
+  workflow_dispatch:
+
+# Várias publicações seguidas: só a última build vai ao ar.
+concurrency:
+  group: deploy-site
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: producao
+    env:
+      SITE_URL: ${{ vars.SITE_URL }}
+      PUBLIC_RESERVAS_URL: ${{ vars.RESERVAS_URL }}
+      PUBLIC_GTM_ID: ${{ vars.GTM_ID }}
+      STRAPI_URL: ${{ vars.STRAPI_URL }}
+      STRAPI_TOKEN: ${{ secrets.STRAPI_TOKEN }}
+      HSTS_HEADER: ${{ vars.HSTS_HEADER }}
+      INDEXNOW_KEY: ${{ vars.INDEXNOW_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+
+      # Imagens já otimizadas ficam em cache entre builds (decisão 8).
+      - uses: actions/cache@v4
+        with:
+          path: apps/site/node_modules/.astro
+          key: astro-assets-${{ github.run_id }}
+          restore-keys: astro-assets-
+
+      - name: Build com o conteúdo do painel
+        run: pnpm --filter @saltao/site build
+      - name: Testes do build (bloqueiam o deploy se algo quebrar)
+        run: pnpm --filter @saltao/site test
+
+      - name: Publicar via rsync (SSH)
+        env:
+          SSH_KEY: ${{ secrets.HOSTINGER_SSH_KEY }}
+          SSH_HOST: ${{ secrets.HOSTINGER_SSH_HOST }}
+          SSH_PORT: ${{ secrets.HOSTINGER_SSH_PORT }}
+          SSH_USER: ${{ secrets.HOSTINGER_SSH_USER }}
+          DESTINO: ${{ vars.HOSTINGER_PUBLIC_HTML }}
+        run: |
+          install -m 600 -D /dev/null ~/.ssh/id_ed25519
+          echo "$SSH_KEY" > ~/.ssh/id_ed25519
+          ssh-keyscan -p "$SSH_PORT" "$SSH_HOST" >> ~/.ssh/known_hosts
+          # 1) assets novos primeiro (nomes com hash), 2) HTML e o resto, 3) remove o que sobrou — sem página quebrada no meio.
+          rsync -az -e "ssh -p $SSH_PORT" apps/site/dist/_astro/ "$SSH_USER@$SSH_HOST:$DESTINO/_astro/"
+          rsync -az --delete --exclude ".well-known" --exclude "_astro" -e "ssh -p $SSH_PORT" apps/site/dist/ "$SSH_USER@$SSH_HOST:$DESTINO/"
+          rsync -az --delete -e "ssh -p $SSH_PORT" apps/site/dist/_astro/ "$SSH_USER@$SSH_HOST:$DESTINO/_astro/"
+
+      - name: Smoke test em produção
+        run: |
+          curl -sf -o /dev/null "$SITE_URL/"
+          curl -sf "$SITE_URL/robots.txt" | grep -q Sitemap
+          curl -sfI "$SITE_URL/" | grep -qi strict-transport-security
+
+      - name: IndexNow (Bing / ChatGPT / Copilot)
+        run: node apps/site/scripts/indexnow.mjs
