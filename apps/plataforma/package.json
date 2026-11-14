@@ -1,0 +1,23 @@
+{
+  "name": "@saltao/plataforma",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Motor de reservas + sistema interno do Saltão (núcleo de estoque, hold, preço e pagamento). As telas e o checkout vêm do SuiVerde.",
+  "engines": {
+    "node": ">=22.18"
+  },
+  "scripts": {
+    "migrar": "node scripts/migrar.ts",
+    "expirar-holds": "node scripts/expirar-holds.ts",
+    "test": "node --test --test-concurrency=1 tests/*.test.ts",
+    "check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "mysql2": "^3.24.6"
+  },
+  "devDependencies": {
+    "@types/node": "^22",
+    "typescript": "^5.9.0"
+  }
+}
