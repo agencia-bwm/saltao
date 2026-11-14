@@ -7,9 +7,14 @@
 import { readFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
+import { indexavel } from "./indexacao.mjs";
 
 const key = process.env.INDEXNOW_KEY;
 const site = new URL(process.env.SITE_URL ?? "https://www.saltao.com.br");
+if (!indexavel(site.href)) {
+  console.log(`${site.host} está fora do domínio oficial — ping não enviado`);
+  process.exit(0);
+}
 if (!key) {
   console.log("INDEXNOW_KEY ausente — ping não enviado");
   process.exit(0);
