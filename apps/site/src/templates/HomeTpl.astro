@@ -20,7 +20,7 @@ const ctaHref = hero.cta?.tipo === "produto" && hero.cta.produtoId ? indice.link
 
 <Base {...rota} indice={indice} imagem={hero.imagem} jsonld={[noWebPage(rota.path, doc.seo.metaTitle, hero.respostaDireta, locale), noFaq(faqs, rota.path)].filter((n) => n !== null)}>
   <section class="hero">
-    <Foto img={hero.imagem} prioridade sizes="100vw" class="hero-img" larguras={[640, 960, 1280, 1600]} />
+    <Foto img={hero.imagem} prioridade sizes="100vw" class="hero-img" larguras={[480, 760, 1080, 1440, 1600]} />
     <div class="hero-texto">
       <div class="container">
         <h1>{hero.titulo}</h1>

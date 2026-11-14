@@ -4,15 +4,57 @@
  * Em produção o conteúdo vem sempre do painel (Strapi).
  */
 import type { Conteudo, Faq, Img, Locale, RichText, Seo } from "../lib/types";
-import cachoeira from "../assets/placeholder/cachoeira.jpg";
-import dayUse from "../assets/placeholder/day-use.jpg";
-import hospedagem from "../assets/placeholder/hospedagem.jpg";
-import camping from "../assets/placeholder/camping.jpg";
-import quiosque from "../assets/placeholder/quiosque.jpg";
-import trilha from "../assets/placeholder/trilha.jpg";
+import fHeroSrc from "../assets/fotos/cachoeira-saltao/cachoeira-saltao-mata-visitantes.jpg";
+import fCachMolduraSrc from "../assets/fotos/cachoeira-saltao/cachoeira-saltao-moldura-arvores.jpg";
+import fCach2Src from "../assets/fotos/cachoeira-2/cachoeira-2-queda-larga-poco.jpg";
+import fCach2PanSrc from "../assets/fotos/cachoeira-2/cachoeira-2-poco-panoramica.jpg";
+import fTrilhaSrc from "../assets/fotos/cachoeira-2/cachoeira-2-trilha-bambuzal.jpg";
+import fPratoSrc from "../assets/fotos/gastronomia/prato-feito-bife-arroz-fritas.jpg";
+import fCafeSrc from "../assets/fotos/gastronomia/cafe-da-manha-bandeja-mamao-01.jpg";
+import fAptosSrc from "../assets/fotos/hospedagem/apartamentos-chales-coloridos-gramado.jpg";
+import fAptosVASrc from "../assets/fotos/hospedagem/apartamentos-verde-amarelo.jpg";
+import fQuartoSrc from "../assets/fotos/hospedagem/apartamento-quarto-tv.jpg";
+import fBanheiroSrc from "../assets/fotos/hospedagem/apartamento-banheiro-vertical.jpg";
+import fCampFamiliaSrc from "../assets/fotos/camping/camping-familia-barraca-verde.jpg";
+import fCampNoiteSrc from "../assets/fotos/camping/camping-noite-quiosque-iluminado.jpg";
+import fFogueiraSrc from "../assets/fotos/camping/fogueira-roda-noite.jpg";
+import fCampValeSrc from "../assets/fotos/camping/camping-barraca-vista-vale.jpg";
+import fCampEntardecerSrc from "../assets/fotos/camping/camping-entardecer-barracas.jpg";
+import fQuiosqueSrc from "../assets/fotos/camping/camping-barracas-quiosque-amigos.jpg";
+import fQuiosqueNoiteSrc from "../assets/fotos/camping/camping-noite-barracas-quiosque.jpg";
+import fKidsSrc from "../assets/fotos/estrutura/salao-kids-brinquedos-bambu.jpg";
+import fValeSrc from "../assets/fotos/paisagem/paisagem-vale-ceu-azul.jpg";
+import fPorDoSolSrc from "../assets/fotos/paisagem/por-do-sol-sol-tocando-horizonte.jpg";
+import fPorDoSolArvoreSrc from "../assets/fotos/paisagem/por-do-sol-dourado-arvore.jpg";
+import mapaProvisorio from "../assets/placeholder/trilha.jpg";
+
 
 const T = "2026-11-13T12:00:00.000Z";
 const img = (src: Img["src"], alt: string): Img => ({ src, alt });
+
+/* Fotos reais (lote 1, 14/11/2026) — alt vem de docs/fotos-catalogo.csv */
+const fHero = img(fHeroSrc, "Cachoeira do Saltão vista de longe, cercada de mata nativa, com visitantes na base");
+const fCachMoldura = img(fCachMolduraSrc, "Cachoeira do Saltão emoldurada por árvores, com céu azul");
+const fCach2 = img(fCach2Src, "Segunda cachoeira do parque, queda larga sobre rochas com poço amplo");
+const fCach2Pan = img(fCach2PanSrc, "Vista frontal da segunda cachoeira do parque e seu poço");
+const fTrilha = img(fTrilhaSrc, "Caminho de terra entre bambuzal levando à segunda cachoeira do parque");
+const fPrato = img(fPratoSrc, "Prato com bife, arroz, farofa, batata frita, salada e feijão em cumbuca de barro");
+const fCafe = img(fCafeSrc, "Café da manhã servido em bandeja de madeira: mamão, misto de queijo e presunto, leite e café");
+const fAptos = img(fAptosSrc, "Apartamentos coloridos (amarelo, verde e azul) em gramado amplo do parque");
+const fAptosVA = img(fAptosVASrc, "Apartamentos verde e amarelo com gramado e céu azul");
+const fQuarto = img(fQuartoSrc, "Quarto do apartamento com TV de tela plana, ar-condicionado e cama de casal");
+const fBanheiro = img(fBanheiroSrc, "Banheiro do apartamento com box, pia de granito e janela");
+const fCampFamilia = img(fCampFamiliaSrc, "Família com criança pequena brincando em frente à barraca verde");
+const fCampNoite = img(fCampNoiteSrc, "Área de camping à noite com quiosque iluminado e barracas");
+const fFogueira = img(fFogueiraSrc, "Pessoas reunidas ao redor da fogueira à noite no campo");
+const fCampVale = img(fCampValeSrc, "Barraca montada ao lado de quiosque com vista para o vale e eucaliptos");
+const fCampEntardecer = img(fCampEntardecerSrc, "Barracas na área de camping ao entardecer, com céu rosado");
+const fQuiosque = img(fQuiosqueSrc, "Grupo de amigos junto a barracas e quiosque com churrasqueira na área de camping");
+const fQuiosqueNoite = img(fQuiosqueNoiteSrc, "Barracas montadas à noite ao lado de quiosque com churrasqueira");
+const fKids = img(fKidsSrc, "Brinquedos de bambu e rede de proteção no salão coberto");
+const fVale = img(fValeSrc, "Vista panorâmica do vale com lago e céu azul limpo");
+const fPorDoSol = img(fPorDoSolSrc, "Sol tocando o horizonte com palmeira e eucaliptos em silhueta");
+const fPorDoSolArvore = img(fPorDoSolArvoreSrc, "Pôr do sol dourado sobre campos e árvore isolada");
 const p = (...textos: string[]): RichText => textos.map((text) => ({ type: "paragraph", children: [{ type: "text", text }] }));
 const h2 = (text: string): RichText[number] => ({ type: "heading", level: 2, children: [{ type: "text", text }] });
 const ul = (...itens: string[]): RichText[number] => ({
@@ -71,7 +113,7 @@ const produtosBase = [
     preco: 60,
     unidade: "por-pessoa" as const,
     schema: "Product" as const,
-    imgs: [dayUse, cachoeira, trilha],
+    imgs: [fTrilha, fHero, fCach2, fPrato],
     t: {
       pt: ["Ingresso Day Use", "ingresso-day-use", "Ingresso para passar o dia no Saltão, com acesso à cachoeira de 75 m, trilhas e áreas de lazer. Ideal para famílias e grupos. A partir de R$ 60 por pessoa (valor de exemplo)."],
       en: ["Day Pass Ticket", "day-pass-ticket", "Ticket to spend the day at Saltão, with access to the 75 m waterfall, trails and leisure areas. Great for families and groups. From R$ 60 per person (sample price)."],
@@ -85,7 +127,7 @@ const produtosBase = [
     preco: 280,
     unidade: "por-noite" as const,
     schema: "LodgingBusiness" as const,
-    imgs: [hospedagem, cachoeira],
+    imgs: [fAptos, fQuarto, fBanheiro, fCafe],
     t: {
       pt: ["Apartamentos", "apartamentos", "Suítes dentro do parque para até 4 pessoas, com TV, frigobar e ventilador de teto, e acesso às áreas do day use durante a estadia. A partir de R$ 280 por noite (valor de exemplo)."],
       en: ["Rooms", "rooms", "Rooms inside the park, with breakfast and free access to the day-pass areas during your stay. From R$ 280 per night (sample price)."],
@@ -99,7 +141,7 @@ const produtosBase = [
     preco: 70,
     unidade: "por-pessoa-noite" as const,
     schema: "Campground" as const,
-    imgs: [camping, trilha],
+    imgs: [fCampFamilia, fCampNoite, fFogueira, fCampVale],
     t: {
       pt: ["Camping", "camping", "Área de camping com banheiros, pontos de energia e acesso à cachoeira. Cobrança por pessoa, por noite, a partir de R$ 70 (valor de exemplo)."],
       en: ["Camping", "camping", "Camping area with restrooms, power points and waterfall access. Priced per person, per night, from R$ 70 (sample price)."],
@@ -114,7 +156,7 @@ const produtosBase = [
     preco: 120,
     unidade: "por-espaco-dia" as const,
     schema: "Product" as const,
-    imgs: [quiosque, dayUse],
+    imgs: [fQuiosque, fQuiosqueNoite],
     t: {
       pt: ["Quiosque com churrasqueira", "quiosque-com-churrasqueira", "Quiosque coberto com churrasqueira, mesas e pia, para grupos de até 30 pessoas. Valor por espaço, por dia, a partir de R$ 120 (valor de exemplo)."],
       en: ["Kiosk with barbecue", "kiosk-with-barbecue", "Covered kiosk with barbecue grill, tables and sink, for groups of up to 30 people. Price per space, per day, from R$ 120 (sample price)."],
@@ -128,7 +170,7 @@ const produtosBase = [
     preco: 390,
     unidade: "por-noite" as const,
     schema: "Product" as const,
-    imgs: [cachoeira, hospedagem],
+    imgs: [fAptosVA, fCach2Pan, fKids],
     t: {
       pt: ["Combo Família: hospedagem + day use", "combo-familia", "Uma noite em apartamento com day use para toda a família no dia seguinte, com preço especial. A partir de R$ 390 (valor de exemplo)."],
       en: ["Family Package: lodging + day pass", "family-package", "One night in a room plus a day pass for the whole family the next day, at a special price. From R$ 390 (sample price)."],
@@ -152,7 +194,7 @@ const produtos: Conteudo["produtos"] = produtosBase.flatMap((b) =>
       slug,
       categoriaId: b.cat,
       respostaRapida: resp,
-      galeria: b.imgs.map((s, i) => img(s, `${titulo} — foto ${i + 1} (imagem provisória)`)),
+      galeria: b.imgs,
       precoAPartirDe: b.preco,
       unidadePreco: b.unidade,
       motorProdutoId: b.motor,
@@ -187,10 +229,10 @@ const produtos: Conteudo["produtos"] = produtosBase.flatMap((b) =>
 
 /* ---------------- Categorias de produto ---------------- */
 const catDefs = [
-  ["cat-dayuse", "dayuse", dayUse, ["prod-dayuse"], 1],
-  ["cat-hosp", "hosp", hospedagem, ["prod-apto", "prod-camping"], 2],
-  ["cat-quiosques", "quiosques", quiosque, ["prod-quiosque"], 3],
-  ["cat-combos", "combos", cachoeira, ["prod-combo-familia"], 4],
+  ["cat-dayuse", "dayuse", fTrilha, ["prod-dayuse"], 1],
+  ["cat-hosp", "hosp", fAptos, ["prod-apto", "prod-camping"], 2],
+  ["cat-quiosques", "quiosques", fQuiosque, ["prod-quiosque"], 3],
+  ["cat-combos", "combos", fPorDoSol, ["prod-combo-familia"], 4],
 ] as const;
 
 const categoriasProduto: Conteudo["categoriasProduto"] = catDefs.flatMap(([id, key, im, prods, ordem]) =>
@@ -203,7 +245,7 @@ const categoriasProduto: Conteudo["categoriasProduto"] = catDefs.flatMap(([id, k
       titulo,
       slug,
       respostaDireta: resp,
-      imagemHero: img(im, `${titulo} no Saltão (imagem provisória)`),
+      imagemHero: im,
       produtoIds: [...prods],
       faq: [],
       ordemMenu: ordem,
@@ -236,13 +278,13 @@ const autores: Conteudo["autores"] = [
     updatedAt: T,
     nome: "Equipe Saltão",
     slug: "equipe-saltao",
-    foto: img(trilha, "Equipe do Saltão (imagem provisória)"),
+    foto: img(fValeSrc, "Equipe do Saltão (imagem provisória)"),
     minibio: "Guias e monitores que trabalham no parque e conhecem as trilhas e cachoeiras da Serra do Itaqueri.",
     sameAs: [],
   },
 ];
 
-const artigo = (id: string, titulo: string, slug: string, cat: string, resumo: string, im: Img["src"], cta: string) => ({
+const artigo = (id: string, titulo: string, slug: string, cat: string, resumo: string, im: Img, cta: string) => ({
   documentId: id,
   locale: "pt" as const,
   updatedAt: T,
@@ -253,7 +295,7 @@ const artigo = (id: string, titulo: string, slug: string, cat: string, resumo: s
   dataPublicacao: "2026-11-10",
   dataAtualizacao: "2026-11-13",
   resumo,
-  imagemDestaque: img(im, `${titulo} (imagem provisória)`),
+  imagemDestaque: im,
   corpo: [
     { __component: "blocks.texto" as const, conteudo: [h2("Resumo rápido"), ...p(resumo), h2("O que saber antes de ir"), ul("Texto de exemplo — item 1", "Texto de exemplo — item 2", "Texto de exemplo — item 3"), ...p("Conteúdo provisório. O texto final será escrito com base nas perguntas reais do WhatsApp e do Search Console.")] },
     { __component: "blocks.tabela" as const, titulo: "Distâncias (a confirmar)", cabecalho: ["Saindo de", "Distância", "Tempo de carro"], linhas: [["Brotas", "a confirmar", "a confirmar"], ["São Carlos", "a confirmar", "a confirmar"], ["São Paulo", "a confirmar", "a confirmar"]] },
@@ -267,10 +309,10 @@ const artigo = (id: string, titulo: string, slug: string, cat: string, resumo: s
 });
 
 const artigos: Conteudo["artigos"] = [
-  artigo("art-1", "Cachoeiras perto de Brotas: o que saber antes de ir", "cachoeiras-perto-de-brotas", "cg-cachoeiras", "Um guia prático sobre as cachoeiras da região de Brotas e da Serra do Itaqueri: como chegar, melhor época e o que levar. Texto de exemplo.", cachoeira, "prod-dayuse"),
-  artigo("art-2", "O que fazer na Serra do Itaqueri em um fim de semana", "o-que-fazer-na-serra-do-itaqueri", "cg-oque", "Roteiro de exemplo para dois dias na Serra do Itaqueri, combinando trilhas, cachoeira e descanso. Texto de exemplo.", trilha, "prod-combo-familia"),
-  artigo("art-3", "Quando ir ao Saltão: melhor época para cachoeira", "quando-ir-ao-saltao", "cg-quando", "Como o volume da cachoeira muda ao longo do ano e qual época combina com cada tipo de passeio. Texto de exemplo.", dayUse, "prod-dayuse"),
-  artigo("art-4", "Camping na Serra do Itaqueri: guia para iniciantes", "camping-na-serra-do-itaqueri", "cg-camping", "O que levar, como escolher o lugar da barraca e cuidados para acampar com conforto e segurança. Texto de exemplo.", camping, "prod-camping"),
+  artigo("art-1", "Cachoeiras perto de Brotas: o que saber antes de ir", "cachoeiras-perto-de-brotas", "cg-cachoeiras", "Um guia prático sobre as cachoeiras da região de Brotas e da Serra do Itaqueri: como chegar, melhor época e o que levar. Texto de exemplo.", fCachMoldura, "prod-dayuse"),
+  artigo("art-2", "O que fazer na Serra do Itaqueri em um fim de semana", "o-que-fazer-na-serra-do-itaqueri", "cg-oque", "Roteiro de exemplo para dois dias na Serra do Itaqueri, combinando trilhas, cachoeira e descanso. Texto de exemplo.", fPorDoSolArvore, "prod-combo-familia"),
+  artigo("art-3", "Quando ir ao Saltão: melhor época para cachoeira", "quando-ir-ao-saltao", "cg-quando", "Como o volume da cachoeira muda ao longo do ano e qual época combina com cada tipo de passeio. Texto de exemplo.", fCach2, "prod-dayuse"),
+  artigo("art-4", "Camping na Serra do Itaqueri: guia para iniciantes", "camping-na-serra-do-itaqueri", "cg-camping", "O que levar, como escolher o lugar da barraca e cuidados para acampar com conforto e segurança. Texto de exemplo.", fCampEntardecer, "prod-camping"),
 ];
 artigos[0].relacionadosIds = ["art-3", "art-2"];
 
@@ -292,7 +334,7 @@ const institucionais: Conteudo["institucionais"] = [
     secoes: [
       { __component: "blocks.fatos", titulo: "O parque em números", itens: [{ chave: "Altura da cachoeira", valor: "75 m" }, { chave: "Quiosques", valor: "80" }, { chave: "Churrasqueiras", valor: "102" }] },
       { __component: "blocks.texto", conteudo: [h2("Nossa história"), ...p("Texto provisório sobre a história do parque.")] },
-      { __component: "blocks.imagem", imagem: img(cachoeira, "Cachoeira do Saltão (imagem provisória)") },
+      { __component: "blocks.imagem", imagem: fVale },
     ],
     seo: seo("Conheça o Saltão | Parque de Ecoturismo", "Cachoeira de 75 m, trilhas, day use, hospedagem e camping na Serra do Itaqueri."),
   },
@@ -305,7 +347,7 @@ const institucionais: Conteudo["institucionais"] = [
     respostaDireta: "A Cachoeira do Saltão tem 75 m de altura e fica em Itirapina (SP), na Serra do Itaqueri. Do Mirante das Águas é possível ver três cachoeiras.",
     secoes: [
       { __component: "blocks.fatos", titulo: "A cachoeira em números", itens: [{ chave: "Altura", valor: "75 m" }, { chave: "Cachoeiras vistas do Mirante das Águas", valor: "3" }] },
-      { __component: "blocks.imagem", imagem: img(cachoeira, "Cachoeira do Saltão vista do Mirante das Águas (imagem provisória)") },
+      { __component: "blocks.imagem", imagem: fHero },
       { __component: "blocks.texto", conteudo: [h2("Como visitar"), ...p("A cachoeira faz parte do Day Use do parque. Texto provisório — será reescrito a partir do conteúdo atual do site, sem encurtar.")] },
       { __component: "blocks.cta-produto", produtoId: "prod-dayuse", textoChamada: "Garanta seu ingresso para conhecer a cachoeira." },
     ],
@@ -339,7 +381,7 @@ const institucionais: Conteudo["institucionais"] = [
     slug: "como-chegar",
     respostaDireta: "Como chegar ao Saltão de carro saindo de Brotas, São Carlos e São Paulo. Distâncias e rotas a confirmar.",
     secoes: [
-      { __component: "blocks.mapa-estatico", imagem: img(trilha, "Mapa de localização do Saltão (imagem provisória)"), linkMaps: "https://maps.google.com/" },
+      { __component: "blocks.mapa-estatico", imagem: img(mapaProvisorio, "Mapa de localização do Saltão (imagem provisória)"), linkMaps: "https://maps.google.com/" },
       { __component: "blocks.tabela", titulo: "Distâncias", cabecalho: ["Saindo de", "Distância"], linhas: [["Brotas", "a confirmar"], ["São Carlos", "a confirmar"], ["São Paulo", "a confirmar"]] },
     ],
     seo: seo("Como chegar ao Saltão", "Rotas e distâncias para chegar ao Saltão saindo de Brotas, São Carlos e São Paulo."),
@@ -426,7 +468,7 @@ const home = Object.fromEntries(
       documentId: "home",
       locale: loc,
       updatedAt: T,
-      hero: { __component: "blocks.hero" as const, titulo: L[loc].hero, respostaDireta: L[loc].heroResp, imagem: img(cachoeira, loc === "pt" ? "Cachoeira de 75 m do Saltão (imagem provisória)" : loc === "en" ? "Saltão's 75 m waterfall (placeholder image)" : "Cascada de 75 m de Saltão (imagen provisoria)"), cta: { rotulo: L[loc].reservar, tipo: "link" as const, url: "https://reservas.saltao.com.br/reservar" } },
+      hero: { __component: "blocks.hero" as const, titulo: L[loc].hero, respostaDireta: L[loc].heroResp, imagem: img(fHeroSrc, loc === "pt" ? fHero.alt : loc === "en" ? "Saltão's 75 m waterfall surrounded by native forest, with visitors at its base" : "Cascada de 75 m de Saltão rodeada de bosque nativo, con visitantes en la base"), cta: { rotulo: L[loc].reservar, tipo: "link" as const, url: "https://reservas.saltao.com.br/reservar" } },
       secoes: [
         { __component: "blocks.destaques-produtos" as const, titulo: loc === "pt" ? "Escolha sua experiência" : loc === "en" ? "Choose your experience" : "Elige tu experiencia", produtoIds: ["prod-dayuse", "prod-apto", "prod-camping", "prod-quiosque"] },
         { __component: "blocks.fatos" as const, titulo: loc === "pt" ? "O Saltão em números" : loc === "en" ? "Saltão in numbers" : "Saltão en números", itens: [{ chave: loc === "pt" ? "Cachoeira" : loc === "en" ? "Waterfall" : "Cascada", valor: "75 m" }, { chave: loc === "pt" ? "Quiosques" : loc === "en" ? "Kiosks" : "Quinchos", valor: "80" }, { chave: loc === "pt" ? "Churrasqueiras" : loc === "en" ? "Barbecue grills" : "Parrillas", valor: "102" }] },

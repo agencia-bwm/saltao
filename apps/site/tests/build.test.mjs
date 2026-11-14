@@ -9,6 +9,7 @@ import { readFileSync, readdirSync, statSync, existsSync } from "node:fs";
 import { join, relative } from "node:path";
 import { fileURLToPath } from "node:url";
 import { lerRedirects, validarRedirects } from "../scripts/redirects.mjs";
+import { indexavel } from "../scripts/indexacao.mjs";
 
 const dist = fileURLToPath(new URL("../dist", import.meta.url));
 const SITE = (process.env.SITE_URL ?? "https://www.saltao.com.br").replace(/\/$/, "");
@@ -122,6 +123,16 @@ test("llms.txt gerado", () => {
 test(".htaccess com headers de segurança e cache", () => {
   const h = readFileSync(join(dist, ".htaccess"), "utf8");
   for (const s of ["Strict-Transport-Security", "X-Content-Type-Options", "Referrer-Policy", "Permissions-Policy", "frame-ancestors 'self'", "immutable", "ErrorDocument 404"]) assert.ok(h.includes(s), s);
+});
+
+test("trava de indexação: noindex fora do domínio oficial", () => {
+  assert.equal(indexavel("https://www.saltao.com.br"), true);
+  assert.equal(indexavel("https://saltao.com.br/"), true);
+  assert.equal(indexavel("https://aquamarine-newt-770169.hostingersite.com"), false);
+  assert.equal(indexavel("https://staging.saltao.com.br"), false);
+  const h = readFileSync(join(dist, ".htaccess"), "utf8");
+  const temNoindex = /Header always set X-Robots-Tag "noindex, nofollow"/.test(h);
+  assert.equal(temNoindex, !indexavel(SITE), `SITE_URL=${SITE}`);
 });
 
 test("JS inicial por página ≤ 50 KB (gzip, sem GTM)", async () => {

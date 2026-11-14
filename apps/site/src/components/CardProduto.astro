@@ -12,15 +12,17 @@ interface Props {
   lista?: string;
   index?: number;
   nivel?: "h2" | "h3";
+  /** Primeiro card de uma listagem: é a imagem LCP da página. */
+  prioridade?: boolean;
 }
-const { produto, href, categoria, locale, lista = "lista", index, nivel = "h3" } = Astro.props;
+const { produto, href, categoria, locale, lista = "lista", index, nivel = "h3", prioridade = false } = Astro.props;
 const ui = t(locale);
 const H = nivel;
 const evento = dl({ event: "select_item", ecommerce: { item_list_name: lista, items: [itemGa4(produto, categoria, index)] } });
 ---
 
 <article class="card">
-  {produto.galeria[0] && <Foto img={produto.galeria[0]} sizes="(min-width: 72rem) 22rem, (min-width: 40rem) 45vw, 100vw" larguras={[400, 640, 800]} proporcao={16 / 10} />}
+  {produto.galeria[0] && <Foto img={produto.galeria[0]} sizes="(min-width: 72rem) 22rem, (min-width: 40rem) 45vw, 100vw" larguras={[400, 640, 800]} proporcao={16 / 10} prioridade={prioridade} />}
   <div class="card-corpo">
     <H class="card-titulo"><a href={href} data-dl={evento}>{produto.titulo}</a></H>
     <p class="card-texto">{produto.respostaRapida}</p>

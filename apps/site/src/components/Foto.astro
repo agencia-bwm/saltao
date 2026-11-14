@@ -1,7 +1,8 @@
 ---
 /**
  * Toda imagem do site passa por aqui: AVIF + WebP, srcset, width/height fixos.
- * `prioridade` = imagem LCP (hero): eager + fetchpriority high. O resto é lazy.
+ * `prioridade` = imagem LCP (hero): eager + fetchpriority high + qualidade 35 (fotos reais com
+ * muita mata pesavam ~220 KB em AVIF a 960 px e estouravam o LCP no mobile; a 35 a perda não é visível). O resto é lazy, qualidade 50 (as fotos dos cards carregam junto com o hero no mobile).
  */
 import { Picture } from "astro:assets";
 import type { Img } from "../lib/types";
@@ -34,7 +35,7 @@ const widths = larguras.filter((w) => w <= larguraOriginal);
   sizes={sizes}
   formats={["avif", "webp"]}
   fallbackFormat="jpg"
-  quality={70}
+  quality={prioridade ? 35 : 50}
   fit={proporcao ? "cover" : undefined}
   loading={prioridade ? "eager" : "lazy"}
   decoding={prioridade ? "sync" : "async"}

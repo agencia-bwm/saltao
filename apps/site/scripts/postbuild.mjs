@@ -11,12 +11,15 @@ import { readFileSync, writeFileSync, existsSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 import { lerRedirects, validarRedirects } from "./redirects.mjs";
+import { indexavel } from "./indexacao.mjs";
 
 const raiz = join(dirname(fileURLToPath(import.meta.url)), "..");
 const dist = join(raiz, "dist");
 const site = new URL(process.env.SITE_URL ?? "https://www.saltao.com.br");
 // Decisão 4: começa com 1 dia; depois 1 ano + includeSubDomains; preload só no fim.
 const HSTS = process.env.HSTS_HEADER ?? "max-age=86400";
+// Fora do domínio oficial (endereço provisório, staging), o site inteiro sai com noindex.
+const podeIndexar = indexavel(site.href);
 
 const csv = join(raiz, "migracao", "redirects.csv");
 const redirects = existsSync(csv) ? lerRedirects(readFileSync(csv, "utf8")) : [];
@@ -57,7 +60,10 @@ ${redirects.map((r) => `  RewriteRule ^${escRegex(r.de.replace(/^\//, ""))}$ ${r
   Header always set Content-Security-Policy "frame-ancestors 'self'; upgrade-insecure-requests"
   Header always set Cross-Origin-Opener-Policy "same-origin"
   Header unset X-Powered-By
-
+${podeIndexar ? "" : `
+  # Fora do domínio oficial (${site.host}): não indexar
+  Header always set X-Robots-Tag "noindex, nofollow"
+`}
   # Assets com hash no nome: imutáveis por 1 ano
   <FilesMatch "\\.(js|css|avif|webp|jpg|jpeg|png|svg|woff2|ico)$">
     Header set Cache-Control "public, max-age=31536000, immutable"
@@ -97,4 +103,4 @@ writeFileSync(join(dist, ".htaccess"), htaccess);
 // Arquivo de verificação do IndexNow (a chave é pública por definição do protocolo).
 const indexNow = process.env.INDEXNOW_KEY;
 if (indexNow && /^[a-zA-Z0-9-]{8,128}$/.test(indexNow)) writeFileSync(join(dist, `${indexNow}.txt`), indexNow);
-console.log(`.htaccess gerado (${redirects.length} redirects, HSTS: ${HSTS})`);
+console.log(`.htaccess gerado (${redirects.length} redirects, HSTS: ${HSTS}${podeIndexar ? "" : ", noindex: host fora do domínio oficial"})`);

@@ -37,7 +37,7 @@ const dlPagina = [{ event: "view_item_list", ecommerce: { item_list_name: doc.ti
       {
         produtos.map((p, i) => (
           <li>
-            <CardProduto produto={p} href={indice.link("produto", p.documentId, locale)!} categoria={doc} locale={locale} lista={doc.titulo} index={i} nivel="h2" />
+            <CardProduto produto={p} href={indice.link("produto", p.documentId, locale)!} categoria={doc} locale={locale} lista={doc.titulo} index={i} nivel="h2" prioridade={i === 0} />
           </li>
         ))
       }

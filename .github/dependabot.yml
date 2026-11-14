@@ -1,0 +1,17 @@
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: "/"
+    schedule: { interval: weekly, day: monday }
+    groups:
+      astro: { patterns: ["astro", "@astrojs/*"] }
+    open-pull-requests-limit: 5
+  - package-ecosystem: npm
+    directory: "/apps/painel"
+    schedule: { interval: weekly, day: monday }
+    groups:
+      strapi: { patterns: ["@strapi/*"] }
+    open-pull-requests-limit: 5
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule: { interval: monthly }
