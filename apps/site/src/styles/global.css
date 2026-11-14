@@ -1,5 +1,33 @@
 @import "@saltao/ui/tokens.css";
 
+/* Urbanist variável (OFL), só o subset latino — cobre ã, ç, é etc. Hospedada no site. */
+@font-face {
+  font-family: "Urbanist";
+  src: url("/fonts/urbanist-latin-wght.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* Reservas com as métricas da Urbanist (ascent 95%, descent 25%) e largura medida contra a Arial
+   em cada peso: texto (450) = 98,6%; títulos leves (250–300) = 97,2%. A troca não desloca o layout. */
+@font-face {
+  font-family: "Urbanist Fallback";
+  src: local("Arial"), local("Liberation Sans"), local("Helvetica");
+  size-adjust: 98.6%;
+  ascent-override: 96.3%;
+  descent-override: 25.4%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: "Urbanist Fallback Leve";
+  src: local("Arial"), local("Liberation Sans"), local("Helvetica");
+  size-adjust: 97.2%;
+  ascent-override: 97.7%;
+  descent-override: 25.7%;
+  line-gap-override: 0%;
+}
+
 *,
 *::before,
 *::after {
@@ -14,9 +42,13 @@ body {
   margin: 0;
   font-family: var(--font-sans);
   font-size: var(--fs-200);
+  font-weight: var(--fw-normal);
   line-height: var(--lh-body);
   color: var(--color-text);
-  background: var(--color-bg);
+  /* Topo de toda página começa no céu e clareia até o branco — o rodapé termina no poço. */
+  background: var(--grad-ceu) no-repeat, var(--color-bg);
+  overflow-x: clip;
+  -webkit-font-smoothing: antialiased;
 }
 img,
 picture,
@@ -31,20 +63,35 @@ h2,
 h3,
 h4 {
   font-family: var(--font-display);
+  font-weight: var(--fw-medio);
   line-height: var(--lh-tight);
+  letter-spacing: var(--tracking-display);
+  color: var(--brand-poco);
   margin: 0 0 var(--space-4);
   text-wrap: balance;
 }
+/* Títulos grandes em peso leve, como o "SALTÃO" do logo. */
+h1,
+h2 {
+  font-family: var(--font-display-leve);
+}
 h1 {
   font-size: var(--fs-600);
+  font-weight: var(--fw-leve);
+  letter-spacing: -0.035em;
 }
 h2 {
   font-size: var(--fs-500);
-  margin-top: var(--space-7);
+  font-weight: var(--fw-leve);
+  margin-top: var(--space-8);
 }
 h3 {
   font-size: var(--fs-400);
   margin-top: var(--space-5);
+}
+strong,
+b {
+  font-weight: var(--fw-forte);
 }
 p,
 ul,
@@ -74,12 +121,27 @@ a:hover {
   margin-inline: auto;
 }
 .section {
-  padding-block: var(--space-7);
+  padding-block: var(--space-7) var(--space-8);
 }
 .lead {
   font-size: var(--fs-300);
   color: var(--color-text-muted);
   max-width: 60ch;
+  text-wrap: pretty;
+}
+/* Topo das páginas internas: título + resposta direta, com o fio dos arcos embaixo. */
+.topo {
+  padding-bottom: var(--space-6);
+  margin-bottom: var(--space-7);
+  background: var(--grad-arcos) left bottom / 6rem 3px no-repeat;
+}
+.topo .lead {
+  margin-bottom: 0;
+}
+/* Faixa que ocupa a largura toda da tela mesmo dentro de um .container. */
+.sangria {
+  margin-inline: calc(50% - 50vw);
+  padding-inline: calc(50vw - 50%);
 }
 .visually-hidden {
   position: absolute !important;
@@ -112,20 +174,23 @@ a:hover {
   justify-content: center;
   gap: var(--space-2);
   min-height: 48px;
-  padding: var(--space-3) var(--space-5);
+  padding: var(--space-3) var(--space-6);
   border: 2px solid transparent;
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-pill);
   font: inherit;
-  font-weight: 700;
+  font-weight: var(--fw-forte);
+  letter-spacing: 0.01em;
   text-decoration: none;
   cursor: pointer;
 }
+/* Reservar: degradê do azul Saltão ao azul escuro (texto branco ≥ 4,68:1 em todo o botão). */
 .btn-reservar {
-  background: var(--color-accent);
+  background: var(--grad-botao);
   color: var(--color-on-accent);
+  box-shadow: 0 6px 18px -8px rgb(36 74 117 / 0.7);
 }
 .btn-reservar:hover {
-  background: var(--color-accent-strong);
+  background: var(--grad-botao-hover);
   color: var(--color-on-accent);
 }
 .btn-secundario {
@@ -135,6 +200,7 @@ a:hover {
 }
 .btn-secundario:hover {
   background: var(--color-surface);
+  color: var(--color-primary-strong);
 }
 
 /* Grade de cards */
@@ -169,6 +235,8 @@ td {
 }
 th {
   background: var(--color-surface);
+  font-weight: var(--fw-medio);
+  color: var(--brand-poco);
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -189,7 +257,7 @@ th {
   --cc-btn-secondary-border-color: var(--color-primary);
   --cc-btn-secondary-hover-bg: var(--color-primary-strong);
   --cc-btn-secondary-hover-color: #ffffff;
-  --cc-btn-border-radius: var(--radius-md);
+  --cc-btn-border-radius: var(--radius-pill);
   --cc-modal-border-radius: var(--radius-lg);
   --cc-toggle-on-bg: var(--color-primary);
 }

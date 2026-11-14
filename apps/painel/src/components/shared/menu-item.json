@@ -13,8 +13,13 @@
     },
     "link": {
       "type": "string",
-      "required": true,
       "maxLength": 300
+    },
+    "subitens": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.menu-subitem",
+      "max": 8
     }
   }
 }
