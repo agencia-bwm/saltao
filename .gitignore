@@ -1,0 +1,19 @@
+node_modules/
+dist/
+build/
+.astro/
+.cache/
+.tmp/
+.env
+.env.*
+!.env.example
+*.log
+.DS_Store
+coverage/
+.lighthouseci/
+# Strapi
+apps/painel/.strapi/
+apps/painel/public/uploads/*
+!apps/painel/public/uploads/.gitkeep
+apps/painel/database/*.db
+apps/painel/types/generated/
