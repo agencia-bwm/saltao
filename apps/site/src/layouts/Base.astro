@@ -1,0 +1,115 @@
+---
+/**
+ * Layout base de todas as páginas: meta tags, canonical, hreflang, Open Graph, JSON-LD,
+ * Consent Mode v2 (default denied, antes de qualquer tag), cabeçalho e rodapé.
+ */
+import "../styles/global.css";
+import { getImage } from "astro:assets";
+import type { Img, Locale, Seo } from "../lib/types";
+import type { Indice, Migalha } from "../lib/routes";
+import { HTML_LANG, OG_LOCALE, t } from "../lib/i18n";
+import { absoluta, GTM_ID } from "../lib/config";
+import { grafo, noBreadcrumbs, noGlobal } from "../lib/schema";
+import Cabecalho from "../components/Cabecalho.astro";
+import Rodape from "../components/Rodape.astro";
+import Migalhas from "../components/Migalhas.astro";
+import ogPadrao from "../assets/placeholder/cachoeira.jpg";
+import logoPng from "../assets/marca/logo-512.png";
+
+interface Props {
+  locale: Locale;
+  path: string;
+  alternates: Partial<Record<Locale, string>>;
+  breadcrumbs: Migalha[];
+  seo: Seo;
+  indice: Indice;
+  /** Imagem para OG quando o SEO não define uma (normalmente o hero da página). */
+  imagem?: Img;
+  ogTipo?: "website" | "article";
+  /** Nós JSON-LD específicos do template. */
+  jsonld?: Record<string, unknown>[];
+  /** Eventos do dataLayer disparados ao abrir a página (view_item, view_item_list). */
+  dlPagina?: Record<string, unknown>[];
+}
+const { locale, path, alternates, breadcrumbs, seo, indice, imagem, ogTipo = "website", jsonld = [], dlPagina = [] } = Astro.props;
+const ui = t(locale);
+const g = indice.conteudo.global[locale] ?? indice.conteudo.global.pt;
+
+const titulo = seo.metaTitle || g?.seoPadrao.metaTitle || "Saltão";
+const descricao = seo.metaDescription || g?.seoPadrao.metaDescription || "";
+const canonical = seo.canonicalOverride || absoluta(path);
+
+const og = seo.ogImage ?? imagem ?? { src: ogPadrao, alt: "Saltão" };
+const ogImg = await getImage({ src: og.src, width: 1200, height: 630, fit: "cover", format: "jpg", quality: 75 });
+const ogUrl = ogImg.src.startsWith("http") ? ogImg.src : absoluta(ogImg.src);
+
+const logo = await getImage({ src: logoPng, width: 512, height: 512, format: "png" });
+const nos = [...(g ? noGlobal(g, absoluta(logo.src), ogUrl) : []), ...(breadcrumbs.length > 1 ? [noBreadcrumbs(breadcrumbs)] : []), ...jsonld];
+
+const xDefault = alternates.pt ?? path;
+const privacidade = indice.link("institucional", "inst-privacidade", locale) ?? indice.link("institucional", "inst-privacidade", "pt");
+---
+
+<!doctype html>
+<html lang={HTML_LANG[locale]} data-gtm={GTM_ID || undefined} data-privacidade={privacidade}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{titulo}</title>
+    <meta name="description" content={descricao} />
+    <link rel="canonical" href={canonical} />
+    {seo.noindex && <meta name="robots" content="noindex, follow" />}
+    {
+      !seo.noindex &&
+        Object.entries(alternates).map(([l, p]) => <link rel="alternate" hreflang={HTML_LANG[l as Locale]} href={absoluta(p!)} />)
+    }
+    {!seo.noindex && Object.keys(alternates).length > 0 && <link rel="alternate" hreflang="x-default" href={absoluta(xDefault)} />}
+
+    <meta property="og:type" content={ogTipo} />
+    <meta property="og:site_name" content={g?.nomeOficial ?? "Saltão"} />
+    <meta property="og:title" content={titulo} />
+    <meta property="og:description" content={descricao} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogUrl} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={og.alt} />
+    <meta property="og:locale" content={OG_LOCALE[locale]} />
+    {
+      Object.keys(alternates)
+        .filter((l) => l !== locale)
+        .map((l) => <meta property="og:locale:alternate" content={OG_LOCALE[l as Locale]} />)
+    }
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <meta name="theme-color" content="#4076b6" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon.ico" sizes="32x32" />
+
+    <!-- Consent Mode v2: tudo negado por padrão, antes de qualquer tag do Google -->
+    <script is:inline>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      window.gtag = gtag;
+      gtag("consent", "default", { ad_storage: "denied", analytics_storage: "denied", ad_user_data: "denied", ad_personalization: "denied", wait_for_update: 500 });
+      gtag("set", "ads_data_redaction", true);
+    </script>
+
+    <script type="application/ld+json" is:inline set:html={grafo(nos)} />
+    {dlPagina.length > 0 && <script type="application/json" id="dl-pagina" is:inline set:html={JSON.stringify(dlPagina).replace(/</g, "\\u003c")} />}
+  </head>
+  <body>
+    <a class="skip-link" href="#conteudo">{ui.pularConteudo}</a>
+    <Cabecalho rota={{ locale, path, alternates }} indice={indice} />
+    <Migalhas itens={breadcrumbs} />
+    <main id="conteudo">
+      <slot />
+    </main>
+    <Rodape locale={locale} indice={indice} />
+    <script>
+      import "../scripts/inicio.ts";
+    </script>
+  </body>
+</html>

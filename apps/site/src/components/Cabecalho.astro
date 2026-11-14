@@ -1,0 +1,217 @@
+---
+/** Cabeçalho: menu (sem JS — <details> no mobile), seletor de idioma e botão Reservar sempre visível. */
+import type { Locale } from "../lib/types";
+import type { Indice, Rota } from "../lib/routes";
+import { homePath, guiaPath } from "../lib/routes";
+import { t } from "../lib/i18n";
+import { linkReserva } from "../lib/config";
+import logo from "../assets/marca/logo-horizontal.svg";
+
+interface Props {
+  rota: Pick<Rota, "locale" | "path" | "alternates">;
+  indice: Indice;
+}
+const { rota, indice } = Astro.props;
+const { locale } = rota;
+const ui = t(locale);
+const c = indice.conteudo;
+const g = c.global[locale];
+
+type Item = { rotulo: string; href: string };
+let menu: Item[] = (g?.menuPrincipal ?? []).map((m) => ({ rotulo: m.rotulo, href: m.link }));
+if (!menu.length) {
+  menu = c.categoriasProduto
+    .filter((x) => x.locale === locale)
+    .sort((a, b) => a.ordemMenu - b.ordemMenu)
+    .map((x) => ({ rotulo: x.titulo, href: indice.link("categoria-produto", x.documentId, locale)! }));
+  if (indice.porPath.has(guiaPath(locale))) menu.push({ rotulo: c.guiaHome[locale]?.titulo ?? "Guia", href: guiaPath(locale) });
+  for (const [kind, id] of [["institucional", "inst-conheca"], ["atendimento", "at-faq"]] as const) {
+    const href = indice.link(kind, id, locale);
+    const r = href && indice.porPath.get(href);
+    if (r && "doc" in r) menu.push({ rotulo: (r.doc as { titulo: string }).titulo, href });
+  }
+}
+const atual = (href: string) => rota.path === href || (href !== homePath(locale) && rota.path.startsWith(href));
+
+const NOMES: Record<Locale, string> = { pt: "Português", en: "English", es: "Español" };
+const SIGLA: Record<Locale, string> = { pt: "PT", en: "EN", es: "ES" };
+const idiomas = (Object.keys(NOMES) as Locale[]).map((l) => ({ l, href: rota.alternates[l] ?? homePath(l) }));
+---
+
+<header class="cabecalho">
+  <div class="container barra">
+    <a class="marca" href={homePath(locale)}>
+      <img src={logo.src} width="151" height="44" alt={`${g?.nomeOficial ?? "Saltão"} — ${ui.inicio}`} />
+    </a>
+
+    <nav class="nav-desktop" aria-label={ui.menu}>
+        <ul class="itens">
+          {
+            menu.map((m) => (
+              <li>
+                <a href={m.href} aria-current={atual(m.href) ? "page" : undefined}>
+                  {m.rotulo}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+        <ul class="idiomas" aria-label={ui.idioma}>
+          {
+            idiomas.map(({ l, href }) => (
+              <li>
+                <a href={href} hreflang={l} lang={l} aria-current={l === locale ? "true" : undefined}>
+                  <abbr title={NOMES[l]}>{SIGLA[l]}</abbr>
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+    </nav>
+
+    <details class="menu-mobile">
+      <summary><span>{ui.menu}</span></summary>
+      <nav aria-label={ui.menu}>
+        <ul class="itens">
+          {
+            menu.map((m) => (
+              <li>
+                <a href={m.href} aria-current={atual(m.href) ? "page" : undefined}>
+                  {m.rotulo}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+        <ul class="idiomas" aria-label={ui.idioma}>
+          {
+            idiomas.map(({ l, href }) => (
+              <li>
+                <a href={href} hreflang={l} lang={l} aria-current={l === locale ? "true" : undefined}>
+                  <abbr title={NOMES[l]}>{SIGLA[l]}</abbr>
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+    </details>
+
+    <a class="btn btn-reservar reservar" href={linkReserva({ lang: locale })}>{ui.reservar}</a>
+  </div>
+</header>
+
+<style>
+  .cabecalho {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: var(--color-bg);
+    border-bottom: 1px solid var(--color-border);
+  }
+  .barra {
+    width: min(100% - 2 * var(--space-4), 92rem);
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    min-height: 4.5rem;
+  }
+  .marca {
+    margin-right: auto;
+    display: block;
+    flex-shrink: 0;
+  }
+  .marca img {
+    width: 151px;
+    max-width: none;
+    height: 44px;
+  }
+  @media (max-width: 23rem) {
+    .marca img {
+      width: 124px;
+      height: 36px;
+    }
+  }
+  .reservar {
+    flex-shrink: 0;
+    min-height: 44px;
+    padding-inline: var(--space-4);
+  }
+  summary {
+    cursor: pointer;
+    list-style: none;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    padding: 0 var(--space-3);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    font-weight: 600;
+  }
+  summary::-webkit-details-marker {
+    display: none;
+  }
+  nav ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  nav a {
+    display: block;
+    padding: var(--space-3) var(--space-4);
+    color: var(--color-text);
+    text-decoration: none;
+    font-weight: 600;
+  }
+  nav a[aria-current="page"],
+  nav a[aria-current="true"] {
+    color: var(--color-primary);
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+  }
+  .idiomas {
+    display: flex;
+    border-top: 1px solid var(--color-border);
+  }
+  abbr {
+    text-decoration: none;
+  }
+  .nav-desktop {
+    display: none;
+  }
+  .menu-mobile {
+    order: 3;
+  }
+  .menu-mobile nav {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 100%;
+    background: var(--color-bg);
+    border-bottom: 1px solid var(--color-border);
+    box-shadow: var(--shadow-sm);
+    padding: var(--space-2) 0;
+  }
+  /* Menu completo só onde cabe numa linha; abaixo disso, botão Menu. */
+  @media (min-width: 96rem) {
+    .menu-mobile {
+      display: none;
+    }
+    .nav-desktop,
+    .nav-desktop ul {
+      display: flex;
+      align-items: center;
+      flex-wrap: nowrap;
+      white-space: nowrap;
+    }
+    .nav-desktop a {
+      padding: var(--space-2) var(--space-2);
+      font-size: var(--fs-100);
+    }
+    .nav-desktop .idiomas {
+      border-top: 0;
+      border-left: 1px solid var(--color-border);
+      margin-left: var(--space-2);
+    }
+  }
+</style>

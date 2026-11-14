@@ -1,0 +1,68 @@
+---
+/**
+ * Caixa de preço + botão Reservar. Versão estática (fallback): preço "a partir de" do painel
+ * e link com parâmetros para o motor. A ilha de preço/disponibilidade ao vivo (fase 9) monta
+ * sobre o elemento [data-ilha-motor] sem mudar o HTML base — se a API cair, isto continua vendendo.
+ */
+import type { CategoriaProduto, Locale, Produto } from "../lib/types";
+import { formatPreco, t } from "../lib/i18n";
+import { linkReserva } from "../lib/config";
+import { dl, itemGa4 } from "../lib/tracking";
+
+interface Props {
+  produto: Produto;
+  categoria?: CategoriaProduto;
+  locale: Locale;
+}
+const { produto, categoria, locale } = Astro.props;
+const ui = t(locale);
+const href = linkReserva({ produto: produto.motorProdutoId, setor: produto.setorMotorId, lang: locale });
+---
+
+<aside class="preco-reserva" data-ilha-motor data-produto={produto.motorProdutoId} data-setor={produto.setorMotorId} aria-label={ui.reservar}>
+  <p class="preco">
+    <span>{ui.aPartirDe}</span>
+    <strong>{formatPreco(produto.precoAPartirDe, locale)}</strong>
+    <span>{ui.unidade[produto.unidadePreco]}</span>
+  </p>
+  <a class="btn btn-reservar" href={href} data-dl={dl({ event: "click_reservar", ecommerce: { items: [itemGa4(produto, categoria)] } })}>{ui.reservar}</a>
+  <p class="aviso">{ui.precoIndicativo}</p>
+</aside>
+
+<style>
+  .preco-reserva {
+    position: sticky;
+    top: 5.5rem;
+    padding: var(--space-5);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    background: var(--color-bg);
+    box-shadow: var(--shadow-sm);
+  }
+  .preco {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    align-items: baseline;
+    color: var(--color-text-muted);
+  }
+  .preco strong {
+    font-size: var(--fs-500);
+    color: var(--color-text);
+  }
+  .btn {
+    width: 100%;
+  }
+  /* No celular o preço e o botão vêm antes do conteúdo (logo abaixo da foto). */
+  @media (max-width: 59.99rem) {
+    .preco-reserva {
+      order: -1;
+      position: static;
+    }
+  }
+  .aviso {
+    margin: var(--space-3) 0 0;
+    font-size: var(--fs-100);
+    color: var(--color-text-muted);
+  }
+</style>

@@ -1,0 +1,48 @@
+---
+import type { Migalha } from "../lib/routes";
+interface Props {
+  itens: Migalha[];
+}
+const { itens } = Astro.props;
+---
+
+{
+  itens.length > 1 && (
+    <nav aria-label="Breadcrumb" class="migalhas container">
+      <ol>
+        {itens.map((m, i) =>
+          i === itens.length - 1 ? (
+            <li aria-current="page">{m.nome}</li>
+          ) : (
+            <li>
+              <a href={m.path}>{m.nome}</a>
+            </li>
+          ),
+        )}
+      </ol>
+    </nav>
+  )
+}
+
+<style>
+  .migalhas {
+    font-size: var(--fs-100);
+    padding-top: var(--space-4);
+  }
+  ol {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  li + li::before {
+    content: "›";
+    margin-right: var(--space-2);
+    color: var(--color-text-muted);
+  }
+  li[aria-current] {
+    color: var(--color-text-muted);
+  }
+</style>

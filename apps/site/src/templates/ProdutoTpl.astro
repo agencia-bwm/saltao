@@ -1,0 +1,225 @@
+---
+/** Template "Produto / pacote": ingresso, acomodação, espaço, combo ou página de campanha. */
+import { getImage } from "astro:assets";
+import type { Rota, Indice } from "../lib/routes";
+import type { Avaliacao, Produto } from "../lib/types";
+import { absoluta } from "../lib/config";
+import { noFaq, noProduto, noWebPage } from "../lib/schema";
+import { itemGa4 } from "../lib/tracking";
+import { t } from "../lib/i18n";
+import Base from "../layouts/Base.astro";
+import Foto from "../components/Foto.astro";
+import PrecoReserva from "../components/PrecoReserva.astro";
+import RichText from "../components/RichText.astro";
+import Tabela from "../components/Tabela.astro";
+import FaqLista from "../components/FaqLista.astro";
+import Avaliacoes from "../components/Avaliacoes.astro";
+import CardProduto from "../components/CardProduto.astro";
+import VideoFachada from "../components/VideoFachada.astro";
+
+interface Props {
+  rota: Extract<Rota, { kind: "produto" }>;
+  indice: Indice;
+}
+const { rota, indice } = Astro.props;
+const { doc: p, categoria, locale } = rota;
+const ui = t(locale);
+const g = indice.conteudo.global[locale] ?? indice.conteudo.global.pt!;
+const [hero, ...resto] = p.galeria;
+
+const imagensSchema = await Promise.all(
+  p.galeria.slice(0, 3).map(async (i) => {
+    const r = await getImage({ src: i.src, width: 1200, height: 900, fit: "cover", format: "jpg", quality: 75 });
+    return r.src.startsWith("http") ? r.src : absoluta(r.src);
+  }),
+);
+const avaliacoes = p.avaliacaoIds.map((id) => indice.avaliacao(id)).filter((a): a is Avaliacao => !!a);
+const relacionados = p.relacionadosIds.map((id) => indice.produto(id, locale)).filter((x): x is Produto => !!x && !!indice.link("produto", x.documentId, locale));
+const dlPagina = [{ event: "view_item", ecommerce: { currency: "BRL", value: p.precoAPartirDe, items: [itemGa4(p, categoria)] } }];
+---
+
+<Base {...rota} indice={indice} imagem={hero} jsonld={[noWebPage(rota.path, p.titulo, p.respostaRapida, locale, "ItemPage"), noProduto(p, rota.path, imagensSchema, g, locale), noFaq(p.faq, rota.path)].filter((n) => n !== null)} dlPagina={dlPagina}>
+  <article class="container section produto">
+    <header class="topo">
+      <h1>{p.titulo}</h1>
+      <p class="lead">{p.respostaRapida}</p>
+    </header>
+
+    {hero && <Foto img={hero} prioridade sizes="(min-width: 72rem) 72rem, 100vw" proporcao={16 / 9} class="hero-img" larguras={[640, 960, 1280, 1600]} />}
+
+    <div class="colunas">
+      <div class="principal">
+        {
+          (p.inclui.length > 0 || p.naoInclui.length > 0) && (
+            <section class="inclui">
+              {p.inclui.length > 0 && (
+                <div>
+                  <h2>{ui.inclui}</h2>
+                  <ul class="check">
+                    {p.inclui.map((i) => (
+                      <li>{i}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+              {p.naoInclui.length > 0 && (
+                <div>
+                  <h2>{ui.naoInclui}</h2>
+                  <ul class="x">
+                    {p.naoInclui.map((i) => (
+                      <li>{i}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </section>
+          )
+        }
+
+        {
+          p.regras && p.regras.length > 0 && (
+            <section>
+              <h2>{ui.regras}</h2>
+              <RichText conteudo={p.regras} nivelBase={3} />
+            </section>
+          )
+        }
+
+        {
+          p.capacidade.length > 0 && (
+            <section>
+              <h2>{ui.capacidade}</h2>
+              <dl class="capacidade">
+                {p.capacidade.map((c) => (
+                  <div>
+                    <dt>{c.chave}</dt>
+                    <dd>{c.valor}</dd>
+                  </div>
+                ))}
+              </dl>
+            </section>
+          )
+        }
+
+        {p.tabelaComparativa && <Tabela tabela={p.tabelaComparativa} />}
+
+        {p.video && <VideoFachada url={p.video.url} poster={p.video.poster} titulo={p.titulo} locale={locale} />}
+
+        {
+          resto.length > 0 && (
+            <section>
+              <h2>{ui.galeria}</h2>
+              <ul class="galeria">
+                {resto.map((i) => (
+                  <li>
+                    <Foto img={i} sizes="(min-width: 72rem) 22rem, 50vw" larguras={[400, 640, 800]} proporcao={4 / 3} />
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )
+        }
+
+        <FaqLista itens={p.faq} titulo={ui.faq} id="faq" />
+      </div>
+
+      <PrecoReserva produto={p} categoria={categoria} locale={locale} />
+    </div>
+
+    <Avaliacoes avaliacoes={avaliacoes} locale={locale} />
+
+    {
+      relacionados.length > 0 && (
+        <section>
+          <h2>{ui.relacionados}</h2>
+          <ul class="grid-cards">
+            {relacionados.map((r, i) => (
+              <li>
+                <CardProduto produto={r} href={indice.link("produto", r.documentId, locale)!} categoria={indice.categoriaProduto(r.categoriaId, locale)} locale={locale} lista="relacionados" index={i} />
+              </li>
+            ))}
+          </ul>
+        </section>
+      )
+    }
+  </article>
+</Base>
+
+<style>
+  .topo {
+    margin-bottom: var(--space-5);
+  }
+  .produto :global(.hero-img) {
+    width: 100%;
+    border-radius: var(--radius-lg);
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+  }
+  .colunas {
+    display: grid;
+    gap: var(--space-6);
+    margin-top: var(--space-6);
+  }
+  @media (min-width: 60rem) {
+    .colunas {
+      grid-template-columns: minmax(0, 1fr) 20rem;
+      align-items: start;
+    }
+  }
+  .principal > :first-child h2 {
+    margin-top: 0;
+  }
+  .inclui {
+    display: grid;
+    gap: var(--space-5);
+    grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+  }
+  .check,
+  .x {
+    list-style: none;
+    padding: 0;
+  }
+  .check li,
+  .x li {
+    padding-left: 1.75rem;
+    position: relative;
+    margin-bottom: var(--space-2);
+  }
+  .check li::before {
+    content: "✓";
+    position: absolute;
+    left: 0;
+    color: var(--color-primary);
+    font-weight: 700;
+  }
+  .x li::before {
+    content: "✕";
+    position: absolute;
+    left: 0;
+    color: var(--color-text-muted);
+  }
+  .capacidade div {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--space-4);
+    padding: var(--space-3) 0;
+    border-bottom: 1px solid var(--color-border);
+  }
+  .capacidade dd {
+    margin: 0;
+    font-weight: 700;
+  }
+  .galeria {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 14rem), 1fr));
+    gap: var(--space-3);
+    list-style: none;
+    padding: 0;
+  }
+  .galeria :global(img) {
+    border-radius: var(--radius-md);
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+  }
+</style>

@@ -1,0 +1,24 @@
+---
+/** Template "Institucional por blocos": Conheça o Saltão, Segurança, Como chegar, Políticas. */
+import type { Rota, Indice } from "../lib/routes";
+import { noFaq, noWebPage } from "../lib/schema";
+import Base from "../layouts/Base.astro";
+import Blocos from "../components/Blocos.astro";
+
+interface Props {
+  rota: Extract<Rota, { kind: "institucional" }>;
+  indice: Indice;
+}
+const { rota, indice } = Astro.props;
+const { doc, locale } = rota;
+const faqs = doc.secoes.flatMap((b) => (b.__component === "blocks.faq" ? b.itens : []));
+const imagem = doc.secoes.find((b) => b.__component === "blocks.imagem")?.imagem;
+---
+
+<Base {...rota} indice={indice} imagem={imagem} jsonld={[noWebPage(rota.path, doc.titulo, doc.respostaDireta, locale, doc.documentId === "inst-conheca" ? "AboutPage" : "WebPage"), noFaq(faqs, rota.path)].filter((n) => n !== null)}>
+  <article class="container-narrow section">
+    <h1>{doc.titulo}</h1>
+    <p class="lead">{doc.respostaDireta}</p>
+    <Blocos blocos={doc.secoes} indice={indice} locale={locale} estreito />
+  </article>
+</Base>

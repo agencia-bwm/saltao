@@ -1,0 +1,36 @@
+---
+/**
+ * Rota única: todas as páginas (3 idiomas) nascem da tabela de rotas montada a partir do painel.
+ * Assim os slugs traduzidos vêm do Strapi e a build falha se houver URL duplicada.
+ */
+import type { GetStaticPaths } from "astro";
+import { indice } from "../lib/cms";
+import type { Rota } from "../lib/routes";
+import HomeTpl from "../templates/HomeTpl.astro";
+import ListagemTpl from "../templates/ListagemTpl.astro";
+import ProdutoTpl from "../templates/ProdutoTpl.astro";
+import GuiaTpl from "../templates/GuiaTpl.astro";
+import ArtigoTpl from "../templates/ArtigoTpl.astro";
+import InstitucionalTpl from "../templates/InstitucionalTpl.astro";
+import AtendimentoTpl from "../templates/AtendimentoTpl.astro";
+
+export const getStaticPaths = (async () => {
+  const idx = await indice();
+  return idx.rotas.map((rota) => ({
+    params: { path: rota.path.replace(/^\/|\/$/g, "") || undefined },
+    props: { chave: rota.chave, locale: rota.locale },
+  }));
+}) satisfies GetStaticPaths;
+
+const idx = await indice();
+const { chave, locale } = Astro.props;
+const rota = idx.rotas.find((r) => r.chave === chave && r.locale === locale) as Rota;
+---
+
+{rota.kind === "home" && <HomeTpl rota={rota} indice={idx} />}
+{rota.kind === "categoria-produto" && <ListagemTpl rota={rota} indice={idx} />}
+{rota.kind === "produto" && <ProdutoTpl rota={rota} indice={idx} />}
+{rota.kind === "guia" && <GuiaTpl rota={rota} indice={idx} />}
+{rota.kind === "artigo" && <ArtigoTpl rota={rota} indice={idx} />}
+{rota.kind === "institucional" && <InstitucionalTpl rota={rota} indice={idx} />}
+{rota.kind === "atendimento" && <AtendimentoTpl rota={rota} indice={idx} />}

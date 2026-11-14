@@ -1,0 +1,58 @@
+---
+/** FAQ com <details>: acessível e sem JavaScript. O schema FAQPage é montado no template. */
+import type { Faq } from "../lib/types";
+import RichText from "./RichText.astro";
+
+interface Props {
+  itens: Faq[];
+  titulo?: string;
+  id?: string;
+}
+const { itens, titulo, id } = Astro.props;
+---
+
+{
+  itens.length > 0 && (
+    <section class="faq" aria-labelledby={id ? `${id}-titulo` : undefined}>
+      {titulo && <h2 id={id ? `${id}-titulo` : undefined}>{titulo}</h2>}
+      {itens.map((f) => (
+        <details>
+          <summary>{f.pergunta}</summary>
+          <div class="faq-resposta">
+            <RichText conteudo={f.resposta} nivelBase={4} />
+          </div>
+        </details>
+      ))}
+    </section>
+  )
+}
+
+<style>
+  details {
+    border-bottom: 1px solid var(--color-border);
+  }
+  summary {
+    cursor: pointer;
+    padding: var(--space-4) var(--space-6) var(--space-4) 0;
+    font-weight: 700;
+    list-style: none;
+    position: relative;
+  }
+  summary::-webkit-details-marker {
+    display: none;
+  }
+  summary::after {
+    content: "+";
+    position: absolute;
+    right: var(--space-2);
+    font-size: 1.5rem;
+    line-height: 1;
+  }
+  details[open] summary::after {
+    content: "–";
+  }
+  .faq-resposta {
+    padding-bottom: var(--space-4);
+    color: var(--color-text-muted);
+  }
+</style>

@@ -1,0 +1,44 @@
+---
+/**
+ * Toda imagem do site passa por aqui: AVIF + WebP, srcset, width/height fixos.
+ * `prioridade` = imagem LCP (hero): eager + fetchpriority high. O resto é lazy.
+ */
+import { Picture } from "astro:assets";
+import type { Img } from "../lib/types";
+
+interface Props {
+  img: Img;
+  sizes?: string;
+  prioridade?: boolean;
+  larguras?: number[];
+  class?: string;
+  /** Proporção forçada (ex.: 16/10) — recorta para evitar CLS entre imagens diferentes. */
+  proporcao?: number;
+}
+const { img, sizes = "100vw", prioridade = false, larguras = [400, 640, 960, 1280, 1600], class: cls, proporcao } = Astro.props;
+
+const remota = typeof img.src === "string";
+const larguraOriginal = remota ? (img.width ?? 1600) : (img.src as ImageMetadata).width;
+const alturaOriginal = remota ? (img.height ?? 1000) : (img.src as ImageMetadata).height;
+const width = Math.min(1600, larguraOriginal);
+const height = proporcao ? Math.round(width / proporcao) : Math.round((alturaOriginal / larguraOriginal) * width);
+const widths = larguras.filter((w) => w <= larguraOriginal);
+---
+
+<Picture
+  src={img.src as ImageMetadata}
+  alt={img.alt}
+  width={width}
+  height={height}
+  widths={widths.length ? widths : [width]}
+  sizes={sizes}
+  formats={["avif", "webp"]}
+  fallbackFormat="jpg"
+  quality={70}
+  fit={proporcao ? "cover" : undefined}
+  loading={prioridade ? "eager" : "lazy"}
+  decoding={prioridade ? "sync" : "async"}
+  fetchpriority={prioridade ? "high" : "auto"}
+  class={cls}
+  pictureAttributes={{ class: "foto" }}
+/>

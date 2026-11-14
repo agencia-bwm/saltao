@@ -1,0 +1,25 @@
+---
+/** 404 útil: explica, leva para os produtos e para o início. Nunca indexada. */
+import { indice } from "../lib/cms";
+import { homePath } from "../lib/routes";
+import { t } from "../lib/i18n";
+import Base from "../layouts/Base.astro";
+import CardProduto from "../components/CardProduto.astro";
+
+const idx = await indice();
+const locale = "pt" as const;
+const ui = t(locale);
+const cats = idx.conteudo.categoriasProduto.filter((c) => c.locale === locale).sort((a, b) => a.ordemMenu - b.ordemMenu);
+const produtos = cats.map((c) => idx.produto(c.produtoIds[0], locale)).filter((p) => p !== undefined);
+---
+
+<Base locale={locale} path="/404/" alternates={{}} breadcrumbs={[]} seo={{ metaTitle: `${ui.naoEncontrada} | Saltão`, metaDescription: ui.naoEncontradaTexto, noindex: true }} indice={idx}>
+  <div class="container section">
+    <h1>{ui.naoEncontrada}</h1>
+    <p class="lead">{ui.naoEncontradaTexto}</p>
+    <p><a class="btn btn-secundario" href={homePath(locale)}>{ui.voltarInicio}</a></p>
+    <ul class="grid-cards">
+      {produtos.map((p, i) => <li><CardProduto produto={p} href={idx.link("produto", p.documentId, locale)!} locale={locale} lista="404" index={i} nivel="h2" /></li>)}
+    </ul>
+  </div>
+</Base>

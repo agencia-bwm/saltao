@@ -1,0 +1,68 @@
+---
+import type { Rota, Indice } from "../lib/routes";
+import { noFaq, noWebPage } from "../lib/schema";
+import { linkReserva } from "../lib/config";
+import { t } from "../lib/i18n";
+import Base from "../layouts/Base.astro";
+import Foto from "../components/Foto.astro";
+import Blocos from "../components/Blocos.astro";
+
+interface Props {
+  rota: Extract<Rota, { kind: "home" }>;
+  indice: Indice;
+}
+const { rota, indice } = Astro.props;
+const { doc, locale } = rota;
+const hero = doc.hero;
+const faqs = doc.secoes.flatMap((b) => (b.__component === "blocks.faq" ? b.itens : []));
+const ctaHref = hero.cta?.tipo === "produto" && hero.cta.produtoId ? indice.link("produto", hero.cta.produtoId, locale) : (hero.cta?.url ?? linkReserva({ lang: locale }));
+---
+
+<Base {...rota} indice={indice} imagem={hero.imagem} jsonld={[noWebPage(rota.path, doc.seo.metaTitle, hero.respostaDireta, locale), noFaq(faqs, rota.path)].filter((n) => n !== null)}>
+  <section class="hero">
+    <Foto img={hero.imagem} prioridade sizes="100vw" class="hero-img" larguras={[640, 960, 1280, 1600]} />
+    <div class="hero-texto">
+      <div class="container">
+        <h1>{hero.titulo}</h1>
+        <p class="resposta">{hero.respostaDireta}</p>
+        <a class="btn btn-reservar" href={ctaHref}>{hero.cta?.rotulo ?? t(locale).reservar}</a>
+      </div>
+    </div>
+  </section>
+  <div class="container section">
+    <Blocos blocos={doc.secoes} indice={indice} locale={locale} />
+  </div>
+</Base>
+
+<style>
+  .hero {
+    position: relative;
+    display: grid;
+    min-height: min(80vh, 40rem);
+    color: #ffffff;
+    background: var(--color-primary-strong);
+  }
+  .hero > :global(picture),
+  .hero-texto {
+    grid-area: 1 / 1;
+  }
+  .hero :global(.hero-img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .hero-texto {
+    display: flex;
+    align-items: flex-end;
+    padding-block: var(--space-8) var(--space-7);
+    background: linear-gradient(to top, rgb(0 0 0 / 0.65), rgb(0 0 0 / 0.1) 70%);
+  }
+  .hero h1 {
+    max-width: 22ch;
+    color: #ffffff;
+  }
+  .resposta {
+    font-size: var(--fs-300);
+    max-width: 55ch;
+  }
+</style>

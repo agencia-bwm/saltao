@@ -1,0 +1,47 @@
+---
+/** Fatos objetivos e citáveis em texto (GEO): altura da cachoeira, capacidade, distâncias. */
+import type { KV } from "../lib/types";
+interface Props {
+  itens: KV[];
+  titulo?: string;
+}
+const { itens, titulo } = Astro.props;
+---
+
+<section class="fatos">
+  {titulo && <h2>{titulo}</h2>}
+  <dl>
+    {
+      itens.map((f) => (
+        <div>
+          <dt>{f.chave}</dt>
+          <dd>{f.valor}</dd>
+        </div>
+      ))
+    }
+  </dl>
+</section>
+
+<style>
+  dl {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+    gap: var(--space-4);
+    margin: 0;
+  }
+  dl > div {
+    background: var(--color-surface);
+    border-radius: var(--radius-md);
+    padding: var(--space-5);
+  }
+  dt {
+    color: var(--color-text-muted);
+    font-size: var(--fs-100);
+  }
+  dd {
+    margin: 0;
+    font-size: var(--fs-500);
+    font-weight: 700;
+    color: var(--color-primary);
+  }
+</style>

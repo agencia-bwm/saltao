@@ -1,0 +1,160 @@
+---
+import type { Locale } from "../lib/types";
+import type { Indice } from "../lib/routes";
+import { t } from "../lib/i18n";
+import { linkWhatsApp } from "../lib/config";
+import RichText from "./RichText.astro";
+
+interface Props {
+  locale: Locale;
+  indice: Indice;
+}
+const { locale, indice } = Astro.props;
+const ui = t(locale);
+const g = indice.conteudo.global[locale] ?? indice.conteudo.global.pt;
+const paginas = [...indice.conteudo.institucionais, ...indice.conteudo.atendimento].filter((p) => p.locale === locale);
+const linkPagina = (id: string) => indice.link("institucional", id, locale) ?? indice.link("atendimento", id, locale);
+const ano = new Date().getFullYear();
+const DIA: Record<Locale, Record<string, string>> = {
+  pt: { Mo: "seg", Tu: "ter", We: "qua", Th: "qui", Fr: "sex", Sa: "sáb", Su: "dom" },
+  en: { Mo: "Mon", Tu: "Tue", We: "Wed", Th: "Thu", Fr: "Fri", Sa: "Sat", Su: "Sun" },
+  es: { Mo: "lun", Tu: "mar", We: "mié", Th: "jue", Fr: "vie", Sa: "sáb", Su: "dom" },
+};
+const dias = (s: string) => s.replace(/Mo|Tu|We|Th|Fr|Sa|Su/g, (d) => DIA[locale][d]).replace("-", " a ");
+---
+
+<footer class="rodape">
+  {
+    g && (
+      <div class="container colunas">
+        <section>
+          <h2>{g.nomeOficial}</h2>
+          <address>
+            {g.endereco.rua}, {g.endereco.numero}
+            <br />
+            {g.endereco.cidade} – {g.endereco.uf}, {g.endereco.cep}
+            <br />
+            <a href={`tel:${g.telefone.replace(/[^\d+]/g, "")}`} data-dl='{"event":"click_phone"}'>
+              {g.telefone}
+            </a>
+            <br />
+            <a href={`mailto:${g.email}`}>{g.email}</a>
+          </address>
+          <a class="btn btn-secundario whats" href={linkWhatsApp(g.whatsapp, g.whatsappMensagemPadrao)} rel="noopener" target="_blank" data-dl='{"event":"generate_lead","method":"whatsapp"}'>
+            {ui.whatsapp}
+          </a>
+        </section>
+        <section>
+          <h2>{ui.horarios}</h2>
+          <ul>
+            {g.horarios.map((h) => (
+              <li>
+                {dias(h.dias)}: {h.abre}–{h.fecha}
+              </li>
+            ))}
+          </ul>
+        </section>
+        <section>
+          <h2>Saltão</h2>
+          <ul>
+            {paginas.map((p) => (
+              <li>
+                <a href={linkPagina(p.documentId)}>{p.titulo}</a>
+              </li>
+            ))}
+            <li>
+              <button type="button" class="link-cookies" data-cc="show-preferencesModal">
+                {ui.preferenciasCookies}
+              </button>
+            </li>
+          </ul>
+        </section>
+        {g.redesSociais.length > 0 && (
+          <section>
+            <h2>{ui.seguirRedes}</h2>
+            <ul>
+              {g.redesSociais.map((r) => (
+                <li>
+                  <a href={r.url} rel="noopener me" target="_blank">
+                    {r.rede.charAt(0).toUpperCase() + r.rede.slice(1)}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
+      </div>
+    )
+  }
+  {g?.rodape && g.rodape.length > 0 && <div class="container extra"><RichText conteudo={g.rodape} /></div>}
+  <p class="container copy">© {ano} {g?.nomeOficial ?? "Saltão"}</p>
+</footer>
+
+<a class="whats-flutuante" href={g ? linkWhatsApp(g.whatsapp, g.whatsappMensagemPadrao) : "#"} rel="noopener" target="_blank" aria-label={ui.whatsapp} data-dl='{"event":"generate_lead","method":"whatsapp_flutuante"}'>
+  <svg viewBox="0 0 32 32" width="28" height="28" aria-hidden="true"><path fill="currentColor" d="M16 3a13 13 0 0 0-11.2 19.6L3 29l6.6-1.7A13 13 0 1 0 16 3Zm0 23.6c-2 0-4-.6-5.7-1.6l-.4-.2-3.9 1 1-3.8-.3-.4A10.6 10.6 0 1 1 16 26.6Zm5.8-7.9c-.3-.2-1.9-.9-2.2-1-.3-.1-.5-.2-.7.2l-1 1.2c-.2.2-.4.2-.7.1a8.7 8.7 0 0 1-4.3-3.8c-.3-.6.3-.5.9-1.7.1-.2 0-.4 0-.5l-1-2.4c-.3-.6-.5-.5-.7-.5h-.6c-.2 0-.6.1-.9.4-.3.3-1.2 1.1-1.2 2.8s1.2 3.2 1.4 3.4c.2.2 2.4 3.6 5.7 5 2.1.9 2.9 1 4 .8.6-.1 1.9-.8 2.2-1.5.3-.8.3-1.4.2-1.5-.1-.2-.3-.2-.6-.4Z"/></svg>
+</a>
+
+<style>
+  .rodape {
+    margin-top: var(--space-8);
+    background: var(--color-primary-strong);
+    color: #eaf2fa;
+    padding-block: var(--space-7) var(--space-5);
+    font-size: var(--fs-100);
+  }
+  .rodape a,
+  .link-cookies {
+    color: #ffffff;
+  }
+  .colunas {
+    display: grid;
+    gap: var(--space-6);
+    grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+  }
+  h2 {
+    font-size: var(--fs-300);
+    margin: 0 0 var(--space-3);
+  }
+  ul {
+    list-style: none;
+    padding: 0;
+  }
+  li {
+    margin-bottom: var(--space-2);
+  }
+  address {
+    font-style: normal;
+    margin-bottom: var(--space-4);
+  }
+  .whats {
+    border-color: #ffffff;
+    color: #ffffff;
+  }
+  .link-cookies {
+    background: none;
+    border: 0;
+    padding: 0;
+    font: inherit;
+    text-decoration: underline;
+    cursor: pointer;
+  }
+  .copy {
+    margin-top: var(--space-6);
+    padding-top: var(--space-4);
+    border-top: 1px solid rgb(255 255 255 / 0.2);
+  }
+  .whats-flutuante {
+    position: fixed;
+    right: var(--space-4);
+    bottom: var(--space-4);
+    z-index: 40;
+    display: grid;
+    place-items: center;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: #1f7a45;
+    color: #ffffff;
+    box-shadow: 0 2px 8px rgb(0 0 0 / 0.25);
+  }
+</style>

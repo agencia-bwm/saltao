@@ -1,0 +1,57 @@
+---
+/** Template "Listagem de produtos": Day Use, Hospedagem e Camping, Churrasqueiras e Quiosques, Monte sua Experiência. */
+import type { Rota, Indice } from "../lib/routes";
+import type { Produto } from "../lib/types";
+import { absoluta } from "../lib/config";
+import { noFaq, noWebPage } from "../lib/schema";
+import { itemGa4 } from "../lib/tracking";
+import Base from "../layouts/Base.astro";
+import CardProduto from "../components/CardProduto.astro";
+import RichText from "../components/RichText.astro";
+import FaqLista from "../components/FaqLista.astro";
+import { t } from "../lib/i18n";
+
+interface Props {
+  rota: Extract<Rota, { kind: "categoria-produto" }>;
+  indice: Indice;
+}
+const { rota, indice } = Astro.props;
+const { doc, locale } = rota;
+const ui = t(locale);
+const produtos = doc.produtoIds.map((id) => indice.produto(id, locale)).filter((p): p is Produto => !!p);
+const lista = {
+  "@type": "ItemList",
+  "@id": `${absoluta(rota.path)}#lista`,
+  itemListElement: produtos.map((p, i) => ({ "@type": "ListItem", position: i + 1, url: absoluta(indice.link("produto", p.documentId, locale)!), name: p.titulo })),
+};
+const dlPagina = [{ event: "view_item_list", ecommerce: { item_list_name: doc.titulo, items: produtos.map((p, i) => itemGa4(p, doc, i)) } }];
+---
+
+<Base {...rota} indice={indice} imagem={doc.imagemHero} jsonld={[noWebPage(rota.path, doc.titulo, doc.respostaDireta, locale, "CollectionPage"), lista, noFaq(doc.faq, rota.path)].filter((n) => n !== null)} dlPagina={dlPagina}>
+  <div class="container section">
+    <header class="topo">
+      <h1>{doc.titulo}</h1>
+      <p class="lead">{doc.respostaDireta}</p>
+    </header>
+    <ul class="grid-cards">
+      {
+        produtos.map((p, i) => (
+          <li>
+            <CardProduto produto={p} href={indice.link("produto", p.documentId, locale)!} categoria={doc} locale={locale} lista={doc.titulo} index={i} nivel="h2" />
+          </li>
+        ))
+      }
+    </ul>
+    {doc.introducao && doc.introducao.length > 0 && <div class="container-narrow intro"><RichText conteudo={doc.introducao} /></div>}
+    <FaqLista itens={doc.faq} titulo={ui.faq} id="faq" />
+  </div>
+</Base>
+
+<style>
+  .topo {
+    margin-bottom: var(--space-6);
+  }
+  .intro {
+    margin-top: var(--space-7);
+  }
+</style>

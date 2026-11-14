@@ -1,0 +1,174 @@
+---
+/** Template "Listagem do blog" (Guia da Serra do Itaqueri) e páginas de categoria. Paginação rastreável (links reais). */
+import type { Rota, Indice } from "../lib/routes";
+import { guiaPath } from "../lib/routes";
+import { absoluta } from "../lib/config";
+import { noWebPage } from "../lib/schema";
+import { formatData, SEG, t } from "../lib/i18n";
+import Base from "../layouts/Base.astro";
+import Foto from "../components/Foto.astro";
+
+interface Props {
+  rota: Extract<Rota, { kind: "guia" }>;
+  indice: Indice;
+}
+const { rota, indice } = Astro.props;
+const { locale, artigos, pagina, totalPaginas, categoria } = rota;
+const ui = t(locale);
+const raiz = categoria ? indice.rotas.find((r) => r.kind === "guia" && r.categoria?.documentId === categoria.documentId && r.locale === locale && r.pagina === 1)!.path : guiaPath(locale);
+const urlPagina = (n: number) => (n === 1 ? raiz : `${raiz}${SEG[locale].pagina}/${n}/`);
+const categorias = indice.rotas.filter((r): r is Extract<Rota, { kind: "guia" }> => r.kind === "guia" && r.locale === locale && !!r.categoria && r.pagina === 1);
+const lista = {
+  "@type": "ItemList",
+  itemListElement: artigos.map((a, i) => ({ "@type": "ListItem", position: (pagina - 1) * 12 + i + 1, url: absoluta(indice.link("artigo", a.documentId, locale)!), name: a.titulo })),
+};
+---
+
+<Base {...rota} indice={indice} imagem={artigos[0]?.imagemDestaque} jsonld={[noWebPage(rota.path, rota.titulo, rota.respostaDireta, locale, "CollectionPage"), lista]}>
+  <div class="container section">
+    <header class="topo">
+      <h1>{rota.titulo}{pagina > 1 && ` — ${ui.pagina} ${pagina}`}</h1>
+      {rota.respostaDireta && <p class="lead">{rota.respostaDireta}</p>}
+    </header>
+
+    {
+      categorias.length > 0 && (
+        <nav aria-label={ui.categorias} class="categorias">
+          <ul>
+            <li>
+              <a href={guiaPath(locale)} aria-current={!categoria ? "page" : undefined}>
+                {ui.todos}
+              </a>
+            </li>
+            {categorias.map((c) => (
+              <li>
+                <a href={c.path} aria-current={categoria?.documentId === c.categoria!.documentId ? "page" : undefined}>
+                  {c.categoria!.nome}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      )
+    }
+
+    <ul class="grid-cards">
+      {
+        artigos.map((a, i) => (
+          <li>
+            <article class="card-artigo">
+              <Foto img={a.imagemDestaque} sizes="(min-width: 72rem) 22rem, (min-width: 40rem) 45vw, 100vw" larguras={[400, 640, 800]} proporcao={16 / 10} prioridade={i === 0 && pagina === 1} />
+              <div>
+                <h2>
+                  <a href={indice.link("artigo", a.documentId, locale)}>{a.titulo}</a>
+                </h2>
+                <p>{a.resumo}</p>
+                <p class="data">
+                  {ui.atualizadoEm} <time datetime={a.dataAtualizacao}>{formatData(a.dataAtualizacao, locale)}</time>
+                </p>
+              </div>
+            </article>
+          </li>
+        ))
+      }
+    </ul>
+
+    {
+      totalPaginas > 1 && (
+        <nav class="paginacao" aria-label={ui.pagina}>
+          {pagina > 1 && (
+            <a href={urlPagina(pagina - 1)} rel="prev">
+              ← {ui.anterior}
+            </a>
+          )}
+          <ol>
+            {Array.from({ length: totalPaginas }, (_, i) => i + 1).map((n) => (
+              <li>
+                <a href={urlPagina(n)} aria-current={n === pagina ? "page" : undefined}>
+                  {n}
+                </a>
+              </li>
+            ))}
+          </ol>
+          {pagina < totalPaginas && (
+            <a href={urlPagina(pagina + 1)} rel="next">
+              {ui.proxima} →
+            </a>
+          )}
+        </nav>
+      )
+    }
+  </div>
+</Base>
+
+<style>
+  .topo {
+    margin-bottom: var(--space-5);
+  }
+  .categorias ul,
+  .paginacao ol {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    list-style: none;
+    padding: 0;
+  }
+  .categorias a,
+  .paginacao a {
+    display: inline-block;
+    padding: var(--space-2) var(--space-4);
+    border: 1px solid var(--color-border);
+    border-radius: 999px;
+    text-decoration: none;
+    min-height: 44px;
+    line-height: 28px;
+  }
+  .categorias a[aria-current],
+  .paginacao a[aria-current] {
+    background: var(--color-primary);
+    border-color: var(--color-primary);
+    color: var(--color-on-primary);
+  }
+  .card-artigo {
+    position: relative;
+    height: 100%;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+  }
+  .card-artigo :global(img) {
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    object-fit: cover;
+  }
+  .card-artigo > div {
+    padding: var(--space-5);
+  }
+  .card-artigo h2 {
+    font-size: var(--fs-400);
+    margin: 0 0 var(--space-2);
+  }
+  .card-artigo h2 a {
+    color: var(--color-text);
+    text-decoration: none;
+  }
+  .card-artigo h2 a::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+  }
+  .card-artigo p {
+    color: var(--color-text-muted);
+    font-size: var(--fs-100);
+  }
+  .data {
+    margin: 0;
+  }
+  .paginacao {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    margin-top: var(--space-6);
+  }
+</style>

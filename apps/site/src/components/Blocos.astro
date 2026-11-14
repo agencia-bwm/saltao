@@ -1,0 +1,144 @@
+---
+/** Renderiza as dynamic zones (Home, Institucional, corpo do Artigo). Um componente por bloco do Figma. */
+import type { Block, Locale } from "../lib/types";
+import type { Indice } from "../lib/routes";
+import { t } from "../lib/i18n";
+import RichText from "./RichText.astro";
+import Foto from "./Foto.astro";
+import Tabela from "./Tabela.astro";
+import Fatos from "./Fatos.astro";
+import FaqLista from "./FaqLista.astro";
+import Avaliacoes from "./Avaliacoes.astro";
+import CardProduto from "./CardProduto.astro";
+import VideoFachada from "./VideoFachada.astro";
+
+interface Props {
+  blocos: Block[];
+  indice: Indice;
+  locale: Locale;
+  /** Largura de leitura (artigos) ou de página (home). */
+  estreito?: boolean;
+}
+const { blocos, indice, locale, estreito = false } = Astro.props;
+const ui = t(locale);
+const sizesLargura = estreito ? "(min-width: 46rem) 46rem, 100vw" : "(min-width: 72rem) 72rem, 100vw";
+---
+
+{
+  blocos.map((b, i) => {
+    switch (b.__component) {
+      case "blocks.texto":
+        return <RichText conteudo={b.conteudo} />;
+      case "blocks.imagem":
+        return (
+          <figure class="bloco-imagem">
+            <Foto img={b.imagem} sizes={sizesLargura} />
+            {b.imagem.caption && <figcaption>{b.imagem.caption}</figcaption>}
+          </figure>
+        );
+      case "blocks.tabela":
+        return <Tabela tabela={b} />;
+      case "blocks.citacao":
+        return (
+          <blockquote class="citacao">
+            <p>{b.texto}</p>
+            {b.autor && <cite>{b.autor}</cite>}
+          </blockquote>
+        );
+      case "blocks.fatos":
+        return <Fatos itens={b.itens} titulo={b.titulo} />;
+      case "blocks.faq":
+        return <FaqLista itens={b.itens} titulo={b.titulo} id={`faq-${i}`} />;
+      case "blocks.avaliacoes":
+        return <Avaliacoes avaliacoes={b.avaliacaoIds.map((id) => indice.avaliacao(id)).filter((a) => a !== undefined)} titulo={b.titulo} locale={locale} />;
+      case "blocks.video":
+        return <VideoFachada url={b.url} poster={b.poster} titulo={b.titulo} locale={locale} />;
+      case "blocks.mapa-estatico":
+        return (
+          <figure class="bloco-mapa">
+            <a href={b.linkMaps} rel="noopener" target="_blank" data-dl='{"event":"click_directions","method":"mapa"}'>
+              <Foto img={b.imagem} sizes={sizesLargura} />
+              <span class="btn btn-secundario">{ui.abrirMapa}</span>
+            </a>
+          </figure>
+        );
+      case "blocks.cta-produto": {
+        const p = indice.produto(b.produtoId, locale);
+        const href = indice.link("produto", b.produtoId, locale);
+        if (!p || !href) return null;
+        return (
+          <aside class="cta-produto">
+            <p>
+              <strong>{p.titulo}</strong>
+              {b.textoChamada && <><br />{b.textoChamada}</>}
+            </p>
+            <a class="btn btn-reservar" href={href}>
+              {ui.verDetalhes}
+            </a>
+          </aside>
+        );
+      }
+      case "blocks.destaques-produtos": {
+        const itens = b.produtoIds
+          .map((id) => ({ p: indice.produto(id, locale), href: indice.link("produto", id, locale) }))
+          .filter((x) => x.p && x.href);
+        return (
+          <section class="destaques">
+            {b.titulo && <h2>{b.titulo}</h2>}
+            <ul class="grid-cards">
+              {itens.map(({ p, href }, idx) => (
+                <li>
+                  <CardProduto produto={p!} href={href!} categoria={indice.categoriaProduto(p!.categoriaId, locale)} locale={locale} lista={b.titulo ?? "destaques"} index={idx} />
+                </li>
+              ))}
+            </ul>
+          </section>
+        );
+      }
+      default:
+        return null;
+    }
+  })
+}
+
+<style>
+  .bloco-imagem,
+  .bloco-mapa {
+    margin: var(--space-6) 0;
+  }
+  .bloco-imagem :global(img),
+  .bloco-mapa :global(img) {
+    border-radius: var(--radius-lg);
+    width: 100%;
+  }
+  figcaption {
+    font-size: var(--fs-100);
+    color: var(--color-text-muted);
+    margin-top: var(--space-2);
+  }
+  .bloco-mapa a {
+    display: grid;
+    gap: var(--space-3);
+    justify-items: start;
+    text-decoration: none;
+  }
+  .citacao {
+    border-left: 4px solid var(--color-primary);
+    padding-left: var(--space-5);
+    font-size: var(--fs-300);
+  }
+  .cta-produto {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-4);
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--space-5);
+    margin: var(--space-6) 0;
+    background: var(--color-surface);
+    border-radius: var(--radius-lg);
+  }
+  .cta-produto p {
+    margin: 0;
+  }
+</style>

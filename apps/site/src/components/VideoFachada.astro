@@ -1,0 +1,77 @@
+---
+/**
+ * Vídeo como fachada: só a imagem de capa + botão. O player (YouTube sem cookies) só carrega no clique.
+ */
+import type { Img, Locale } from "../lib/types";
+import { t } from "../lib/i18n";
+import Foto from "./Foto.astro";
+
+interface Props {
+  url: string;
+  poster: Img;
+  titulo?: string;
+  locale: Locale;
+}
+const { url, poster, titulo, locale } = Astro.props;
+const id = url.match(/(?:youtu\.be\/|v=|embed\/|shorts\/)([\w-]{11})/)?.[1];
+const ui = t(locale);
+---
+
+{
+  id && (
+    <div class="video" data-video-id={id} data-video-titulo={titulo ?? poster.alt}>
+      <Foto img={poster} sizes="(min-width: 72rem) 46rem, 100vw" proporcao={16 / 9} />
+      <button type="button" class="play">
+        <span class="visually-hidden">{ui.assistirVideo}: {titulo ?? poster.alt}</span>
+        <svg viewBox="0 0 68 48" width="68" height="48" aria-hidden="true">
+          <path d="M66.5 7.7A8.5 8.5 0 0 0 60.5 1.7C55.2.3 34 .3 34 .3s-21.2 0-26.5 1.4a8.5 8.5 0 0 0-6 6C.1 13 .1 24 .1 24s0 11 1.4 16.3a8.5 8.5 0 0 0 6 6C12.8 47.7 34 47.7 34 47.7s21.2 0 26.5-1.4a8.5 8.5 0 0 0 6-6C67.9 35 67.9 24 67.9 24s0-11-1.4-16.3Z" fill="#000" fill-opacity=".75" />
+          <path d="m27 34 18-10-18-10z" fill="#fff" />
+        </svg>
+      </button>
+    </div>
+  )
+}
+
+<script>
+  for (const el of document.querySelectorAll<HTMLElement>("[data-video-id]")) {
+    el.querySelector("button")?.addEventListener(
+      "click",
+      () => {
+        const f = document.createElement("iframe");
+        f.src = `https://www.youtube-nocookie.com/embed/${el.dataset.videoId}?autoplay=1`;
+        f.title = el.dataset.videoTitulo ?? "";
+        f.allow = "accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture";
+        f.allowFullscreen = true;
+        el.replaceChildren(f);
+      },
+      { once: true },
+    );
+  }
+</script>
+
+<style>
+  .video {
+    position: relative;
+    aspect-ratio: 16 / 9;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    background: #000;
+    margin-bottom: var(--space-5);
+  }
+  .video :global(img),
+  .video :global(iframe) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border: 0;
+  }
+  .play {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    background: transparent;
+    border: 0;
+    cursor: pointer;
+  }
+</style>

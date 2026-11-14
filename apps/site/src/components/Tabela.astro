@@ -1,0 +1,25 @@
+---
+import type { Tabela } from "../lib/types";
+interface Props {
+  tabela: Tabela;
+}
+const { tabela } = Astro.props;
+---
+
+<div class="tabela-wrap">
+  <table>
+    {tabela.titulo && <caption>{tabela.titulo}</caption>}
+    <thead>
+      <tr>{tabela.cabecalho.map((c) => <th scope="col">{c}</th>)}</tr>
+    </thead>
+    <tbody>
+      {
+        tabela.linhas.map((l) => (
+          <tr>
+            {l.map((c, i) => (i === 0 ? <th scope="row">{c}</th> : <td>{c}</td>))}
+          </tr>
+        ))
+      }
+    </tbody>
+  </table>
+</div>

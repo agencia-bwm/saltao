@@ -1,0 +1,79 @@
+---
+/**
+ * Renderiza o rich text "blocks" do Strapi 5. Como o formato é JSON (não HTML),
+ * não existe HTML cru do editor na página: o conteúdo já sai sanitizado.
+ * `nivelBase` rebaixa títulos (ex.: dentro de FAQ) para manter um único H1 por página.
+ */
+import type { RichText, RtInline } from "../lib/types";
+
+interface Props {
+  conteudo: RichText;
+  nivelBase?: 2 | 3 | 4;
+}
+const { conteudo, nivelBase = 2 } = Astro.props;
+
+const seguro = (url: string) => /^(https?:|mailto:|tel:|\/|#)/i.test(url);
+const externo = (url: string) => /^https?:/i.test(url) && !url.includes("saltao.com.br");
+const nivel = (n: number) => `h${Math.min(6, Math.max(nivelBase, n))}` as "h2";
+---
+
+{
+  conteudo.map((b) => {
+    const inline = (nos: RtInline[]) =>
+      nos.map((n) => {
+        if (n.type === "link") {
+          const href = seguro(n.url) ? n.url : "#";
+          const txt = n.children.map((c) => c.text).join("");
+          return externo(href) ? (
+            <a href={href} rel="noopener" target="_blank">
+              {txt}
+            </a>
+          ) : (
+            <a href={href}>{txt}</a>
+          );
+        }
+        let el: any = n.text;
+        if (n.code) el = <code>{el}</code>;
+        if (n.bold) el = <strong>{el}</strong>;
+        if (n.italic) el = <em>{el}</em>;
+        if (n.underline) el = <u>{el}</u>;
+        if (n.strikethrough) el = <s>{el}</s>;
+        return el;
+      });
+    switch (b.type) {
+      case "paragraph":
+        return b.children.some((c) => (c.type === "text" ? c.text : true)) ? <p>{inline(b.children)}</p> : null;
+      case "heading": {
+        const H = nivel(b.level);
+        return <H>{inline(b.children)}</H>;
+      }
+      case "list":
+        return b.format === "ordered" ? (
+          <ol>
+            {b.children.map((li) => (
+              <li>{inline(li.children)}</li>
+            ))}
+          </ol>
+        ) : (
+          <ul>
+            {b.children.map((li) => (
+              <li>{inline(li.children)}</li>
+            ))}
+          </ul>
+        );
+      case "quote":
+        return <blockquote>{inline(b.children)}</blockquote>;
+      case "code":
+        return (
+          <pre>
+            <code>{b.children.map((c) => c.text).join("")}</code>
+          </pre>
+        );
+      case "image":
+        // Imagens do corpo devem usar o bloco "Imagem" (otimizado). Aqui só o fallback com dimensões.
+        return <img src={b.image.url} alt={b.image.alternativeText ?? ""} width={b.image.width} height={b.image.height} loading="lazy" decoding="async" />;
+      default:
+        return null;
+    }
+  })
+}

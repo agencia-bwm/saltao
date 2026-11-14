@@ -1,0 +1,101 @@
+---
+import type { CategoriaProduto, Locale, Produto } from "../lib/types";
+import { formatPreco, t } from "../lib/i18n";
+import { dl, itemGa4 } from "../lib/tracking";
+import Foto from "./Foto.astro";
+
+interface Props {
+  produto: Produto;
+  href: string;
+  categoria?: CategoriaProduto;
+  locale: Locale;
+  lista?: string;
+  index?: number;
+  nivel?: "h2" | "h3";
+}
+const { produto, href, categoria, locale, lista = "lista", index, nivel = "h3" } = Astro.props;
+const ui = t(locale);
+const H = nivel;
+const evento = dl({ event: "select_item", ecommerce: { item_list_name: lista, items: [itemGa4(produto, categoria, index)] } });
+---
+
+<article class="card">
+  {produto.galeria[0] && <Foto img={produto.galeria[0]} sizes="(min-width: 72rem) 22rem, (min-width: 40rem) 45vw, 100vw" larguras={[400, 640, 800]} proporcao={16 / 10} />}
+  <div class="card-corpo">
+    <H class="card-titulo"><a href={href} data-dl={evento}>{produto.titulo}</a></H>
+    <p class="card-texto">{produto.respostaRapida}</p>
+    <p class="card-preco">
+      <span>{ui.aPartirDe}</span>
+      <strong>{formatPreco(produto.precoAPartirDe, locale)}</strong>
+      <span>{ui.unidade[produto.unidadePreco]}</span>
+    </p>
+  </div>
+</article>
+
+<style>
+  .card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    background: var(--color-bg);
+  }
+  .card :global(img) {
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    object-fit: cover;
+  }
+  .card-corpo {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    padding: var(--space-5);
+  }
+  .card-titulo {
+    font-size: var(--fs-400);
+    margin: 0 0 var(--space-2);
+  }
+  .card-titulo a {
+    color: var(--color-text);
+    text-decoration: none;
+  }
+  /* Card inteiro clicável, mantendo um único link acessível */
+  .card-titulo a::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+  }
+  .card:hover {
+    box-shadow: var(--shadow-sm);
+    border-color: var(--color-primary);
+  }
+  .card-texto {
+    color: var(--color-text-muted);
+    font-size: var(--fs-100);
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .card-preco {
+    margin: auto 0 0;
+    display: flex;
+    flex-wrap: wrap;
+    column-gap: var(--space-2);
+    gap: var(--space-2);
+    align-items: baseline;
+    font-size: var(--fs-100);
+    color: var(--color-text-muted);
+  }
+  .card-preco span {
+    white-space: nowrap;
+  }
+  .card-preco strong {
+    font-size: var(--fs-400);
+    color: var(--color-text);
+  }
+</style>
