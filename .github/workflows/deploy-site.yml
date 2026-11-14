@@ -70,7 +70,12 @@ jobs:
       - name: Smoke test em produção
         run: |
           curl -sf -o /dev/null "$SITE_URL/"
-          curl -sf "$SITE_URL/robots.txt" | grep -q Sitemap
+          # Em *.hostingersite.com a Hostinger serve o próprio robots.txt (bloqueia o Googlebot) — só confere o nosso no domínio oficial.
+          if node -e 'import("./apps/site/scripts/indexacao.mjs").then(m=>process.exit(m.indexavel(process.env.SITE_URL)?0:1))'; then
+            curl -sf "$SITE_URL/robots.txt" | grep -q Sitemap
+          else
+            curl -sfI "$SITE_URL/" | grep -qi "x-robots-tag: noindex"
+          fi
           curl -sfI "$SITE_URL/" | grep -qi strict-transport-security
 
       - name: IndexNow (Bing / ChatGPT / Copilot)
