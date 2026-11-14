@@ -17,21 +17,47 @@ const ui = t(locale);
 const c = indice.conteudo;
 const g = c.global[locale];
 
-type Item = { rotulo: string; href: string };
-let menu: Item[] = (g?.menuPrincipal ?? []).map((m) => ({ rotulo: m.rotulo, href: m.link }));
+type Link = { rotulo: string; href: string };
+type Entrada = { rotulo: string; href?: string; filhos: Link[] };
+
+/** Menu do painel; se vazio, montado a partir das páginas existentes, em grupos de páginas relacionadas. */
+let menu: Entrada[] = (g?.menuPrincipal ?? []).map((m) => ({ rotulo: m.rotulo, href: m.link, filhos: (m.subitens ?? []).map((x) => ({ rotulo: x.rotulo, href: x.link })) }));
 if (!menu.length) {
-  menu = c.categoriasProduto
-    .filter((x) => x.locale === locale)
-    .sort((a, b) => a.ordemMenu - b.ordemMenu)
-    .map((x) => ({ rotulo: x.titulo, href: indice.link("categoria-produto", x.documentId, locale)! }));
-  if (indice.porPath.has(guiaPath(locale))) menu.push({ rotulo: c.guiaHome[locale]?.titulo ?? "Guia", href: guiaPath(locale) });
-  for (const [kind, id] of [["institucional", "inst-conheca"], ["atendimento", "at-faq"]] as const) {
+  const pagina = (kind: "institucional" | "atendimento", id: string): Link | null => {
     const href = indice.link(kind, id, locale);
     const r = href && indice.porPath.get(href);
-    if (r && "doc" in r) menu.push({ rotulo: (r.doc as { titulo: string }).titulo, href });
-  }
+    return r && "doc" in r ? { rotulo: (r.doc as { titulo: string }).titulo, href } : null;
+  };
+  const cats = c.categoriasProduto.filter((x) => x.locale === locale).sort((a, b) => a.ordemMenu - b.ordemMenu);
+  const cat = (id: string): Link | null => {
+    const x = cats.find((k) => k.documentId === id);
+    return x ? { rotulo: x.titulo, href: indice.link("categoria-produto", x.documentId, locale)! } : null;
+  };
+  const so = (xs: (Link | null)[]) => xs.filter((x): x is Link => x !== null);
+  // Hospedagem: a categoria (visão geral) + cada acomodação.
+  const hosp = cats.find((k) => k.documentId === "cat-hosp");
+  const hospFilhos: Link[] = hosp
+    ? [
+        { rotulo: ui.visaoGeral, href: indice.link("categoria-produto", hosp.documentId, locale)! },
+        ...hosp.produtoIds.flatMap((id) => {
+          const pr = indice.produto(id, locale);
+          const href = indice.link("produto", id, locale);
+          return pr && href ? [{ rotulo: pr.titulo, href }] : [];
+        }),
+      ]
+    : [];
+  const grupos: Entrada[] = [
+    { rotulo: ui.grupoParque, filhos: so([pagina("institucional", "inst-conheca"), pagina("institucional", "inst-cachoeira"), pagina("institucional", "inst-restaurante"), pagina("institucional", "inst-seguranca")]) },
+    { rotulo: ui.grupoExperiencias, filhos: so([cat("cat-dayuse"), cat("cat-quiosques"), cat("cat-combos")]) },
+    hosp ? { rotulo: hosp.titulo.split(/\s+(e|and|y)\s+/)[0], filhos: hospFilhos } : { rotulo: "", filhos: [] },
+    ...(indice.porPath.has(guiaPath(locale)) ? [{ rotulo: ui.guiaCurto, href: guiaPath(locale), filhos: [] }] : []),
+    { rotulo: ui.grupoAtendimento, filhos: so([pagina("atendimento", "at-faq"), pagina("institucional", "inst-como-chegar"), pagina("atendimento", "at-minha-reserva")]) },
+  ];
+  // Grupo com um só filho vira link direto.
+  menu = grupos.filter((x) => x.href || x.filhos.length).map((x) => (x.filhos.length === 1 ? { rotulo: x.rotulo, href: x.filhos[0].href, filhos: [] } : x));
 }
 const atual = (href: string) => rota.path === href || (href !== homePath(locale) && rota.path.startsWith(href));
+const grupoAtivo = (e: Entrada) => (e.href ? atual(e.href) : false) || e.filhos.some((f) => atual(f.href));
 
 const NOMES: Record<Locale, string> = { pt: "Português", en: "English", es: "Español" };
 const SIGLA: Record<Locale, string> = { pt: "PT", en: "EN", es: "ES" };
@@ -45,28 +71,44 @@ const idiomas = (Object.keys(NOMES) as Locale[]).map((l) => ({ l, href: rota.alt
     </a>
 
     <nav class="nav-desktop" aria-label={ui.menu}>
-        <ul class="itens">
-          {
-            menu.map((m) => (
-              <li>
-                <a href={m.href} aria-current={atual(m.href) ? "page" : undefined}>
-                  {m.rotulo}
-                </a>
+      <ul class="itens">
+        {
+          menu.map((m) =>
+            m.filhos.length ? (
+              <li class="grupo">
+                <details name="menu-principal">
+                  <summary class={grupoAtivo(m) ? "ativo" : undefined}>
+                    {m.rotulo}
+                    <svg class="seta" viewBox="0 0 12 12" width="12" height="12" aria-hidden="true"><path d="M2.5 4.5 6 8l3.5-3.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                  </summary>
+                  <ul class="sub">
+                    {m.filhos.map((f) => (
+                      <li>
+                        <a href={f.href} aria-current={atual(f.href) ? "page" : undefined}>{f.rotulo}</a>
+                      </li>
+                    ))}
+                  </ul>
+                </details>
               </li>
-            ))
-          }
-        </ul>
-        <ul class="idiomas" aria-label={ui.idioma}>
-          {
-            idiomas.map(({ l, href }) => (
+            ) : (
               <li>
-                <a href={href} hreflang={l} lang={l} aria-current={l === locale ? "true" : undefined}>
-                  <abbr title={NOMES[l]}>{SIGLA[l]}</abbr>
-                </a>
+                <a href={m.href} aria-current={atual(m.href!) ? "page" : undefined}>{m.rotulo}</a>
               </li>
-            ))
-          }
-        </ul>
+            ),
+          )
+        }
+      </ul>
+      <ul class="idiomas" aria-label={ui.idioma}>
+        {
+          idiomas.map(({ l, href }) => (
+            <li>
+              <a href={href} hreflang={l} lang={l} aria-current={l === locale ? "true" : undefined}>
+                <abbr title={NOMES[l]}>{SIGLA[l]}</abbr>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
     </nav>
 
     <details class="menu-mobile">
@@ -74,13 +116,24 @@ const idiomas = (Object.keys(NOMES) as Locale[]).map((l) => ({ l, href: rota.alt
       <nav aria-label={ui.menu}>
         <ul class="itens">
           {
-            menu.map((m) => (
-              <li>
-                <a href={m.href} aria-current={atual(m.href) ? "page" : undefined}>
-                  {m.rotulo}
-                </a>
-              </li>
-            ))
+            menu.map((m) =>
+              m.filhos.length ? (
+                <li class="grupo-mobile">
+                  <span class="grupo-titulo">{m.rotulo}</span>
+                  <ul>
+                    {m.filhos.map((f) => (
+                      <li>
+                        <a href={f.href} aria-current={atual(f.href) ? "page" : undefined}>{f.rotulo}</a>
+                      </li>
+                    ))}
+                  </ul>
+                </li>
+              ) : (
+                <li>
+                  <a href={m.href} aria-current={atual(m.href!) ? "page" : undefined}>{m.rotulo}</a>
+                </li>
+              ),
+            )
           }
         </ul>
         <ul class="idiomas" aria-label={ui.idioma}>
@@ -107,7 +160,14 @@ const idiomas = (Object.keys(NOMES) as Locale[]).map((l) => ({ l, href: rota.alt
     top: 0;
     z-index: 50;
     background: var(--color-bg);
-    border-bottom: 1px solid var(--color-border);
+  }
+  /* Os três arcos do logo, lado a lado, como fio sob o cabeçalho. */
+  .cabecalho::after {
+    content: "";
+    position: absolute;
+    inset: auto 0 0;
+    height: 3px;
+    background: var(--grad-arcos);
   }
   .barra {
     width: min(100% - 2 * var(--space-4), 92rem);
@@ -145,8 +205,13 @@ const idiomas = (Object.keys(NOMES) as Locale[]).map((l) => ({ l, href: rota.alt
     align-items: center;
     padding: 0 var(--space-3);
     border: 1px solid var(--color-border);
-    border-radius: var(--radius-md);
-    font-weight: 600;
+    border-radius: var(--radius-pill);
+    padding-inline: var(--space-4);
+    font-weight: var(--fw-medio);
+  }
+  .menu-mobile[open] summary {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
   }
   summary::-webkit-details-marker {
     display: none;
@@ -161,13 +226,18 @@ const idiomas = (Object.keys(NOMES) as Locale[]).map((l) => ({ l, href: rota.alt
     padding: var(--space-3) var(--space-4);
     color: var(--color-text);
     text-decoration: none;
-    font-weight: 600;
+    font-weight: var(--fw-medio);
+  }
+  nav a:hover {
+    color: var(--color-primary);
   }
   nav a[aria-current="page"],
   nav a[aria-current="true"] {
     color: var(--color-primary);
     text-decoration: underline;
     text-decoration-thickness: 2px;
+    text-underline-offset: 0.4em;
+    text-decoration-color: var(--brand-azul-medio);
   }
   .idiomas {
     display: flex;
@@ -188,30 +258,111 @@ const idiomas = (Object.keys(NOMES) as Locale[]).map((l) => ({ l, href: rota.alt
     right: 0;
     top: 100%;
     background: var(--color-bg);
-    border-bottom: 1px solid var(--color-border);
-    box-shadow: var(--shadow-sm);
-    padding: var(--space-2) 0;
+    box-shadow: var(--shadow-md);
+    padding: var(--space-3) 0 var(--space-2);
   }
-  /* Menu completo só onde cabe numa linha; abaixo disso, botão Menu. */
-  @media (min-width: 96rem) {
+  .menu-mobile nav {
+    max-height: calc(100svh - 4.5rem);
+    overflow-y: auto;
+  }
+  .grupo-mobile {
+    padding-top: var(--space-2);
+  }
+  .grupo-titulo {
+    display: block;
+    padding: var(--space-2) var(--space-4) 0;
+    font-size: var(--fs-100);
+    color: var(--color-text-muted);
+  }
+  .grupo-mobile a {
+    padding-left: var(--space-6);
+  }
+  /* Menu completo a partir de 70rem; abaixo disso, botão Menu. */
+  @media (min-width: 70rem) {
     .menu-mobile {
       display: none;
     }
     .nav-desktop,
-    .nav-desktop ul {
+    .nav-desktop > ul {
       display: flex;
       align-items: center;
       flex-wrap: nowrap;
       white-space: nowrap;
     }
-    .nav-desktop a {
-      padding: var(--space-2) var(--space-2);
+    .nav-desktop .itens {
+      gap: var(--space-1);
+    }
+    .nav-desktop .itens > li > a,
+    .grupo summary {
+      display: flex;
+      align-items: center;
+      gap: var(--space-1);
+      min-height: 44px;
+      padding: var(--space-2) var(--space-3);
+      border-radius: var(--radius-pill);
+      color: var(--color-text);
+      font-weight: var(--fw-medio);
+      text-decoration: none;
+    }
+    .grupo {
+      position: relative;
+    }
+    .grupo summary {
+      cursor: pointer;
+      list-style: none;
+      border: 0;
+    }
+    .grupo summary::-webkit-details-marker {
+      display: none;
+    }
+    .grupo summary:hover,
+    .nav-desktop .itens > li > a:hover,
+    .grupo details[open] summary {
+      background: var(--color-surface);
+      color: var(--color-primary-strong);
+    }
+    .grupo summary.ativo {
+      color: var(--color-primary);
+    }
+    .seta {
+      transition: transform 0.15s ease;
+    }
+    .grupo details[open] .seta {
+      transform: rotate(180deg);
+    }
+    /* Painel do submenu: branco, com o fio dos arcos no topo. */
+    .sub {
+      position: absolute;
+      top: calc(100% + var(--space-2));
+      left: 0;
+      min-width: 15rem;
+      padding: var(--space-3) var(--space-2) var(--space-2);
+      background: var(--grad-arcos) top / 100% 3px no-repeat, var(--color-bg);
+      border-radius: var(--radius-md) var(--radius-lg) var(--radius-lg) var(--radius-lg);
+      box-shadow: var(--shadow-md);
+    }
+    .sub a {
+      padding: var(--space-2) var(--space-3);
+      border-radius: var(--radius-sm);
       font-size: var(--fs-100);
+    }
+    .sub a:hover {
+      background: var(--color-surface);
     }
     .nav-desktop .idiomas {
       border-top: 0;
       border-left: 1px solid var(--color-border);
-      margin-left: var(--space-2);
+      margin-left: var(--space-3);
+      padding-left: var(--space-2);
+    }
+    .nav-desktop .idiomas a {
+      padding: var(--space-2);
+      font-size: var(--fs-100);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .seta {
+      transition: none;
     }
   }
 </style>

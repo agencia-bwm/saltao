@@ -219,7 +219,8 @@ export interface Global extends Doc {
   horarios: Horario[];
   redesSociais: { rede: string; url: string }[];
   distancias: KV[];
-  menuPrincipal: { rotulo: string; link: string }[];
+  /** Item com `subitens` vira grupo com submenu; `link` do grupo é opcional. */
+  menuPrincipal: { rotulo: string; link?: string; subitens?: { rotulo: string; link: string }[] }[];
   rodape?: RichText;
   resumoLlms: string;
   seoPadrao: Seo;

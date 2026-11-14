@@ -53,25 +53,33 @@ const ui = t(locale);
 
 <style>
   figure {
+    position: relative;
     margin: 0;
     height: 100%;
-    padding: var(--space-5);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-md);
+    padding: var(--space-6) var(--space-5) var(--space-5);
+    background: var(--color-surface);
+    border-radius: var(--radius-lg) var(--radius-arco) var(--radius-lg) var(--radius-lg);
   }
   .nota {
     color: #8a5a00;
     letter-spacing: 2px;
-    margin-bottom: var(--space-2);
+    margin-bottom: var(--space-3);
   }
   .vazias {
-    color: var(--color-border);
+    color: var(--brand-azul-claro);
   }
   blockquote {
-    margin: 0 0 var(--space-3);
+    margin: 0 0 var(--space-4);
+    font-size: var(--fs-300);
+    line-height: 1.5;
+    color: var(--brand-poco);
   }
   figcaption {
     font-size: var(--fs-100);
     color: var(--color-text-muted);
+  }
+  /* Sobre o fundo céu, o azul Saltão fica em 4,2:1 — links usam o azul escuro (8,3:1). */
+  figcaption a {
+    color: var(--color-primary-strong);
   }
 </style>

@@ -54,7 +54,7 @@ const blocosPop: Populate = {
 };
 
 const POPULATE: Record<string, Record<string, Populate>> = {
-  global: { endereco: true, geo: true, horarios: true, redesSociais: true, distancias: true, menuPrincipal: true, seoPadrao: seoPop },
+  global: { endereco: true, geo: true, horarios: true, redesSociais: true, distancias: true, menuPrincipal: { subitens: true }, seoPadrao: seoPop },
   home: { hero: { imagem: { imagem: true }, cta: { produto: true } }, secoes: blocosPop, seo: seoPop },
   "guia-home": { seo: seoPop },
   produtos: {
@@ -212,7 +212,7 @@ export async function carregarDoStrapi(): Promise<Conteudo> {
       horarios: d.horarios ?? [],
       redesSociais: d.redesSociais ?? [],
       distancias: kvs(d.distancias),
-      menuPrincipal: d.menuPrincipal ?? [],
+      menuPrincipal: (d.menuPrincipal ?? []).map((m: Json) => ({ rotulo: m.rotulo, link: m.link || undefined, subitens: (m.subitens ?? []).map((x: Json) => ({ rotulo: x.rotulo, link: x.link })) })),
       rodape: rich(d.rodape),
       resumoLlms: d.resumoLlms ?? "",
       seoPadrao: seo(d.seoPadrao),

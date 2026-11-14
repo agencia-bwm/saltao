@@ -33,26 +33,46 @@ const { itens, titulo, id } = Astro.props;
   }
   summary {
     cursor: pointer;
-    padding: var(--space-4) var(--space-6) var(--space-4) 0;
-    font-weight: 700;
+    padding: var(--space-5) var(--space-7) var(--space-5) 0;
+    font-size: var(--fs-300);
+    font-weight: var(--fw-medio);
+    color: var(--brand-poco);
     list-style: none;
     position: relative;
   }
   summary::-webkit-details-marker {
     display: none;
   }
+  summary:hover {
+    color: var(--color-primary);
+  }
+  summary::before,
   summary::after {
-    content: "+";
+    content: "";
     position: absolute;
     right: var(--space-2);
-    font-size: 1.5rem;
-    line-height: 1;
+    top: 50%;
+    width: 14px;
+    height: 2px;
+    background: var(--color-primary);
+    border-radius: 2px;
+    transition: transform 0.2s ease;
+  }
+  summary::after {
+    transform: rotate(90deg);
   }
   details[open] summary::after {
-    content: "–";
+    transform: rotate(0deg);
   }
   .faq-resposta {
-    padding-bottom: var(--space-4);
+    padding-bottom: var(--space-5);
     color: var(--color-text-muted);
+    max-width: 65ch;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    summary::before,
+    summary::after {
+      transition: none;
+    }
   }
 </style>

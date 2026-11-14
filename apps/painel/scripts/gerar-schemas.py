@@ -53,7 +53,9 @@ components = {
     "geo": ("Coordenadas", "pinMap", {"latitude": {"type": "decimal", "required": True}, "longitude": {"type": "decimal", "required": True}}),
     "horario": ("Horário", "clock", {"dias": s(True, 30, regex="^(Mo|Tu|We|Th|Fr|Sa|Su)([-,](Mo|Tu|We|Th|Fr|Sa|Su))*$"), "abre": s(True, 5, regex="^\\d{2}:\\d{2}$"), "fecha": s(True, 5, regex="^\\d{2}:\\d{2}$")}),
     "rede-social": ("Rede social", "earth", {"rede": enum(["instagram", "facebook", "youtube", "tiktok", "tripadvisor", "google"], True), "url": s(True, 500, regex="^https://")}),
-    "menu-item": ("Item de menu", "bulletList", {"rotulo": s(True, 40), "link": s(True, 300)}),
+    # Item do menu principal. Com subitens vira grupo (submenu); o link do grupo é opcional.
+    "menu-item": ("Item de menu", "bulletList", {"rotulo": s(True, 40), "link": s(maxLength=300), "subitens": comp("shared.menu-subitem", True, max=8)}),
+    "menu-subitem": ("Subitem de menu", "bulletList", {"rotulo": s(True, 60), "link": s(True, 300)}),
     "grupo-faq": ("Grupo de perguntas", "question", {"tituloGrupo": s(True, 100), "itens": comp("shared.faq-item", True)}),
   },
   "blocks": {

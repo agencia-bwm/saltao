@@ -16,14 +16,22 @@ Velocidade e SEO antes de efeito visual. Se piora o Core Web Vitals, não entra 
 - Zero JS por padrão. Ilhas só para preço/disponibilidade/Reservar (Preact ou JS puro), sempre com fallback estático.
 - Imagens só via `components/Foto.astro` (astro:assets, AVIF+WebP, srcset, width/height). Hero: `prioridade`; o resto é lazy.
 - Nada de jQuery, slider, animação em JS, widget de terceiro. Vídeo = fachada (`VideoFachada.astro`). Mapa = imagem estática.
-- Fontes: no máximo 2 famílias/4 pesos, WOFF2 subset latino, hospedadas no site (definir com o Figma).
+- Fonte: **Urbanist** variável (OFL), uma família só, `public/fonts/urbanist-latin-wght.woff2` (28 KB, subset latino; cache imutável de 1 ano — se trocar a fonte, troque o nome do arquivo), com preload e reserva com métricas iguais (`Urbanist Fallback`) para CLS zero. Não adicionar outra família sem medir.
 - CSS: tokens de `packages/ui/src/tokens.css`; nunca cor/medida solta nos componentes.
 
 ## Marca
 Cores do logo oficial (`packages/ui/marca/saltao-logo-original.pdf`): azul Saltão `#4076b6`, azul médio `#489ed2` (só decorativo), azul claro `#a0c9e8`; azul escuro derivado `#244a75`. Contraste AA obrigatório: texto azul só com `#4076b6` ou mais escuro.
 
+## Linguagem visual ("a queda")
+- A página desce como os 75 m da cachoeira: topo em céu (`--grad-ceu` no body), faixas fundas no meio (`--grad-profundo`), rodapé no poço (`--grad-poco`).
+- Os três arcos do logo são o único ornamento: fio `--grad-arcos` (cabeçalho, topo das páginas, submenu, preço), fios d'água no hero e marca d'água no rodapé.
+- Canto do arco: fotos e painéis usam `--radius-arco` só no canto superior direito.
+- Títulos em peso leve (300/250), como o wordmark. Nada de caixa-alta em rótulos.
+- Texto azul sobre o fundo céu: usar `--color-primary-strong` (o azul Saltão fica em 4,2:1).
+
 ## Templates e campos
 7 templates (`apps/site/src/templates`): Home, Listagem de produtos, Produto/pacote, Listagem do blog, Artigo, Institucional por blocos, FAQ/Contato. Cada campo do painel = um bloco visual. Rotas montadas em `src/lib/routes.ts` a partir do painel (slugs traduzidos). A build falha se houver URL duplicada.
+- Menu: `Global.menuPrincipal`; item com `subitens` vira grupo com submenu (`<details name>` exclusivo, sem JS). Sem menu no painel, `Cabecalho.astro` monta 5 grupos: O Saltão, Experiências, Hospedagem, Guia, Atendimento.
 
 ## SEO / GEO / AEO
 - Toda página: 1 H1, resposta direta de 1–2 frases no topo, canonical, hreflang PT/EN/ES + x-default, breadcrumbs + BreadcrumbList, OG.
