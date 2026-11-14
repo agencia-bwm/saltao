@@ -40,6 +40,7 @@
   /* Tipografia — Urbanist (variável, 100–900, WOFF2 latino, hospedada no site) */
   --font-sans: "Urbanist", "Urbanist Fallback", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
   --font-display: var(--font-sans);
+  --font-display-leve: "Urbanist", "Urbanist Fallback Leve", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif; /* títulos em peso leve */
   --fw-leve: 300;
   --fw-normal: 450;
   --fw-medio: 600;
