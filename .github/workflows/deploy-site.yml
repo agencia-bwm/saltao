@@ -40,7 +40,7 @@ jobs:
       - run: pnpm install --frozen-lockfile
 
       # Imagens já otimizadas ficam em cache entre builds (decisão 8).
-      - uses: actions/cache@v4
+      - uses: actions/cache@v6
         with:
           path: apps/site/node_modules/.astro
           key: astro-assets-${{ github.run_id }}
