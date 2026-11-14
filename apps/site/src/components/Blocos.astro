@@ -111,7 +111,7 @@ const sizesLargura = estreito ? "(min-width: 46rem) 46rem, 100vw" : "(min-width:
   }
   .bloco-imagem :global(img),
   .bloco-mapa :global(img) {
-    border-radius: var(--radius-lg);
+    border-radius: var(--radius-lg) var(--radius-arco) var(--radius-lg) var(--radius-lg);
     width: 100%;
   }
   figcaption {
@@ -126,7 +126,7 @@ const sizesLargura = estreito ? "(min-width: 46rem) 46rem, 100vw" : "(min-width:
     text-decoration: none;
   }
   .citacao {
-    border-left: 4px solid var(--color-primary);
+    border-left: 3px solid var(--brand-azul-medio);
     padding-left: var(--space-5);
     font-size: var(--fs-300);
   }
@@ -136,10 +136,14 @@ const sizesLargura = estreito ? "(min-width: 46rem) 46rem, 100vw" : "(min-width:
     gap: var(--space-4);
     align-items: center;
     justify-content: space-between;
-    padding: var(--space-5);
-    margin: var(--space-6) 0;
-    background: var(--color-surface);
-    border-radius: var(--radius-lg);
+    padding: var(--space-5) var(--space-6);
+    margin: var(--space-7) 0;
+    background: var(--grad-arcos) left top / 100% 3px no-repeat, var(--color-surface);
+    border-radius: var(--radius-lg) var(--radius-arco) var(--radius-lg) var(--radius-lg);
+  }
+  .cta-produto strong {
+    font-size: var(--fs-300);
+    color: var(--brand-poco);
   }
   .cta-produto p {
     margin: 0;

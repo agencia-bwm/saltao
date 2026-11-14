@@ -57,7 +57,7 @@ const lista = {
         artigos.map((a, i) => (
           <li>
             <article class="card-artigo">
-              <Foto img={a.imagemDestaque} sizes="(min-width: 72rem) 22rem, (min-width: 40rem) 45vw, 100vw" larguras={[400, 640, 800]} proporcao={16 / 10} prioridade={i === 0 && pagina === 1} />
+              <Foto img={a.imagemDestaque} sizes="(min-width: 72rem) 22rem, (min-width: 40rem) 45vw, calc(100vw - 2rem)" larguras={[400, 680, 800]} proporcao={16 / 10} prioridade={i === 0 && pagina === 1} />
               <div>
                 <h2>
                   <a href={indice.link("artigo", a.documentId, locale)}>{a.titulo}</a>
