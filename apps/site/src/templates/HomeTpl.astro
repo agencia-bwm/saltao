@@ -137,10 +137,10 @@ const cardCat = cardProd ? indice.categoriaProduto(cardProd.categoriaId, locale)
 </Base>
 
 <style>
+  /* Hero na largura total da tela. */
   .hero-wrap {
     position: relative;
-    width: min(100% - 2 * var(--space-3), 92rem);
-    margin-inline: auto;
+    width: 100%;
   }
   .hero {
     position: relative;
@@ -149,7 +149,6 @@ const cardCat = cardProd ? indice.categoriaProduto(cardProd.categoriaId, locale)
     color: #ffffff;
     background: var(--brand-poco);
     overflow: hidden;
-    border-radius: var(--radius-lg) var(--radius-arco) 0 0;
   }
   .hero > :global(picture),
   .hero-veu {
@@ -328,7 +327,8 @@ const cardCat = cardProd ? indice.categoriaProduto(cardProd.categoriaId, locale)
     .card-flutuante {
       position: absolute;
       top: clamp(var(--space-7), 9vw, 7.5rem);
-      right: clamp(var(--space-5), 4vw, var(--space-8));
+      /* Alinhado à borda direita do conteúdo (84rem), não da tela. */
+      right: max(var(--space-5), calc((100% - 84rem) / 2));
       width: 21rem;
       margin: 0;
       transform: rotate(1.5deg);
@@ -348,7 +348,6 @@ const cardCat = cardProd ? indice.categoriaProduto(cardProd.categoriaId, locale)
   @media (max-width: 40rem) {
     .hero {
       min-height: 88svh;
-      border-radius: var(--radius-lg) var(--radius-lg) 0 0;
     }
     .hero-veu {
       align-items: flex-end;
