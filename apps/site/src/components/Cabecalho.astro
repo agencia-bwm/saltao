@@ -48,7 +48,7 @@ if (!menu.length) {
     : [];
   const grupos: Entrada[] = [
     { rotulo: ui.grupoParque, filhos: so([pagina("institucional", "inst-conheca"), pagina("institucional", "inst-cachoeira"), pagina("institucional", "inst-restaurante"), pagina("institucional", "inst-seguranca")]) },
-    { rotulo: ui.grupoExperiencias, filhos: so([cat("cat-dayuse"), cat("cat-quiosques"), cat("cat-combos")]) },
+    { rotulo: ui.grupoExperiencias, filhos: so([cat("cat-dayuse"), cat("cat-quiosques")]) },
     hosp ? { rotulo: hosp.titulo.split(/\s+(e|and|y)\s+/)[0], filhos: hospFilhos } : { rotulo: "", filhos: [] },
     ...(indice.porPath.has(guiaPath(locale)) ? [{ rotulo: ui.guiaCurto, href: guiaPath(locale), filhos: [] }] : []),
     { rotulo: ui.grupoAtendimento, filhos: so([pagina("atendimento", "at-faq"), pagina("institucional", "inst-como-chegar"), pagina("atendimento", "at-minha-reserva")]) },

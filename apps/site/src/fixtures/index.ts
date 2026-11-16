@@ -24,7 +24,6 @@ import fQuiosqueSrc from "../assets/fotos/camping/camping-barracas-quiosque-amig
 import fQuiosqueNoiteSrc from "../assets/fotos/camping/camping-noite-barracas-quiosque.jpg";
 import fKidsSrc from "../assets/fotos/estrutura/salao-kids-brinquedos-bambu.jpg";
 import fValeSrc from "../assets/fotos/paisagem/paisagem-vale-ceu-azul.jpg";
-import fPorDoSolSrc from "../assets/fotos/paisagem/por-do-sol-sol-tocando-horizonte.jpg";
 import fPorDoSolArvoreSrc from "../assets/fotos/paisagem/por-do-sol-dourado-arvore.jpg";
 import mapaProvisorio from "../assets/placeholder/trilha.jpg";
 
@@ -53,7 +52,6 @@ const fQuiosque = img(fQuiosqueSrc, "Grupo de amigos junto a barracas e quiosque
 const fQuiosqueNoite = img(fQuiosqueNoiteSrc, "Barracas montadas à noite ao lado de quiosque com churrasqueira");
 const fKids = img(fKidsSrc, "Brinquedos de bambu e rede de proteção no salão coberto");
 const fVale = img(fValeSrc, "Vista panorâmica do vale com lago e céu azul limpo");
-const fPorDoSol = img(fPorDoSolSrc, "Sol tocando o horizonte com palmeira e eucaliptos em silhueta");
 const fPorDoSolArvore = img(fPorDoSolArvoreSrc, "Pôr do sol dourado sobre campos e árvore isolada");
 const p = (...textos: string[]): RichText => textos.map((text) => ({ type: "paragraph", children: [{ type: "text", text }] }));
 const h2 = (text: string): RichText[number] => ({ type: "heading", level: 2, children: [{ type: "text", text }] });
@@ -75,7 +73,6 @@ const L = {
       dayuse: ["Day Use", "day-use", "Passe o dia no Saltão com acesso à cachoeira, trilhas e áreas de lazer. Ingressos por pessoa, a partir de R$ 60 (valor de exemplo)."],
       hosp: ["Hospedagem e Camping", "hospedagem", "Durma no parque: apartamentos com café da manhã e áreas de camping com estrutura. Diárias a partir de R$ 280 (valor de exemplo)."],
       quiosques: ["Churrasqueiras e Quiosques", "churrasqueiras-e-quiosques", "Reserve um quiosque ou churrasqueira para o seu grupo, com mesas e ponto de apoio. A partir de R$ 120 por dia (valor de exemplo)."],
-      combos: ["Monte sua Experiência", "monte-sua-experiencia", "Combos prontos que juntam day use, hospedagem e quiosque com preço especial."],
     },
   },
   en: {
@@ -86,7 +83,6 @@ const L = {
       dayuse: ["Day Pass", "day-pass", "Spend the day at Saltão with access to the waterfall, trails and leisure areas. Tickets per person from R$ 60 (sample price)."],
       hosp: ["Lodging and Camping", "lodging", "Stay in the park: rooms with breakfast and equipped camping areas. Nightly rates from R$ 280 (sample price)."],
       quiosques: ["Barbecue Kiosks", "barbecue-kiosks", "Book a kiosk or barbecue area for your group, with tables and support point. From R$ 120 per day (sample price)."],
-      combos: ["Build Your Experience", "build-your-experience", "Ready-made packages combining day pass, lodging and kiosk at a special price."],
     },
   },
   es: {
@@ -97,7 +93,6 @@ const L = {
       dayuse: ["Pase de Día", "pase-de-dia", "Pasa el día en Saltão con acceso a la cascada, senderos y áreas de ocio. Entradas por persona desde R$ 60 (precio de ejemplo)."],
       hosp: ["Hospedaje y Camping", "hospedaje", "Duerme en el parque: habitaciones con desayuno y áreas de camping equipadas. Noches desde R$ 280 (precio de ejemplo)."],
       quiosques: ["Quinchos y Parrillas", "quinchos-y-parrillas", "Reserva un quincho o parrilla para tu grupo, con mesas y punto de apoyo. Desde R$ 120 por día (precio de ejemplo)."],
-      combos: ["Arma tu Experiencia", "arma-tu-experiencia", "Combos listos que reúnen pase de día, hospedaje y quincho con precio especial."],
     },
   },
 } as const;
@@ -163,20 +158,6 @@ const produtosBase = [
       es: ["Quincho con parrilla", "quincho-con-parrilla", "Quincho techado con parrilla, mesas y fregadero, para grupos de hasta 30 personas. Precio por espacio, por día, desde R$ 120 (precio de ejemplo)."],
     },
   },
-  {
-    id: "prod-combo-familia",
-    cat: "cat-combos",
-    motor: "combo-familia",
-    preco: 390,
-    unidade: "por-noite" as const,
-    schema: "Product" as const,
-    imgs: [fAptosVA, fCach2Pan, fKids],
-    t: {
-      pt: ["Combo Família: hospedagem + day use", "combo-familia", "Uma noite em apartamento com day use para toda a família no dia seguinte, com preço especial. A partir de R$ 390 (valor de exemplo)."],
-      en: ["Family Package: lodging + day pass", "family-package", "One night in a room plus a day pass for the whole family the next day, at a special price. From R$ 390 (sample price)."],
-      es: ["Combo Familia: hospedaje + pase de día", "combo-familia", "Una noche en habitación más pase de día para toda la familia al día siguiente, con precio especial. Desde R$ 390 (precio de ejemplo)."],
-    },
-  },
 ];
 
 const incluiPt = ["Acesso à cachoeira e às trilhas sinalizadas", "Estacionamento", "Banheiros e vestiários"];
@@ -232,7 +213,6 @@ const catDefs = [
   ["cat-dayuse", "dayuse", fTrilha, ["prod-dayuse"], 1],
   ["cat-hosp", "hosp", fAptos, ["prod-apto", "prod-camping"], 2],
   ["cat-quiosques", "quiosques", fQuiosque, ["prod-quiosque"], 3],
-  ["cat-combos", "combos", fPorDoSol, ["prod-combo-familia"], 4],
 ] as const;
 
 const categoriasProduto: Conteudo["categoriasProduto"] = catDefs.flatMap(([id, key, im, prods, ordem]) =>
@@ -310,7 +290,7 @@ const artigo = (id: string, titulo: string, slug: string, cat: string, resumo: s
 
 const artigos: Conteudo["artigos"] = [
   artigo("art-1", "Cachoeiras perto de Brotas: o que saber antes de ir", "cachoeiras-perto-de-brotas", "cg-cachoeiras", "Um guia prático sobre as cachoeiras da região de Brotas e da Serra do Itaqueri: como chegar, melhor época e o que levar. Texto de exemplo.", fCachMoldura, "prod-dayuse"),
-  artigo("art-2", "O que fazer na Serra do Itaqueri em um fim de semana", "o-que-fazer-na-serra-do-itaqueri", "cg-oque", "Roteiro de exemplo para dois dias na Serra do Itaqueri, combinando trilhas, cachoeira e descanso. Texto de exemplo.", fPorDoSolArvore, "prod-combo-familia"),
+  artigo("art-2", "O que fazer na Serra do Itaqueri em um fim de semana", "o-que-fazer-na-serra-do-itaqueri", "cg-oque", "Roteiro de exemplo para dois dias na Serra do Itaqueri, combinando trilhas, cachoeira e descanso. Texto de exemplo.", fPorDoSolArvore, "prod-apto"),
   artigo("art-3", "Quando ir ao Saltão: melhor época para cachoeira", "quando-ir-ao-saltao", "cg-quando", "Como o volume da cachoeira muda ao longo do ano e qual época combina com cada tipo de passeio. Texto de exemplo.", fCach2, "prod-dayuse"),
   artigo("art-4", "Camping na Serra do Itaqueri: guia para iniciantes", "camping-na-serra-do-itaqueri", "cg-camping", "O que levar, como escolher o lugar da barraca e cuidados para acampar com conforto e segurança. Texto de exemplo.", fCampEntardecer, "prod-camping"),
 ];
