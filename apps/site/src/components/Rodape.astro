@@ -110,7 +110,7 @@ const dias = (s: string) => s.replace(/Mo|Tu|We|Th|Fr|Sa|Su/g, (d) => DIA[locale
     padding-block: var(--space-8) var(--space-5);
     font-size: var(--fs-100);
     /* O canto de cima curva como o topo dos arcos — a borda do poço. */
-    border-start-end-radius: clamp(2.5rem, 8vw, 7rem);
+    border-start-end-radius: var(--radius-faixa);
   }
   .rodape > :not(.arcos-fundo) {
     position: relative;

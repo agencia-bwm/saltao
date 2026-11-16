@@ -80,7 +80,7 @@ components = {
       "ancora": s(maxLength=40, regex="^[a-z0-9-]+$"), "sobretitulo": s(maxLength=40), "titulo": s(True, 90), "texto": text(False, 400),
       "imagem": comp("shared.image-alt", req=True), "galeria": comp("shared.image-alt", True, max=3),
       "destaque": s(maxLength=12), "destaqueLegenda": s(maxLength=60),
-      "layout": enum(["imersivo", "foto_esquerda", "foto_direita"], True, "foto_esquerda"), "tema": enum(["claro", "escuro"], True, "claro"),
+      "layout": enum(["imersivo", "foto_esquerda", "foto_direita"], True, "foto_esquerda"), "tema": enum(["claro", "escuro", "profundo"], True, "claro"),
       "cta": comp("shared.cta")}),
     "roteiro": ("Roteiro (um dia no parque)", "calendar", {"titulo": s(maxLength=90), "itens": comp("shared.roteiro-item", True, max=6)}),
     "chamada-final": ("Chamada final", "message", {"titulo": s(True, 90), "texto": text(False, 300), "imagem": comp("shared.image-alt", req=True), "cta": comp("shared.cta")}),

@@ -58,7 +58,8 @@
       "type": "enumeration",
       "enum": [
         "claro",
-        "escuro"
+        "escuro",
+        "profundo"
       ],
       "required": true,
       "default": "claro"

@@ -157,7 +157,7 @@ a:hover {
   padding: calc(var(--altura-cabecalho) + var(--space-4)) 0 var(--space-8);
   background: var(--grad-faixa-topo);
   color: var(--color-on-deep);
-  border-end-start-radius: clamp(2.5rem, 8vw, 7rem);
+  border-end-start-radius: var(--radius-faixa);
 }
 .faixa-topo--sobreposta {
   padding-bottom: calc(var(--space-8) + var(--space-8));

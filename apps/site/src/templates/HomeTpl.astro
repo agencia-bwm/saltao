@@ -24,24 +24,23 @@ const hero = doc.hero;
 const faqs = doc.secoes.flatMap((b) => (b.__component === "blocks.faq" ? b.itens : []));
 const ctaHref = hrefCta(hero.cta, indice, locale);
 
-// O 2º botão do hero desce até o primeiro capítulo que tem âncora (ex.: #cachoeiras).
-const primeiroCapitulo = doc.secoes.find((b) => b.__component === "blocks.capitulo" && b.ancora);
-const ancoraDescubra = primeiroCapitulo?.__component === "blocks.capitulo" ? primeiroCapitulo.ancora : undefined;
+// O 2º botão do hero desce até o primeiro capítulo com âncora; a barra de atalhos lista todos.
+const capitulos = doc.secoes.flatMap((b) => (b.__component === "blocks.capitulo" && b.ancora ? [{ ancora: b.ancora, rotulo: b.sobretitulo ?? b.titulo }] : []));
+const ancoraDescubra = capitulos[0]?.ancora;
+// Nome grande do hero: a marca, como no logo (ex.: "Saltão").
+const g = indice.conteudo.global[locale] ?? indice.conteudo.global.pt;
+const marca = (g?.nomeOficial ?? "Saltão").split(/\s+[—–-]\s+/)[0];
 ---
 
 <Base {...rota} indice={indice} imagem={hero.imagem} jsonld={[noWebPage(rota.path, doc.seo.metaTitle, hero.respostaDireta, locale), noFaq(faqs, rota.path)].filter((n) => n !== null)}>
   <section class="hero no-escuro">
     <Foto img={hero.imagem} prioridade sizes="100vw" class="hero-img" larguras={[480, 760, 1080, 1440, 1600]} />
     <div class="hero-texto">
+      {hero.sobretitulo && <p class="hero-vertical" aria-hidden="true">{hero.sobretitulo}</p>}
       <div class="container hero-grade">
-        <!-- Os três arcos do logo, esticados na vertical: a queda d'água ao lado do título. -->
-        <svg class="fios" viewBox="166 62 118 166" preserveAspectRatio="none" aria-hidden="true" focusable="false">
-          <path fill="#489ed2" d="M239.58 73.19c-4.78-2.11-9.34-3.38-13.55-3.55-48.59-1.9-53.53 26.05-53.53 90.66 0 19.02 2.39 40.3 6.97 60.88-1.26-15.83-1.66-32.09-1.66-47.49 0-62.75 16.3-98.48 61.77-100.5Z" />
-          <path fill="#4076b6" d="M258.58 73.19c-4.79-2.11-9.34-3.38-13.55-3.55-48.61-1.9-53.54 26.05-53.54 90.66 0 19.02 2.4 40.3 6.98 60.88-1.26-15.83-1.67-32.09-1.67-47.49 0-62.75 16.31-98.48 61.78-100.5Z" />
-          <path fill="#a0c9e8" d="M278.53 73.33c-4.78-2.11-9.34-3.38-13.55-3.55-48.6-1.9-53.53 26.05-53.53 90.66 0 19.02 2.38 40.31 6.97 60.88-1.25-15.82-1.66-32.09-1.66-47.5 0-62.73 16.31-98.47 61.77-100.49Z" />
-        </svg>
+        <p class="hero-marca" aria-hidden="true">{marca}</p>
         <div class="hero-conteudo">
-          {hero.sobretitulo && <p class="sobretitulo">{hero.sobretitulo}</p>}
+          {hero.sobretitulo && <p class="visually-hidden">{hero.sobretitulo}</p>}
           <h1 set:html={enfase(hero.titulo)} />
           <p class="resposta">{hero.respostaDireta}</p>
           <div class="acoes">
@@ -49,7 +48,22 @@ const ancoraDescubra = primeiroCapitulo?.__component === "blocks.capitulo" ? pri
             {ancoraDescubra && <a class="btn btn-contorno" href={`#${ancoraDescubra}`}>{ui.descubra} <span aria-hidden="true">↓</span></a>}
           </div>
         </div>
-
+        {
+          capitulos.length > 1 && (
+            <nav class="hero-atalhos" aria-label={ui.descubra}>
+              <ol>
+                {capitulos.map((c, i) => (
+                  <li>
+                    <a href={`#${c.ancora}`}>
+                      <span aria-hidden="true">{String(i + 1).padStart(2, "0")}</span>
+                      {c.rotulo}
+                    </a>
+                  </li>
+                ))}
+              </ol>
+            </nav>
+          )
+        }
       </div>
     </div>
   </section>
@@ -59,18 +73,15 @@ const ancoraDescubra = primeiroCapitulo?.__component === "blocks.capitulo" ? pri
 </Base>
 
 <style>
-  /* ---------- Hero ---------- */
+  /* ---------- Hero (editorial: marca gigante e fina, atalhos no pé) ---------- */
   .hero {
     position: relative;
     display: grid;
-    min-height: min(100svh, 58rem);
+    min-height: min(100svh, 60rem);
     color: #ffffff;
     background: var(--brand-poco);
     overflow: hidden;
-    /* A borda de baixo curva como o topo dos arcos do logo. */
-    border-end-start-radius: clamp(2.5rem, 8vw, 7rem);
   }
-  /* A foto é fundo absoluto: a altura do hero vem do min-height, não da proporção da foto. */
   .hero > :global(picture) {
     position: absolute;
     inset: 0;
@@ -79,77 +90,69 @@ const ancoraDescubra = primeiroCapitulo?.__component === "blocks.capitulo" ? pri
     width: 100%;
     height: 100%;
     object-fit: cover;
-    /* Mantém a queda e o poço com os visitantes no quadro. */
     object-position: 52% 55%;
   }
-  /* Véu no alto (menu por cima da foto), embaixo e à esquerda (título). */
+  /* Véu leve: só no alto (menu) e no pé (texto). A foto aparece. */
   .hero-texto {
     position: relative;
     grid-area: 1 / 1;
     display: flex;
     align-items: flex-end;
-    padding-block: calc(var(--altura-cabecalho) + var(--space-8)) var(--space-8);
+    padding-block: calc(var(--altura-cabecalho) + var(--space-7)) var(--space-6);
     background:
       linear-gradient(to bottom, rgb(15 39 68 / 0.5) 0, rgb(15 39 68 / 0) 8rem),
-      linear-gradient(to top, rgb(15 39 68 / 0.8) 0%, rgb(15 39 68 / 0.3) 35%, rgb(15 39 68 / 0) 60%),
-      linear-gradient(to right, rgb(15 39 68 / 0.45), rgb(15 39 68 / 0) 55%);
+      linear-gradient(to top, rgb(15 39 68 / 0.85) 0%, rgb(15 39 68 / 0.35) 38%, rgb(15 39 68 / 0) 62%);
   }
   .hero-grade {
     display: grid;
-    grid-template-columns: auto minmax(0, 1fr);
-    column-gap: clamp(var(--space-4), 3vw, var(--space-6));
-    row-gap: var(--space-7);
-    align-items: end;
+    gap: var(--space-6);
+    text-shadow: 0 2px 22px rgb(15 39 68 / 0.5);
   }
-  .fios {
-    width: clamp(2rem, 4vw, 4rem);
-    height: 100%;
-    min-height: 12rem;
-    margin-top: calc(-1 * var(--space-8));
-    -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 20%, #000 80%, transparent 100%);
-    mask-image: linear-gradient(to bottom, transparent 0, #000 20%, #000 80%, transparent 100%);
+  /* "SALTÃO" gigante, fino e espaçado, como o wordmark do logo. */
+  .hero-marca {
+    margin: 0;
+    font-family: var(--font-display-leve);
+    font-size: clamp(4.25rem, 1rem + 15vw, 15rem);
+    font-weight: 100;
+    line-height: 0.82;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    color: #ffffff;
   }
-  .sobretitulo {
-    display: inline-block;
-    margin: 0 0 var(--space-5);
-    padding: var(--space-1) var(--space-4);
+  /* Texto na vertical, colado na borda direita (como na referência). */
+  .hero-vertical {
+    position: absolute;
+    top: calc(var(--altura-cabecalho) + var(--space-7));
+    right: var(--space-4);
+    margin: 0;
+    writing-mode: vertical-rl;
     font-size: var(--fs-100);
     font-weight: var(--fw-medio);
-    color: #ffffff;
-    background: rgb(255 255 255 / 0.12);
-    border: 1px solid rgb(255 255 255 / 0.28);
-    border-radius: var(--radius-pill);
-    -webkit-backdrop-filter: blur(8px);
-    backdrop-filter: blur(8px);
+    letter-spacing: 0.3em;
+    color: rgb(255 255 255 / 0.85);
   }
-  .hero-conteudo {
-    text-shadow: 0 2px 20px rgb(15 39 68 / 0.5);
-  }
-  .hero h1 {
-    max-width: 15ch;
-    margin-bottom: var(--space-5);
-    color: #ffffff;
-    font-size: clamp(2.6rem, 1.2rem + 5.2vw, 5.75rem);
-    font-weight: 250;
-    line-height: 1.02;
-    text-shadow: 0 2px 24px rgb(15 39 68 / 0.35);
-  }
-  .hero h1 :global(em) {
-    text-shadow: none;
-    filter: drop-shadow(0 2px 14px rgb(15 39 68 / 0.7));
-  }
-  /* No celular o texto começa no alto da foto: véu mais forte por igual. */
-  @media (max-width: 63.99rem) {
-    .hero-texto {
-      background:
-        linear-gradient(rgb(15 39 68 / 0.2), rgb(15 39 68 / 0.2)),
-        linear-gradient(to top, rgb(15 39 68 / 0.85) 0%, rgb(15 39 68 / 0.4) 50%, rgb(15 39 68 / 0.15) 100%);
+  @media (max-width: 47.99rem) {
+    .hero-vertical {
+      display: none;
     }
   }
+  .hero h1 {
+    max-width: 26ch;
+    margin: 0 0 var(--space-4);
+    color: #ffffff;
+    font-size: clamp(1.5rem, 1rem + 1.6vw, 2.25rem);
+    font-weight: 300;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+  }
+  .hero h1 :global(em) {
+    filter: drop-shadow(0 2px 14px rgb(15 39 68 / 0.7));
+  }
   .resposta {
-    font-size: var(--fs-300);
-    max-width: 46ch;
-    margin-bottom: var(--space-6);
+    font-size: var(--fs-200);
+    max-width: 52ch;
+    margin-bottom: var(--space-5);
     color: var(--color-on-deep);
     text-wrap: pretty;
   }
@@ -159,13 +162,58 @@ const ancoraDescubra = primeiroCapitulo?.__component === "blocks.capitulo" ? pri
     gap: var(--space-3);
   }
   .acoes .btn {
-    min-height: 54px;
+    min-height: 52px;
     padding-inline: var(--space-6);
   }
-
+  /* Celular: botões empilhados — a quebra não depende da largura da fonte (CLS zero na troca de fonte). */
+  @media (max-width: 47.99rem) {
+    .acoes {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+  /* Atalhos no pé do hero: fio fino em cima, número e nome. */
+  .hero-atalhos ol {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-2) var(--space-5);
+  }
+  .hero-atalhos a {
+    display: flex;
+    gap: var(--space-3);
+    align-items: baseline;
+    min-height: 44px;
+    padding-top: var(--space-3);
+    border-top: 1px solid rgb(255 255 255 / 0.45);
+    color: #ffffff;
+    font-size: var(--fs-100);
+    font-weight: var(--fw-medio);
+    letter-spacing: 0.04em;
+    text-decoration: none;
+    transition: border-color 0.3s ease;
+  }
+  .hero-atalhos a span {
+    color: var(--brand-azul-claro);
+    font-weight: var(--fw-normal);
+  }
+  .hero-atalhos a:hover {
+    border-color: #ffffff;
+    color: #ffffff;
+  }
   @media (min-width: 64rem) {
-    .hero h1 {
-      max-width: 16ch;
+    .hero-grade {
+      grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+      align-items: end;
+      column-gap: var(--space-8);
+    }
+    .hero-marca {
+      grid-column: 1 / -1;
+    }
+    .hero-atalhos ol {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
     }
   }
 
@@ -184,9 +232,6 @@ const ancoraDescubra = primeiroCapitulo?.__component === "blocks.capitulo" ? pri
   /* Capítulos: cuidam do próprio espaço (foto até a borda). */
   .secoes > :global(.capitulo) {
     padding: 0;
-  }
-  .secoes > :global(.capitulo + .capitulo:not(.capitulo--escuro)) {
-    margin-top: var(--space-6);
   }
 
   /* Experiências: trilho com scroll-snap no celular; grade "bento" no computador
@@ -231,7 +276,7 @@ const ancoraDescubra = primeiroCapitulo?.__component === "blocks.capitulo" ? pri
   /* Roteiro: faixa do poço. */
   .secoes > :global(.roteiro) {
     background: var(--grad-faixa-topo);
-    border-radius: 0 var(--radius-arco) 0 clamp(2.5rem, 8vw, 7rem);
+    border-radius: 0 var(--radius-arco) 0 var(--radius-faixa);
   }
 
   /* Frase: grande, centralizada, sobre o céu. */
@@ -366,6 +411,6 @@ const ancoraDescubra = primeiroCapitulo?.__component === "blocks.capitulo" ? pri
   .secoes > :global(.chamada-final) {
     padding: 0;
     margin-top: var(--space-6);
-    border-radius: 0 var(--radius-arco) 0 clamp(2.5rem, 8vw, 7rem);
+    border-radius: 0 var(--radius-arco) 0 var(--radius-faixa);
   }
 </style>

@@ -94,7 +94,7 @@ const seo = (metaTitle: string, metaDescription: string): Seo => ({ metaTitle, m
 /* ---------------- Textos por idioma (só o que muda) ---------------- */
 const L = {
   pt: {
-    sobre: "Saltão · Parque de Ecoturismo em Itirapina (SP)",
+    sobre: "Itirapina · Serra do Itaqueri · SP",
     hero: "Uma cachoeira de *75 metros* no coração da Serra do Itaqueri",
     heroResp: "O Saltão é um parque de ecoturismo com cachoeira de 75 m, day use, hospedagem, camping e quiosques com churrasqueira. Reserve online e garanta sua data.",
     reservar: "Reservar",
@@ -105,7 +105,7 @@ const L = {
     },
   },
   en: {
-    sobre: "Saltão · Ecotourism Park in Itirapina, Brazil",
+    sobre: "Itirapina · Serra do Itaqueri · Brazil",
     hero: "A *75-metre* waterfall in Serra do Itaqueri",
     heroResp: "Saltão is an ecotourism park with a 75 m waterfall, day passes, lodging, camping and barbecue kiosks. Book online and secure your date.",
     reservar: "Book now",
@@ -116,7 +116,7 @@ const L = {
     },
   },
   es: {
-    sobre: "Saltão · Parque de Ecoturismo en Itirapina, Brasil",
+    sobre: "Itirapina · Serra do Itaqueri · Brasil",
     hero: "Una cascada de *75 metros* en el corazón de la Serra do Itaqueri",
     heroResp: "Saltão es un parque de ecoturismo con una cascada de 75 m, pase de día, hospedaje, camping y quinchos con parrilla. Reserva en línea y asegura tu fecha.",
     reservar: "Reservar",
@@ -558,7 +558,7 @@ const home = Object.fromEntries(
               img(fCapCamp2Src, x("Família em frente à barraca", "Family in front of their tent", "Familia frente a su carpa")),
             ],
             layout: "foto-esquerda" as const,
-            tema: "claro" as const,
+            tema: "profundo" as const,
             cta: { rotulo: x("Conheça o camping", "See the camping", "Conoce el camping"), tipo: "produto" as const, produtoId: "prod-camping" },
           },
           {

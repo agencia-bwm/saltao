@@ -199,7 +199,7 @@ function blocos(v: Json): Block[] {
             destaque: b.destaque ?? undefined,
             destaqueLegenda: b.destaqueLegenda ?? undefined,
             layout: b.layout === "imersivo" || b.layout === "foto_direita" ? (b.layout === "imersivo" ? "imersivo" : "foto-direita") : "foto-esquerda",
-            tema: b.tema === "escuro" ? "escuro" : "claro",
+            tema: b.tema === "escuro" || b.tema === "profundo" ? b.tema : "claro",
             cta: cta(b.cta),
           };
           return { __component: b.__component, ...c };

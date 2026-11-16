@@ -103,7 +103,8 @@ export type Capitulo = {
   destaque?: string;
   destaqueLegenda?: string;
   layout: "imersivo" | "foto-esquerda" | "foto-direita";
-  tema: "claro" | "escuro";
+  /** Cor do bloco de texto: claro = azul claro, escuro = azul Saltão, profundo = azul do poço. */
+  tema: "claro" | "escuro" | "profundo";
   cta?: Cta;
 };
 
