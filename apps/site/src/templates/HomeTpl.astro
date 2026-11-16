@@ -100,13 +100,12 @@ const marca = (g?.nomeOficial ?? "Saltão").split(/\s+[—–-]\s+/)[0];
     align-items: flex-end;
     padding-block: calc(var(--altura-cabecalho) + var(--space-7)) var(--space-6);
     background:
-      linear-gradient(to bottom, rgb(15 39 68 / 0.5) 0, rgb(15 39 68 / 0) 8rem),
-      linear-gradient(to top, rgb(15 39 68 / 0.85) 0%, rgb(15 39 68 / 0.35) 38%, rgb(15 39 68 / 0) 62%);
+      linear-gradient(to top, rgb(0 0 0 / 0.62) 0%, rgb(0 0 0 / 0.22) 38%, rgb(0 0 0 / 0) 62%);
   }
   .hero-grade {
     display: grid;
     gap: var(--space-6);
-    text-shadow: 0 2px 22px rgb(15 39 68 / 0.5);
+    text-shadow: 0 2px 22px rgb(0 0 0 / 0.4);
   }
   /* "SALTÃO" gigante, fino e espaçado, como o wordmark do logo. */
   .hero-marca {
@@ -361,17 +360,18 @@ const marca = (g?.nomeOficial ?? "Saltão").split(/\s+[—–-]\s+/)[0];
     width: 100%;
     height: 100%;
     object-fit: cover;
+    object-position: 50% 30%;
   }
   .secoes > :global(.frase--foto)::after {
     content: "";
     position: absolute;
     inset: 0;
     z-index: -1;
-    background: radial-gradient(60rem 26rem at 50% 55%, rgb(15 39 68 / 0.5), rgb(15 39 68 / 0.12));
+    background: rgb(0 0 0 / 0.18);
   }
   .secoes :global(.frase--foto p) {
     color: #ffffff;
-    text-shadow: 0 2px 24px rgb(15 39 68 / 0.6);
+    text-shadow: 0 2px 24px rgb(0 0 0 / 0.55);
   }
 
   /* Números: faixa azul média, de ponta a ponta. */

@@ -43,8 +43,7 @@ import fCapApto2Src from "../assets/fotos/gastronomia/cafe-da-manha-bandeja-bolo
 import fCapCampSrc from "../assets/fotos/camping/camping-entardecer-barraca-grande.jpg";
 import fCapCamp1Src from "../assets/fotos/camping/fogueira-noite-vertical.jpg";
 import fCapCamp2Src from "../assets/fotos/camping/camping-familia-retrato-vertical.jpg";
-import fFraseSrc from "../assets/fotos/paisagem/por-do-sol-laranja-horizonte.jpg";
-import fFinalSrc from "../assets/fotos/camping/fogueira-roda-noite.jpg";
+import fFraseSrc from "../assets/fotos/cachoeira-2/cachoeira-2-poco-panoramica.jpg";
 import mapaProvisorio from "../assets/placeholder/trilha.jpg";
 
 
@@ -564,20 +563,7 @@ const home = Object.fromEntries(
           {
             __component: "blocks.citacao" as const,
             texto: x("Aqui o barulho que fica é o da *água caindo*.", "Here, the only noise left is the *falling water*.", "Aquí el único ruido que queda es el del *agua cayendo*."),
-            imagem: img(fFraseSrc, x("Pôr do sol laranja no horizonte da serra", "Orange sunset on the hills horizon", "Atardecer naranja en el horizonte de la sierra")),
-          },
-          { __component: "blocks.avaliacoes" as const, titulo: x("Quem visitou *recomenda*", "What visitors *say*", "Lo que dicen *los visitantes*"), avaliacaoIds: ["av-1", "av-2"] },
-          {
-            __component: "blocks.faq" as const,
-            titulo: x("Perguntas frequentes", "FAQ", "Preguntas frecuentes"),
-            itens: [loc === "pt" ? faq("Onde fica o Saltão?", "Na Rodovia Ulisses Guimarães, km 23, em Itirapina (SP), na Serra do Itaqueri.") : loc === "en" ? faq("Where is Saltão?", "At Rodovia Ulisses Guimarães, km 23, Itirapina (São Paulo state), in Serra do Itaqueri.") : faq("¿Dónde queda Saltão?", "En la Rodovia Ulisses Guimarães, km 23, Itirapina (estado de São Paulo), en la Serra do Itaqueri.")],
-          },
-          {
-            __component: "blocks.chamada-final" as const,
-            titulo: x("Sua próxima pausa *começa aqui*", "Your next break *starts here*", "Tu próxima pausa *empieza aquí*"),
-            texto: x("Escolha a data e garanta sua vaga online.", "Pick a date and book online.", "Elige la fecha y reserva en línea."),
-            imagem: img(fFinalSrc, x("Pessoas reunidas ao redor da fogueira à noite", "People gathered around a campfire at night", "Personas reunidas alrededor de una fogata de noche")),
-            cta: { rotulo: L[loc].reservar, tipo: "link" as const, url: "https://reservas.saltao.com.br/reservar" },
+            imagem: img(fFraseSrc, x("Vista frontal da segunda cachoeira do parque e seu poço", "Front view of the park's second waterfall and its pool", "Vista frontal de la segunda cascada del parque y su poza")),
           },
         ];
       })(),

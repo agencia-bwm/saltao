@@ -36,7 +36,7 @@
 html {
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
-  scroll-padding-top: calc(var(--altura-cabecalho) + var(--space-4));
+  scroll-padding-top: var(--space-4);
 }
 body {
   margin: 0;
