@@ -5,7 +5,6 @@
  */
 import type { Conteudo, Faq, Img, Locale, RichText, Seo } from "../lib/types";
 import fHeroSrc from "../assets/fotos/cachoeira-saltao/cachoeira-saltao-mata-visitantes.jpg";
-import fHeroHomeSrc from "../assets/fotos/cachoeira-saltao/cachoeira-saltao-paredao-visitantes-poco.jpg";
 import fCachMolduraSrc from "../assets/fotos/cachoeira-saltao/cachoeira-saltao-moldura-arvores.jpg";
 import fCach2Src from "../assets/fotos/cachoeira-2/cachoeira-2-queda-larga-poco.jpg";
 import fCach2PanSrc from "../assets/fotos/cachoeira-2/cachoeira-2-poco-panoramica.jpg";
@@ -466,7 +465,7 @@ const home = Object.fromEntries(
       documentId: "home",
       locale: loc,
       updatedAt: T,
-      hero: { __component: "blocks.hero" as const, sobretitulo: L[loc].sobre, titulo: L[loc].hero, respostaDireta: L[loc].heroResp, imagem: img(fHeroHomeSrc, loc === "pt" ? "Cachoeira de 75 m do Saltão caindo pelo paredão de rocha, com mata nativa no alto e visitantes no poço" : loc === "en" ? "Saltão's 75 m waterfall dropping down the rock face, with native forest above and visitors at the pool" : "Cascada de 75 m de Saltão cayendo por la pared de roca, con bosque nativo arriba y visitantes en la poza"), cta: { rotulo: L[loc].reservar, tipo: "link" as const, url: "https://reservas.saltao.com.br/reservar" } },
+      hero: { __component: "blocks.hero" as const, sobretitulo: L[loc].sobre, titulo: L[loc].hero, respostaDireta: L[loc].heroResp, imagem: img(fPanoramicaSrc, loc === "pt" ? "Cachoeira de 75 m do Saltão caindo pelo paredão de rocha alaranjada, com mata dos dois lados e visitantes no poço" : loc === "en" ? "Saltão's 75 m waterfall falling down the orange rock face, with forest on both sides and visitors at the pool" : "Cascada de 75 m de Saltão cayendo por la pared de roca anaranjada, con bosque a ambos lados y visitantes en la poza"), cta: { rotulo: L[loc].reservar, tipo: "link" as const, url: "https://reservas.saltao.com.br/reservar" } },
       secoes: [
         { __component: "blocks.destaques-produtos" as const, titulo: loc === "pt" ? "Escolha como viver o *Saltão*" : loc === "en" ? "Choose how to live *Saltão*" : "Elige cómo vivir *Saltão*", produtoIds: ["prod-dayuse", "prod-apto", "prod-camping", "prod-quiosque"] },
         {
@@ -501,9 +500,9 @@ const home = Object.fromEntries(
         {
           __component: "blocks.imagem" as const,
           imagem: {
-            src: fPanoramicaSrc,
-            alt: loc === "pt" ? "Cachoeira de 75 m do Saltão caindo pelo paredão de rocha alaranjada, com mata dos dois lados e visitantes no poço" : loc === "en" ? "Saltão's 75 m waterfall falling down the orange rock face, with forest on both sides and visitors at the pool" : "Cascada de 75 m de Saltão cayendo por la pared de roca anaranjada, con bosque a ambos lados y visitantes en la poza",
-            caption: loc === "pt" ? "Cachoeira do Saltão: 75 m de queda livre." : loc === "en" ? "Saltão waterfall: a 75 m free fall." : "Cascada de Saltão: 75 m de caída libre.",
+            src: fCach2PanSrc,
+            alt: loc === "pt" ? "Vista frontal da segunda cachoeira do parque, com queda larga e poço amplo" : loc === "en" ? "Front view of the park's second waterfall, with a wide drop and a large pool" : "Vista frontal de la segunda cascada del parque, con caída ancha y poza amplia",
+            caption: loc === "pt" ? "A segunda cachoeira do parque, no fim da trilha do bambuzal." : loc === "en" ? "The park's second waterfall, at the end of the bamboo trail." : "La segunda cascada del parque, al final del sendero del bambú.",
           },
         },
         { __component: "blocks.fatos" as const, titulo: loc === "pt" ? "O Saltão em números" : loc === "en" ? "Saltão in numbers" : "Saltão en números", itens: [{ chave: loc === "pt" ? "Cachoeira" : loc === "en" ? "Waterfall" : "Cascada", valor: "75 m" }, { chave: loc === "pt" ? "Quiosques" : loc === "en" ? "Kiosks" : "Quinchos", valor: "80" }, { chave: loc === "pt" ? "Churrasqueiras" : loc === "en" ? "Barbecue grills" : "Parrillas", valor: "102" }] },
