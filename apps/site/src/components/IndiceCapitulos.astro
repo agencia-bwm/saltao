@@ -1,0 +1,107 @@
+---
+/** Índice dos capítulos da home: lista numerada automática dos capítulos com âncora (como um sumário de revista). */
+import { enfase, semEnfase } from "../lib/texto";
+
+interface Props {
+  sobretitulo?: string;
+  titulo: string;
+  itens: { ancora: string; nome: string; subtitulo: string }[];
+}
+const { sobretitulo, titulo, itens } = Astro.props;
+---
+
+{
+  itens.length > 0 && (
+    <section class="indice">
+      {sobretitulo && <p class="ind-rotulo">{sobretitulo}</p>}
+      <h2 set:html={enfase(titulo)} />
+      <ol>
+        {itens.map((it, i) => (
+          <li>
+            <a href={`#${it.ancora}`}>
+              <span class="ind-num">{String(i + 1).padStart(2, "0")}</span>
+              <span class="ind-nome">{it.nome}</span>
+              <span class="ind-sub">{semEnfase(it.subtitulo)}</span>
+            </a>
+          </li>
+        ))}
+      </ol>
+    </section>
+  )
+}
+
+<style>
+  .indice {
+    width: min(100% - 2 * var(--space-5), 74rem);
+    margin: 0 auto;
+    padding-block: clamp(var(--space-7), 7vw, var(--space-9));
+    text-align: center;
+  }
+  .ind-rotulo {
+    margin: 0 0 var(--space-4);
+    font-size: var(--fs-100);
+    font-weight: var(--fw-medio);
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--color-primary-strong);
+  }
+  .indice h2 {
+    margin: 0 auto var(--space-7);
+    font-size: clamp(1.7rem, 1.2rem + 1.8vw, 2.6rem);
+    font-weight: 200;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--brand-poco);
+  }
+  .indice h2 :global(em) {
+    background: none;
+    -webkit-background-clip: border-box;
+    background-clip: border-box;
+    color: var(--color-primary-strong);
+  }
+  ol {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 0 var(--space-6);
+    text-align: left;
+  }
+  @media (min-width: 48rem) {
+    ol {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (min-width: 64rem) {
+    ol {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+  a {
+    display: grid;
+    gap: var(--space-1);
+    padding: var(--space-5) 0;
+    border-top: 1px solid var(--color-border);
+    color: var(--brand-poco);
+    text-decoration: none;
+    transition: border-color 0.3s ease;
+  }
+  a:hover {
+    border-color: var(--brand-azul);
+    color: var(--brand-poco);
+  }
+  .ind-num {
+    font-size: var(--fs-100);
+    letter-spacing: 0.1em;
+    color: var(--color-primary-strong);
+  }
+  .ind-nome {
+    font-size: var(--fs-400);
+    font-weight: 300;
+    letter-spacing: 0.04em;
+  }
+  .ind-sub {
+    font-size: var(--fs-100);
+    color: var(--color-text-muted);
+  }
+</style>

@@ -1,0 +1,373 @@
+---
+/**
+ * Bloco "Capítulo" (home) em MOSAICO editorial: foto grande + bloco de cor sólida com o texto + fotos menores,
+ * tudo encaixado de ponta a ponta, sem espaço e sem canto arredondado. Capítulos seguidos formam um só mosaico.
+ * - imersivo: foto ocupa 3/4 da largura em dois andares altos, com o número grande; texto e 1 foto à direita.
+ * - foto-esquerda: foto (2 colunas) | texto | 2 fotos empilhadas.   - foto-direita: o espelho.
+ * Cor do bloco de texto (tema): claro = azul claro, escuro = azul Saltão, profundo = azul do poço.
+ * Sem preço, sem card: o capítulo desperta o desejo e leva à página da seção.
+ */
+import type { Capitulo, Locale } from "../lib/types";
+import type { Indice } from "../lib/routes";
+import { enfase } from "../lib/texto";
+import { hrefCta } from "../lib/cta";
+import Foto from "./Foto.astro";
+
+interface Props {
+  capitulo: Capitulo;
+  indice: Indice;
+  locale: Locale;
+}
+const { capitulo: c, indice, locale } = Astro.props;
+const href = c.cta ? hrefCta(c.cta, indice, locale) : undefined;
+const imersivo = c.layout === "imersivo";
+const tema = imersivo ? "profundo" : c.tema;
+const galeria = c.galeria.slice(0, imersivo ? 1 : 2);
+const seta = '<svg viewBox="0 0 56 12" width="56" height="12" aria-hidden="true"><path d="M0 6h54m-6-5 6 5-6 5" fill="none" stroke="currentColor" stroke-width="1.2"/></svg>';
+---
+
+<section class:list={["capitulo", `capitulo--${c.layout}`, `tema--${tema}`, `fotos--${galeria.length}`]} id={c.ancora} aria-labelledby={c.ancora ? `${c.ancora}-titulo` : undefined}>
+  <div class="cap-midia">
+    <Foto img={c.imagem} sizes={imersivo ? "(min-width: 60rem) 75vw, 100vw" : "(min-width: 60rem) 50vw, 100vw"} larguras={[480, 760, 1080, 1440, 1920]} class="cap-foto" />
+    {
+      imersivo && c.destaque ? (
+        <p class="cap-destaque" aria-hidden="true">
+          <strong>{c.destaque}</strong>
+          {c.destaqueLegenda && <span>{c.destaqueLegenda}</span>}
+        </p>
+      ) : (
+        c.sobretitulo && (
+          <p class="cap-rotulo" aria-hidden="true">
+            {c.sobretitulo} <Fragment set:html={seta} />
+          </p>
+        )
+      )
+    }
+  </div>
+
+  <div class="cap-texto">
+    {c.sobretitulo && <p class="cap-sobre">{c.sobretitulo}</p>}
+    <h2 id={c.ancora ? `${c.ancora}-titulo` : undefined} set:html={enfase(c.titulo)} />
+    {c.texto && <p class="cap-paragrafo">{c.texto}</p>}
+    {imersivo && c.destaque && <p class="visually-hidden">{c.destaque} {c.destaqueLegenda}</p>}
+    {
+      href && c.cta && (
+        <a class="cap-link" href={href}>
+          <span>{c.cta.rotulo}</span>
+          <Fragment set:html={seta} />
+        </a>
+      )
+    }
+  </div>
+
+  {
+    galeria.map((g, i) => (
+      <div class:list={["cap-extra", `cap-extra--${i + 1}`]}>
+        <Foto img={g} sizes="(min-width: 60rem) 25vw, 50vw" larguras={[320, 480, 720, 960]} class="cap-foto" />
+      </div>
+    ))
+  }
+</section>
+
+<style>
+  /* ---------- Base: celular (empilhado) ---------- */
+  .capitulo {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+  .cap-midia,
+  .cap-extra {
+    position: relative;
+    overflow: hidden;
+    background: var(--brand-poco);
+  }
+  .cap-midia > :global(picture),
+  .cap-extra > :global(picture) {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+  .cap-midia :global(.cap-foto),
+  .cap-extra :global(.cap-foto) {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .cap-midia {
+    grid-column: 1 / -1;
+    aspect-ratio: 4 / 5;
+  }
+  .cap-texto {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: var(--space-8) clamp(var(--space-5), 6vw, var(--space-8));
+  }
+  .cap-extra {
+    aspect-ratio: 1;
+  }
+  .fotos--1 .cap-extra {
+    grid-column: 1 / -1;
+    aspect-ratio: 16 / 10;
+  }
+
+  /* ---------- Cores do bloco de texto (logo) ---------- */
+  .tema--claro .cap-texto {
+    background: var(--brand-azul-claro);
+    color: var(--brand-poco);
+  }
+  .tema--escuro .cap-texto {
+    background: var(--brand-azul);
+    color: #ffffff;
+  }
+  .tema--profundo .cap-texto {
+    background: var(--brand-poco);
+    color: var(--color-on-deep);
+  }
+
+  /* ---------- Texto ---------- */
+  .cap-sobre {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-3);
+    margin: 0 0 var(--space-5);
+    font-size: var(--fs-100);
+    font-weight: var(--fw-forte);
+    letter-spacing: 0.08em;
+  }
+  .cap-sobre::before {
+    content: "";
+    width: 2.5rem;
+    height: 1px;
+    background: currentColor;
+    opacity: 0.6;
+  }
+  .capitulo h2 {
+    margin: 0 0 var(--space-5);
+    font-size: clamp(2.1rem, 1.3rem + 2.2vw, 3.4rem);
+    font-weight: 250;
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+    color: inherit;
+  }
+  /* Destaque (*palavra*) dentro dos blocos de cor: muda o peso; a cor do bloco já é da marca. */
+  .capitulo h2 :global(em) {
+    background: none;
+    -webkit-background-clip: border-box;
+    background-clip: border-box;
+    color: inherit;
+    font-weight: 500;
+  }
+  .tema--profundo h2 :global(em) {
+    color: var(--brand-azul-claro);
+    font-weight: 300;
+  }
+  .cap-paragrafo {
+    max-width: 38ch;
+    margin: 0 0 var(--space-6);
+    font-size: var(--fs-200);
+    line-height: 1.6;
+  }
+  /* Link como na referência: texto + seta fina comprida. */
+  .cap-link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-4);
+    align-self: flex-start;
+    min-height: 44px;
+    font-size: var(--fs-200);
+    font-weight: var(--fw-medio);
+    color: inherit;
+    text-decoration: none;
+  }
+  .cap-link :global(svg) {
+    transition: transform 0.35s ease;
+  }
+  .cap-link:hover {
+    color: inherit;
+  }
+  .cap-link:hover :global(svg) {
+    transform: translateX(10px);
+  }
+
+  /* Rótulo grande e fino sobre a foto ("Day Use ——>"). */
+  .cap-rotulo {
+    position: absolute;
+    left: clamp(var(--space-5), 4vw, var(--space-7));
+    bottom: clamp(var(--space-5), 4vw, var(--space-7));
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    margin: 0;
+    font-size: clamp(1.9rem, 1rem + 2.4vw, 3rem);
+    font-weight: 200;
+    letter-spacing: -0.02em;
+    color: #ffffff;
+    text-shadow: 0 2px 24px rgb(15 39 68 / 0.6);
+  }
+  .cap-rotulo :global(svg) {
+    width: clamp(3rem, 5vw, 4.5rem);
+    height: auto;
+    filter: drop-shadow(0 1px 8px rgb(15 39 68 / 0.6));
+  }
+
+  /* Número grande sobre a foto do capítulo imersivo. */
+  .cap-destaque {
+    position: absolute;
+    left: clamp(var(--space-5), 4vw, var(--space-7));
+    bottom: clamp(var(--space-5), 4vw, var(--space-7));
+    display: grid;
+    margin: 0;
+    color: #ffffff;
+    text-shadow: 0 2px 30px rgb(15 39 68 / 0.55);
+  }
+  .cap-destaque strong {
+    font-size: clamp(5rem, 2rem + 12vw, 13rem);
+    font-weight: 100;
+    line-height: 0.85;
+    letter-spacing: -0.06em;
+  }
+  .cap-destaque span {
+    margin-top: var(--space-3);
+    font-size: var(--fs-300);
+    font-weight: 300;
+    letter-spacing: 0.04em;
+  }
+
+  /* ---------- Computador: mosaico ---------- */
+  @media (min-width: 60rem) {
+    .capitulo {
+      --andar: clamp(17rem, 23vw, 24rem);
+      /* O andar cresce se o texto precisar: nada vaza do bloco de cor. */
+      grid-template-rows: minmax(var(--andar), auto) minmax(var(--andar), auto);
+    }
+    .cap-midia,
+    .cap-extra,
+    .fotos--1 .cap-extra {
+      aspect-ratio: auto;
+    }
+    .cap-texto {
+      padding: clamp(var(--space-6), 3.5vw, var(--space-8));
+    }
+
+    /* foto (2 col) | texto | 2 fotos empilhadas */
+    .capitulo--foto-esquerda {
+      grid-template-columns: 2fr 1fr 1fr;
+    }
+    .capitulo--foto-esquerda .cap-midia {
+      grid-column: 1;
+      grid-row: 1 / 3;
+    }
+    .capitulo--foto-esquerda .cap-texto {
+      grid-column: 2;
+      grid-row: 1 / 3;
+    }
+    .capitulo--foto-esquerda .cap-extra--1 {
+      grid-column: 3;
+      grid-row: 1;
+    }
+    .capitulo--foto-esquerda .cap-extra--2 {
+      grid-column: 3;
+      grid-row: 2;
+    }
+
+    /* espelho: 2 fotos empilhadas | texto | foto (2 col) */
+    .capitulo--foto-direita {
+      grid-template-columns: 1fr 1fr 2fr;
+    }
+    .capitulo--foto-direita .cap-extra--1 {
+      grid-column: 1;
+      grid-row: 1;
+    }
+    .capitulo--foto-direita .cap-extra--2 {
+      grid-column: 1;
+      grid-row: 2;
+    }
+    .capitulo--foto-direita .cap-texto {
+      grid-column: 2;
+      grid-row: 1 / 3;
+    }
+    .capitulo--foto-direita .cap-midia {
+      grid-column: 3;
+      grid-row: 1 / 3;
+    }
+    /* Sem fotos extras, a foto ocupa o espaço delas. */
+    .capitulo--foto-esquerda.fotos--0 .cap-midia {
+      grid-column: 1 / 3;
+    }
+    .capitulo--foto-esquerda.fotos--0 .cap-texto {
+      grid-column: 3;
+    }
+    .capitulo--foto-direita.fotos--0 .cap-texto {
+      grid-column: 1;
+    }
+    .capitulo--foto-direita.fotos--0 .cap-midia {
+      grid-column: 2 / 4;
+    }
+
+    /* imersivo: foto 3/4 em dois andares altos; texto e 1 foto na coluna da direita */
+    .capitulo--imersivo {
+      --andar: clamp(20rem, 27vw, 28rem);
+      grid-template-columns: 3fr 1fr;
+    }
+    .capitulo--imersivo .cap-midia {
+      grid-column: 1;
+      grid-row: 1 / 3;
+    }
+    .capitulo--imersivo .cap-texto {
+      grid-column: 2;
+      grid-row: 1;
+    }
+    .capitulo--imersivo .cap-extra--1 {
+      grid-column: 2;
+      grid-row: 2;
+    }
+    .capitulo--imersivo.fotos--0 .cap-texto {
+      grid-row: 1 / 3;
+    }
+    .capitulo--imersivo .cap-texto h2 {
+      font-size: clamp(1.8rem, 1rem + 1.6vw, 2.6rem);
+    }
+    .capitulo--imersivo .cap-paragrafo {
+      font-size: var(--fs-100);
+    }
+  }
+
+  /* ---------- Movimento: a foto assenta ao entrar na tela (só CSS) ---------- */
+  @supports (animation-timeline: view()) {
+    @media (prefers-reduced-motion: no-preference) {
+      .cap-midia :global(.cap-foto),
+      .cap-extra :global(.cap-foto) {
+        animation: assentar linear both;
+        animation-timeline: view();
+        animation-range: entry 0% cover 50%;
+      }
+    }
+  }
+  @keyframes assentar {
+    from {
+      transform: scale(1.15);
+    }
+    to {
+      transform: scale(1);
+    }
+  }
+  /* Hover: a foto aproxima devagar (recorte reto, nada deforma). */
+  @media (hover: hover) and (prefers-reduced-motion: no-preference) {
+    .cap-midia > :global(picture),
+    .cap-extra > :global(picture) {
+      transition: transform 1.2s cubic-bezier(0.2, 0.7, 0.2, 1);
+    }
+    .cap-midia:hover > :global(picture),
+    .cap-extra:hover > :global(picture) {
+      transform: scale(1.04);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .cap-link :global(svg) {
+      transition: none;
+    }
+  }
+</style>

@@ -30,8 +30,11 @@ interface Props {
   jsonld?: Record<string, unknown>[];
   /** Eventos do dataLayer disparados ao abrir a página (view_item, view_item_list). */
   dlPagina?: Record<string, unknown>[];
+  /** A primeira peça do conteúdo (foto do produto, capa do artigo) sobe por cima da faixa do topo. */
+  topoSobreposto?: boolean;
 }
-const { locale, path, alternates, breadcrumbs, seo, indice, imagem, ogTipo = "website", jsonld = [], dlPagina = [] } = Astro.props;
+const { locale, path, alternates, breadcrumbs, seo, indice, imagem, ogTipo = "website", jsonld = [], dlPagina = [], topoSobreposto = false } = Astro.props;
+const temTopo = Astro.slots.has("topo");
 const ui = t(locale);
 const g = indice.conteudo.global[locale] ?? indice.conteudo.global.pt;
 
@@ -103,8 +106,23 @@ const privacidade = indice.link("institucional", "inst-privacidade", locale) ?? 
   <body>
     <a class="skip-link" href="#conteudo">{ui.pularConteudo}</a>
     <Cabecalho rota={{ locale, path, alternates }} indice={indice} />
-    <Migalhas itens={breadcrumbs} />
     <main id="conteudo">
+      {
+        temTopo && (
+          <div class:list={["faixa-topo", { "faixa-topo--sobreposta": topoSobreposto }]}>
+            <svg class="arcos-topo" viewBox="166 62 118 166" aria-hidden="true" focusable="false">
+              <path fill="#489ed2" d="M239.58 73.19c-4.78-2.11-9.34-3.38-13.55-3.55-48.59-1.9-53.53 26.05-53.53 90.66 0 19.02 2.39 40.3 6.97 60.88-1.26-15.83-1.66-32.09-1.66-47.49 0-62.75 16.3-98.48 61.77-100.5Z" />
+              <path fill="#4076b6" d="M258.58 73.19c-4.79-2.11-9.34-3.38-13.55-3.55-48.61-1.9-53.54 26.05-53.54 90.66 0 19.02 2.4 40.3 6.98 60.88-1.26-15.83-1.67-32.09-1.67-47.49 0-62.75 16.31-98.48 61.78-100.5Z" />
+              <path fill="#a0c9e8" d="M278.53 73.33c-4.78-2.11-9.34-3.38-13.55-3.55-48.6-1.9-53.53 26.05-53.53 90.66 0 19.02 2.38 40.31 6.97 60.88-1.25-15.82-1.66-32.09-1.66-47.5 0-62.73 16.31-98.47 61.77-100.49Z" />
+            </svg>
+            <Migalhas itens={breadcrumbs} />
+            <div class="container">
+              <slot name="topo" />
+            </div>
+          </div>
+        )
+      }
+      {!temTopo && <Migalhas itens={breadcrumbs} />}
       <slot />
     </main>
     <Rodape locale={locale} indice={indice} />

@@ -83,7 +83,7 @@ O mapa segue a arquitetura da proposta: 8 itens de menu e o botão Reservar semp
 | Template                   | Onde é usado                                                                     | Editável no painel    |
 |----------------------------|----------------------------------------------------------------------------------|-----------------------|
 | Home                       | Início                                                                           | Sim, por blocos fixos |
-| Listagem de produtos       | Day Use, Hospedagem e Camping, Churrasqueiras e Quiosques, Monte sua Experiência | Sim                   |
+| Listagem de produtos       | Day Use, Hospedagem e Camping, Churrasqueiras e Quiosques                       | Sim                   |
 | Produto / pacote (interna) | Cada ingresso, acomodação, espaço, combo ou página de campanha                   | Sim                   |
 | Listagem do blog           | Guia da Serra do Itaqueri + páginas de categoria                                 | Automática            |
 | Artigo                     | Posts do Guia                                                                    | Sim                   |

@@ -25,11 +25,11 @@ const lista = {
 ---
 
 <Base {...rota} indice={indice} imagem={artigos[0]?.imagemDestaque} jsonld={[noWebPage(rota.path, rota.titulo, rota.respostaDireta, locale, "CollectionPage"), lista]}>
+  <header slot="topo">
+    <h1>{rota.titulo}{pagina > 1 && ` — ${ui.pagina} ${pagina}`}</h1>
+    {rota.respostaDireta && <p class="lead">{rota.respostaDireta}</p>}
+  </header>
   <div class="container section">
-    <header class="topo">
-      <h1>{rota.titulo}{pagina > 1 && ` — ${ui.pagina} ${pagina}`}</h1>
-      {rota.respostaDireta && <p class="lead">{rota.respostaDireta}</p>}
-    </header>
 
     {
       categorias.length > 0 && (

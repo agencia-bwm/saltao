@@ -24,8 +24,26 @@ import fQuiosqueSrc from "../assets/fotos/camping/camping-barracas-quiosque-amig
 import fQuiosqueNoiteSrc from "../assets/fotos/camping/camping-noite-barracas-quiosque.jpg";
 import fKidsSrc from "../assets/fotos/estrutura/salao-kids-brinquedos-bambu.jpg";
 import fValeSrc from "../assets/fotos/paisagem/paisagem-vale-ceu-azul.jpg";
-import fPorDoSolSrc from "../assets/fotos/paisagem/por-do-sol-sol-tocando-horizonte.jpg";
 import fPorDoSolArvoreSrc from "../assets/fotos/paisagem/por-do-sol-dourado-arvore.jpg";
+import fPanoramicaSrc from "../assets/fotos/cachoeira-saltao/cachoeira-saltao-paredao-panoramica.jpg";
+import fRotTrilhaSrc from "../assets/fotos/cachoeira-2/cachoeira-2-trilha-bambuzal-vertical.jpg";
+import fRotPocoSrc from "../assets/fotos/cachoeira-saltao/cachoeira-saltao-poco-vertical.jpg";
+import fRotPorcaoSrc from "../assets/fotos/gastronomia/porcao-linguica-cerveja-vertical.jpg";
+import fRotPorDoSolSrc from "../assets/fotos/paisagem/por-do-sol-palmeira-vertical.jpg";
+import fRotFogueiraSrc from "../assets/fotos/camping/fogueira-noite-vertical.jpg";
+import fCapCachSrc from "../assets/fotos/cachoeira-saltao/cachoeira-saltao-mata-visitantes.jpg";
+import fCapQuedaSrc from "../assets/fotos/cachoeira-saltao/cachoeira-saltao-queda-75m-vertical-01.jpg";
+import fCapCach2Src from "../assets/fotos/cachoeira-2/cachoeira-2-poco-vertical.jpg";
+import fCapDayUseSrc from "../assets/fotos/cachoeira-2/cachoeira-2-queda-larga-poco.jpg";
+import fCapDayUse1Src from "../assets/fotos/camping/camping-barracas-quiosque-amigos.jpg";
+import fCapDayUse2Src from "../assets/fotos/gastronomia/porcao-linguica-cerveja-vertical.jpg";
+import fCapAptoSrc from "../assets/fotos/hospedagem/apartamento-azul-fachada-buganvilia.jpg";
+import fCapApto1Src from "../assets/fotos/hospedagem/apartamento-quarto-duas-camas.jpg";
+import fCapApto2Src from "../assets/fotos/gastronomia/cafe-da-manha-bandeja-bolo-01.jpg";
+import fCapCampSrc from "../assets/fotos/camping/camping-entardecer-barraca-grande.jpg";
+import fCapCamp1Src from "../assets/fotos/camping/fogueira-noite-vertical.jpg";
+import fCapCamp2Src from "../assets/fotos/camping/camping-familia-retrato-vertical.jpg";
+import fFraseSrc from "../assets/fotos/cachoeira-2/cachoeira-2-poco-panoramica.jpg";
 import mapaProvisorio from "../assets/placeholder/trilha.jpg";
 
 
@@ -53,8 +71,15 @@ const fQuiosque = img(fQuiosqueSrc, "Grupo de amigos junto a barracas e quiosque
 const fQuiosqueNoite = img(fQuiosqueNoiteSrc, "Barracas montadas à noite ao lado de quiosque com churrasqueira");
 const fKids = img(fKidsSrc, "Brinquedos de bambu e rede de proteção no salão coberto");
 const fVale = img(fValeSrc, "Vista panorâmica do vale com lago e céu azul limpo");
-const fPorDoSol = img(fPorDoSolSrc, "Sol tocando o horizonte com palmeira e eucaliptos em silhueta");
 const fPorDoSolArvore = img(fPorDoSolArvoreSrc, "Pôr do sol dourado sobre campos e árvore isolada");
+/* Roteiro "um dia no Saltão" (fotos verticais) */
+const fRot = {
+  trilha: (alt: string) => img(fRotTrilhaSrc, alt),
+  poco: (alt: string) => img(fRotPocoSrc, alt),
+  porcao: (alt: string) => img(fRotPorcaoSrc, alt),
+  porDoSol: (alt: string) => img(fRotPorDoSolSrc, alt),
+  fogueira: (alt: string) => img(fRotFogueiraSrc, alt),
+};
 const p = (...textos: string[]): RichText => textos.map((text) => ({ type: "paragraph", children: [{ type: "text", text }] }));
 const h2 = (text: string): RichText[number] => ({ type: "heading", level: 2, children: [{ type: "text", text }] });
 const ul = (...itens: string[]): RichText[number] => ({
@@ -68,36 +93,36 @@ const seo = (metaTitle: string, metaDescription: string): Seo => ({ metaTitle, m
 /* ---------------- Textos por idioma (só o que muda) ---------------- */
 const L = {
   pt: {
-    hero: "Saltão — Parque de Ecoturismo na Serra do Itaqueri",
+    sobre: "Itirapina · Serra do Itaqueri · SP",
+    hero: "Uma cachoeira de *75 metros* no coração da Serra do Itaqueri",
     heroResp: "O Saltão é um parque de ecoturismo com cachoeira de 75 m, day use, hospedagem, camping e quiosques com churrasqueira. Reserve online e garanta sua data.",
     reservar: "Reservar",
     cats: {
       dayuse: ["Day Use", "day-use", "Passe o dia no Saltão com acesso à cachoeira, trilhas e áreas de lazer. Ingressos por pessoa, a partir de R$ 60 (valor de exemplo)."],
       hosp: ["Hospedagem e Camping", "hospedagem", "Durma no parque: apartamentos com café da manhã e áreas de camping com estrutura. Diárias a partir de R$ 280 (valor de exemplo)."],
       quiosques: ["Churrasqueiras e Quiosques", "churrasqueiras-e-quiosques", "Reserve um quiosque ou churrasqueira para o seu grupo, com mesas e ponto de apoio. A partir de R$ 120 por dia (valor de exemplo)."],
-      combos: ["Monte sua Experiência", "monte-sua-experiencia", "Combos prontos que juntam day use, hospedagem e quiosque com preço especial."],
     },
   },
   en: {
-    hero: "Saltão — Ecotourism Park in Serra do Itaqueri, Brazil",
+    sobre: "Itirapina · Serra do Itaqueri · Brazil",
+    hero: "A *75-metre* waterfall in Serra do Itaqueri",
     heroResp: "Saltão is an ecotourism park with a 75 m waterfall, day passes, lodging, camping and barbecue kiosks. Book online and secure your date.",
     reservar: "Book now",
     cats: {
       dayuse: ["Day Pass", "day-pass", "Spend the day at Saltão with access to the waterfall, trails and leisure areas. Tickets per person from R$ 60 (sample price)."],
       hosp: ["Lodging and Camping", "lodging", "Stay in the park: rooms with breakfast and equipped camping areas. Nightly rates from R$ 280 (sample price)."],
       quiosques: ["Barbecue Kiosks", "barbecue-kiosks", "Book a kiosk or barbecue area for your group, with tables and support point. From R$ 120 per day (sample price)."],
-      combos: ["Build Your Experience", "build-your-experience", "Ready-made packages combining day pass, lodging and kiosk at a special price."],
     },
   },
   es: {
-    hero: "Saltão — Parque de Ecoturismo en la Serra do Itaqueri, Brasil",
+    sobre: "Itirapina · Serra do Itaqueri · Brasil",
+    hero: "Una cascada de *75 metros* en el corazón de la Serra do Itaqueri",
     heroResp: "Saltão es un parque de ecoturismo con una cascada de 75 m, pase de día, hospedaje, camping y quinchos con parrilla. Reserva en línea y asegura tu fecha.",
     reservar: "Reservar",
     cats: {
       dayuse: ["Pase de Día", "pase-de-dia", "Pasa el día en Saltão con acceso a la cascada, senderos y áreas de ocio. Entradas por persona desde R$ 60 (precio de ejemplo)."],
       hosp: ["Hospedaje y Camping", "hospedaje", "Duerme en el parque: habitaciones con desayuno y áreas de camping equipadas. Noches desde R$ 280 (precio de ejemplo)."],
       quiosques: ["Quinchos y Parrillas", "quinchos-y-parrillas", "Reserva un quincho o parrilla para tu grupo, con mesas y punto de apoyo. Desde R$ 120 por día (precio de ejemplo)."],
-      combos: ["Arma tu Experiencia", "arma-tu-experiencia", "Combos listos que reúnen pase de día, hospedaje y quincho con precio especial."],
     },
   },
 } as const;
@@ -163,20 +188,6 @@ const produtosBase = [
       es: ["Quincho con parrilla", "quincho-con-parrilla", "Quincho techado con parrilla, mesas y fregadero, para grupos de hasta 30 personas. Precio por espacio, por día, desde R$ 120 (precio de ejemplo)."],
     },
   },
-  {
-    id: "prod-combo-familia",
-    cat: "cat-combos",
-    motor: "combo-familia",
-    preco: 390,
-    unidade: "por-noite" as const,
-    schema: "Product" as const,
-    imgs: [fAptosVA, fCach2Pan, fKids],
-    t: {
-      pt: ["Combo Família: hospedagem + day use", "combo-familia", "Uma noite em apartamento com day use para toda a família no dia seguinte, com preço especial. A partir de R$ 390 (valor de exemplo)."],
-      en: ["Family Package: lodging + day pass", "family-package", "One night in a room plus a day pass for the whole family the next day, at a special price. From R$ 390 (sample price)."],
-      es: ["Combo Familia: hospedaje + pase de día", "combo-familia", "Una noche en habitación más pase de día para toda la familia al día siguiente, con precio especial. Desde R$ 390 (precio de ejemplo)."],
-    },
-  },
 ];
 
 const incluiPt = ["Acesso à cachoeira e às trilhas sinalizadas", "Estacionamento", "Banheiros e vestiários"];
@@ -229,10 +240,9 @@ const produtos: Conteudo["produtos"] = produtosBase.flatMap((b) =>
 
 /* ---------------- Categorias de produto ---------------- */
 const catDefs = [
-  ["cat-dayuse", "dayuse", fTrilha, ["prod-dayuse"], 1],
-  ["cat-hosp", "hosp", fAptos, ["prod-apto", "prod-camping"], 2],
-  ["cat-quiosques", "quiosques", fQuiosque, ["prod-quiosque"], 3],
-  ["cat-combos", "combos", fPorDoSol, ["prod-combo-familia"], 4],
+  ["cat-dayuse", "dayuse", fCachMoldura, ["prod-dayuse"], 1],
+  ["cat-hosp", "hosp", fCampVale, ["prod-apto", "prod-camping"], 2],
+  ["cat-quiosques", "quiosques", fQuiosqueNoite, ["prod-quiosque"], 3],
 ] as const;
 
 const categoriasProduto: Conteudo["categoriasProduto"] = catDefs.flatMap(([id, key, im, prods, ordem]) =>
@@ -310,7 +320,7 @@ const artigo = (id: string, titulo: string, slug: string, cat: string, resumo: s
 
 const artigos: Conteudo["artigos"] = [
   artigo("art-1", "Cachoeiras perto de Brotas: o que saber antes de ir", "cachoeiras-perto-de-brotas", "cg-cachoeiras", "Um guia prático sobre as cachoeiras da região de Brotas e da Serra do Itaqueri: como chegar, melhor época e o que levar. Texto de exemplo.", fCachMoldura, "prod-dayuse"),
-  artigo("art-2", "O que fazer na Serra do Itaqueri em um fim de semana", "o-que-fazer-na-serra-do-itaqueri", "cg-oque", "Roteiro de exemplo para dois dias na Serra do Itaqueri, combinando trilhas, cachoeira e descanso. Texto de exemplo.", fPorDoSolArvore, "prod-combo-familia"),
+  artigo("art-2", "O que fazer na Serra do Itaqueri em um fim de semana", "o-que-fazer-na-serra-do-itaqueri", "cg-oque", "Roteiro de exemplo para dois dias na Serra do Itaqueri, combinando trilhas, cachoeira e descanso. Texto de exemplo.", fPorDoSolArvore, "prod-apto"),
   artigo("art-3", "Quando ir ao Saltão: melhor época para cachoeira", "quando-ir-ao-saltao", "cg-quando", "Como o volume da cachoeira muda ao longo do ano e qual época combina com cada tipo de passeio. Texto de exemplo.", fCach2, "prod-dayuse"),
   artigo("art-4", "Camping na Serra do Itaqueri: guia para iniciantes", "camping-na-serra-do-itaqueri", "cg-camping", "O que levar, como escolher o lugar da barraca e cuidados para acampar com conforto e segurança. Texto de exemplo.", fCampEntardecer, "prod-camping"),
 ];
@@ -468,13 +478,104 @@ const home = Object.fromEntries(
       documentId: "home",
       locale: loc,
       updatedAt: T,
-      hero: { __component: "blocks.hero" as const, titulo: L[loc].hero, respostaDireta: L[loc].heroResp, imagem: img(fHeroSrc, loc === "pt" ? fHero.alt : loc === "en" ? "Saltão's 75 m waterfall surrounded by native forest, with visitors at its base" : "Cascada de 75 m de Saltão rodeada de bosque nativo, con visitantes en la base"), cta: { rotulo: L[loc].reservar, tipo: "link" as const, url: "https://reservas.saltao.com.br/reservar" } },
-      secoes: [
-        { __component: "blocks.destaques-produtos" as const, titulo: loc === "pt" ? "Escolha sua experiência" : loc === "en" ? "Choose your experience" : "Elige tu experiencia", produtoIds: ["prod-dayuse", "prod-apto", "prod-camping", "prod-quiosque"] },
-        { __component: "blocks.fatos" as const, titulo: loc === "pt" ? "O Saltão em números" : loc === "en" ? "Saltão in numbers" : "Saltão en números", itens: [{ chave: loc === "pt" ? "Cachoeira" : loc === "en" ? "Waterfall" : "Cascada", valor: "75 m" }, { chave: loc === "pt" ? "Quiosques" : loc === "en" ? "Kiosks" : "Quinchos", valor: "80" }, { chave: loc === "pt" ? "Churrasqueiras" : loc === "en" ? "Barbecue grills" : "Parrillas", valor: "102" }] },
-        { __component: "blocks.avaliacoes" as const, titulo: loc === "pt" ? "Quem visitou recomenda" : loc === "en" ? "What visitors say" : "Lo que dicen los visitantes", avaliacaoIds: ["av-1", "av-2"] },
-        { __component: "blocks.faq" as const, titulo: loc === "pt" ? "Perguntas frequentes" : loc === "en" ? "FAQ" : "Preguntas frecuentes", itens: [loc === "pt" ? faq("Onde fica o Saltão?", "Na Rodovia Ulisses Guimarães, km 23, em Itirapina (SP), na Serra do Itaqueri.") : loc === "en" ? faq("Where is Saltão?", "At Rodovia Ulisses Guimarães, km 23, Itirapina (São Paulo state), in Serra do Itaqueri.") : faq("¿Dónde queda Saltão?", "En la Rodovia Ulisses Guimarães, km 23, Itirapina (estado de São Paulo), en la Serra do Itaqueri.")] },
-      ],
+      hero: { __component: "blocks.hero" as const, sobretitulo: L[loc].sobre, titulo: L[loc].hero, respostaDireta: L[loc].heroResp, imagem: img(fPanoramicaSrc, loc === "pt" ? "Cachoeira de 75 m do Saltão caindo pelo paredão de rocha alaranjada, com mata dos dois lados e visitantes no poço" : loc === "en" ? "Saltão's 75 m waterfall falling down the orange rock face, with forest on both sides and visitors at the pool" : "Cascada de 75 m de Saltão cayendo por la pared de roca anaranjada, con bosque a ambos lados y visitantes en la poza"), cta: { rotulo: L[loc].reservar, tipo: "link" as const, url: "https://reservas.saltao.com.br/reservar" } },
+      secoes: (() => {
+        const x = (pt: string, en: string, es: string) => (loc === "pt" ? pt : loc === "en" ? en : es);
+        return [
+          {
+            __component: "blocks.citacao" as const,
+            texto: x(
+              "A água cai *75 metros*\nno meio da mata da serra.\nO dia passa devagar,\ne a noite acende o céu.",
+              "The water falls *75 metres*\nthrough the forest of the hills.\nThe day goes by slowly,\nand the night lights up the sky.",
+              "El agua cae *75 metros*\nen medio del bosque de la sierra.\nEl día pasa despacio,\ny la noche enciende el cielo.",
+            ),
+          },
+          { __component: "blocks.indice-capitulos" as const, sobretitulo: x("O parque", "The park", "El parque"), titulo: x("Quatro caminhos", "Four journeys", "Cuatro caminos") },
+          {
+            __component: "blocks.capitulo" as const,
+            ancora: "cachoeiras",
+            sobretitulo: x("Cachoeiras", "Waterfalls", "Cascadas"),
+            titulo: x("Onde a água despenca de *75 metros*", "Where the water drops *75 metres*", "Donde el agua cae *75 metros*"),
+            texto: x(
+              "A Cachoeira do Saltão cai livre de um paredão de rocha no meio da mata da Serra do Itaqueri. Pela trilha do bambuzal, uma segunda cachoeira forma um poço amplo para o banho.",
+              "Saltão waterfall falls freely from a rock wall in the middle of the Serra do Itaqueri forest. Along the bamboo trail, a second waterfall forms a wide pool for swimming.",
+              "La cascada de Saltão cae libre desde una pared de roca en medio del bosque de la Serra do Itaqueri. Por el sendero del bambú, una segunda cascada forma una poza amplia para bañarse.",
+            ),
+            imagem: img(fCapCachSrc, x("Cachoeira do Saltão vista de longe, cercada de mata nativa, com visitantes na base", "Saltão waterfall seen from afar, surrounded by native forest, with visitors at its base", "Cascada de Saltão vista de lejos, rodeada de bosque nativo, con visitantes en la base")),
+            galeria: [
+              { ...img(fCapQuedaSrc, x("A queda de 75 m da Cachoeira do Saltão, em foto vertical", "Saltão's 75 m drop, vertical photo", "La caída de 75 m de Saltão, foto vertical")), caption: x("A queda de 75 m vista do poço", "The 75 m drop seen from the pool", "La caída de 75 m vista desde la poza") },
+              { ...img(fCapCach2Src, x("Poço da segunda cachoeira do parque", "Pool of the park's second waterfall", "Poza de la segunda cascada del parque")), caption: x("A segunda cachoeira, no fim da trilha", "The second waterfall, at the end of the trail", "La segunda cascada, al final del sendero") },
+            ],
+            destaque: "75 m",
+            destaqueLegenda: x("de queda livre", "free fall", "de caída libre"),
+            layout: "narrativa" as const,
+            tema: "escuro" as const,
+            cta: { rotulo: x("Conheça as cachoeiras", "Discover the waterfalls", "Conoce las cascadas"), tipo: "pagina" as const, paginaId: "inst-cachoeira" },
+          },
+          {
+            __component: "blocks.capitulo" as const,
+            ancora: "day-use",
+            sobretitulo: "Day Use",
+            titulo: x("Um dia inteiro *com os pés na água*", "A whole day *with your feet in the water*", "Un día entero *con los pies en el agua*"),
+            texto: x(
+              "Trilha, banho de cachoeira, churrasco no quiosque à beira do rio e a tarde inteira para não fazer nada. Chegue cedo e fique até o sol baixar.",
+              "Trails, a waterfall swim, a riverside barbecue and the whole afternoon to do nothing. Arrive early and stay until the sun goes down.",
+              "Sendero, baño de cascada, asado en el quincho junto al río y toda la tarde para no hacer nada. Llega temprano y quédate hasta que baje el sol.",
+            ),
+            imagem: img(fCapDayUseSrc, x("Segunda cachoeira do parque, queda larga sobre rochas com poço amplo", "The park's second waterfall, a wide drop over rocks into a large pool", "Segunda cascada del parque, caída ancha sobre rocas con poza amplia")),
+            galeria: [
+              { ...img(fCapDayUse1Src, x("Amigos no quiosque com churrasqueira", "Friends at a barbecue kiosk", "Amigos en el quincho con parrilla")), caption: x("Quiosques com churrasqueira à beira do rio", "Barbecue kiosks by the river", "Quinchos con parrilla junto al río") },
+              { ...img(fCapDayUse2Src, x("Porção de linguiça com cerveja gelada", "Sausage snack with a cold beer", "Picada de chorizo con cerveza fría")), caption: x("Porção e cerveja gelada no fim da tarde", "Snacks and a cold beer in the late afternoon", "Picada y cerveza fría al final de la tarde") },
+            ],
+            layout: "narrativa" as const,
+            tema: "claro" as const,
+            cta: { rotulo: x("Conheça o Day Use", "Discover the Day Pass", "Conoce el Pase de Día"), tipo: "categoria" as const, categoriaId: "cat-dayuse" },
+          },
+          {
+            __component: "blocks.capitulo" as const,
+            ancora: "apartamentos",
+            sobretitulo: x("Apartamentos", "Rooms", "Habitaciones"),
+            titulo: x("Dormir *dentro do parque*", "Sleep *inside the park*", "Dormir *dentro del parque*"),
+            texto: x(
+              "Acordar com o som da mata, tomar café sem pressa e estar a poucos passos da cachoeira antes de todo mundo chegar.",
+              "Wake up to the sound of the forest, have a slow breakfast and be steps from the waterfall before anyone else arrives.",
+              "Despertar con el sonido del bosque, desayunar sin prisa y estar a pocos pasos de la cascada antes que nadie.",
+            ),
+            imagem: img(fCapAptoSrc, x("Apartamento azul com buganvília florida na fachada", "Blue guest room with blooming bougainvillea on the façade", "Habitación azul con buganvilla florida en la fachada")),
+            galeria: [
+              { ...img(fCapApto1Src, x("Quarto do apartamento com duas camas", "Guest room with two beds", "Habitación con dos camas")), caption: x("Quartos para até 4 pessoas", "Rooms for up to 4 people", "Habitaciones para hasta 4 personas") },
+              { ...img(fCapApto2Src, x("Café da manhã servido em bandeja de madeira", "Breakfast served on a wooden tray", "Desayuno servido en bandeja de madera")), caption: x("Café da manhã sem pressa", "A slow breakfast", "Desayuno sin prisa") },
+            ],
+            layout: "narrativa" as const,
+            tema: "escuro" as const,
+            cta: { rotulo: x("Conheça os apartamentos", "See the rooms", "Conoce las habitaciones"), tipo: "produto" as const, produtoId: "prod-apto" },
+          },
+          {
+            __component: "blocks.capitulo" as const,
+            ancora: "camping",
+            sobretitulo: "Camping",
+            titulo: x("Barraca, fogueira *e céu estrelado*", "A tent, a campfire *and a starry sky*", "Carpa, fogata *y cielo estrellado*"),
+            texto: x(
+              "Áreas de camping com estrutura no meio do verde, para montar a barraca, acender a fogueira e dormir ouvindo a água.",
+              "Equipped camping areas surrounded by green, to pitch your tent, light a campfire and fall asleep to the sound of water.",
+              "Áreas de camping equipadas en medio del verde, para armar la carpa, encender la fogata y dormir escuchando el agua.",
+            ),
+            imagem: img(fCapCampSrc, x("Barraca grande na área de camping ao entardecer", "Large tent in the camping area at dusk", "Carpa grande en el camping al atardecer")),
+            galeria: [
+              { ...img(fCapCamp1Src, x("Fogueira acesa à noite", "Campfire at night", "Fogata encendida de noche")), caption: x("Fogueira depois do jantar", "A campfire after dinner", "Fogata después de la cena") },
+              { ...img(fCapCamp2Src, x("Família em frente à barraca", "Family in front of their tent", "Familia frente a su carpa")), caption: x("Camping em família", "Family camping", "Camping en familia") },
+            ],
+            layout: "narrativa" as const,
+            tema: "profundo" as const,
+            cta: { rotulo: x("Conheça o camping", "See the camping", "Conoce el camping"), tipo: "produto" as const, produtoId: "prod-camping" },
+          },
+          {
+            __component: "blocks.citacao" as const,
+            texto: x("Aqui o barulho que fica é o da *água caindo*.", "Here, the only noise left is the *falling water*.", "Aquí el único ruido que queda es el del *agua cayendo*."),
+            imagem: img(fFraseSrc, x("Vista frontal da segunda cachoeira do parque e seu poço", "Front view of the park's second waterfall and its pool", "Vista frontal de la segunda cascada del parque y su poza")),
+          },
+        ];
+      })(),
       seo: seo(loc === "pt" ? "Saltão — Parque de Ecoturismo | Cachoeira, Day Use e Hospedagem" : loc === "en" ? "Saltão Ecotourism Park | Waterfall, Day Pass and Lodging" : "Saltão Parque de Ecoturismo | Cascada, Pase de Día y Hospedaje", L[loc].heroResp.slice(0, 150)),
     },
   ]),

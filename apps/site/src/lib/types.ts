@@ -57,8 +57,11 @@ export interface KV {
 }
 export interface Cta {
   rotulo: string;
-  tipo: "produto" | "link" | "whatsapp";
+  tipo: "produto" | "categoria" | "pagina" | "link" | "whatsapp";
   produtoId?: string;
+  categoriaId?: string;
+  /** Página institucional (documentId). */
+  paginaId?: string;
   url?: string;
 }
 export interface Tabela {
@@ -69,18 +72,46 @@ export interface Tabela {
 
 /* ---------- Blocos (dynamic zones) ---------- */
 export type Block =
-  | { __component: "blocks.hero"; titulo: string; respostaDireta: string; imagem: Img; cta?: Cta }
+  | { __component: "blocks.hero"; sobretitulo?: string; titulo: string; respostaDireta: string; imagem: Img; cta?: Cta }
   | { __component: "blocks.texto"; conteudo: RichText }
   | { __component: "blocks.imagem"; imagem: Img }
   | ({ __component: "blocks.tabela" } & Tabela)
-  | { __component: "blocks.citacao"; texto: string; autor?: string }
+  | { __component: "blocks.citacao"; texto: string; autor?: string; imagem?: Img }
   | { __component: "blocks.cta-produto"; produtoId: string; textoChamada?: string }
   | { __component: "blocks.destaques-produtos"; titulo?: string; produtoIds: string[] }
   | { __component: "blocks.fatos"; titulo?: string; itens: KV[] }
   | { __component: "blocks.avaliacoes"; titulo?: string; avaliacaoIds: string[] }
   | { __component: "blocks.faq"; titulo?: string; itens: Faq[] }
   | { __component: "blocks.video"; url: string; poster: Img; titulo?: string }
-  | { __component: "blocks.mapa-estatico"; imagem: Img; linkMaps: string };
+  | { __component: "blocks.mapa-estatico"; imagem: Img; linkMaps: string }
+  | { __component: "blocks.roteiro"; titulo?: string; itens: MomentoRoteiro[] }
+  | { __component: "blocks.chamada-final"; titulo: string; texto?: string; imagem: Img; cta?: Cta }
+  | ({ __component: "blocks.capitulo" } & Capitulo)
+  | { __component: "blocks.indice-capitulos"; sobretitulo?: string; titulo: string };
+
+/**
+ * Bloco "Capítulo" (home): uma seção de revista — foto grande, título curto, texto e um link para a página.
+ * "imersivo" = foto de ponta a ponta com o texto por cima; "foto-esquerda"/"foto-direita" = foto sangrando até a borda da tela.
+ */
+export type Capitulo = {
+  ancora?: string;
+  sobretitulo?: string;
+  titulo: string;
+  texto?: string;
+  imagem: Img;
+  galeria: Img[];
+  /** Número ou fato grande (ex.: "75 m") com legenda curta. */
+  destaque?: string;
+  destaqueLegenda?: string;
+  /** narrativa = texto centralizado + foto larga + grade de fotos com legenda (padrão). */
+  layout: "narrativa" | "imersivo" | "foto-esquerda" | "foto-direita";
+  /** Cor do bloco de texto: claro = azul claro, escuro = azul Saltão, profundo = azul do poço. */
+  tema: "claro" | "escuro" | "profundo";
+  cta?: Cta;
+};
+
+/** Um momento do bloco "Roteiro" (um dia no parque): hora, título curto e foto. */
+export type MomentoRoteiro = { hora: string; titulo: string; texto?: string; imagem: Img };
 
 /* ---------- Content types ---------- */
 interface Doc {

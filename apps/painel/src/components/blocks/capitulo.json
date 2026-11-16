@@ -1,0 +1,74 @@
+{
+  "collectionName": "components_blocks_capitulo",
+  "info": {
+    "displayName": "Capítulo (seção com foto grande)",
+    "icon": "landscape"
+  },
+  "options": {},
+  "attributes": {
+    "ancora": {
+      "type": "string",
+      "maxLength": 40,
+      "regex": "^[a-z0-9-]+$"
+    },
+    "sobretitulo": {
+      "type": "string",
+      "maxLength": 40
+    },
+    "titulo": {
+      "type": "string",
+      "required": true,
+      "maxLength": 90
+    },
+    "texto": {
+      "type": "text",
+      "maxLength": 400
+    },
+    "imagem": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.image-alt",
+      "required": true
+    },
+    "galeria": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.image-alt",
+      "max": 3
+    },
+    "destaque": {
+      "type": "string",
+      "maxLength": 12
+    },
+    "destaqueLegenda": {
+      "type": "string",
+      "maxLength": 60
+    },
+    "layout": {
+      "type": "enumeration",
+      "enum": [
+        "narrativa",
+        "imersivo",
+        "foto_esquerda",
+        "foto_direita"
+      ],
+      "required": true,
+      "default": "narrativa"
+    },
+    "tema": {
+      "type": "enumeration",
+      "enum": [
+        "claro",
+        "escuro",
+        "profundo"
+      ],
+      "required": true,
+      "default": "claro"
+    },
+    "cta": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.cta"
+    }
+  }
+}

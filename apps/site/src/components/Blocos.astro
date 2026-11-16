@@ -11,6 +11,12 @@ import FaqLista from "./FaqLista.astro";
 import Avaliacoes from "./Avaliacoes.astro";
 import CardProduto from "./CardProduto.astro";
 import VideoFachada from "./VideoFachada.astro";
+import Roteiro from "./Roteiro.astro";
+import Capitulo from "./Capitulo.astro";
+import CapituloNarrativa from "./CapituloNarrativa.astro";
+import IndiceCapitulos from "./IndiceCapitulos.astro";
+import ChamadaFinal from "./ChamadaFinal.astro";
+import { enfase } from "../lib/texto";
 
 interface Props {
   blocos: Block[];
@@ -20,8 +26,15 @@ interface Props {
   estreito?: boolean;
   /** Página sem hero (Institucional): a primeira imagem nos 2 primeiros blocos é a imagem LCP. */
   prioridadeTopo?: boolean;
+  /** Home: títulos com destaque (*palavra*), cards em foto e citação grande. */
+  home?: boolean;
 }
-const { blocos, indice, locale, estreito = false, prioridadeTopo = false } = Astro.props;
+const { blocos, indice, locale, estreito = false, prioridadeTopo = false, home = false } = Astro.props;
+const iDestaques = blocos.findIndex((b) => b.__component === "blocks.destaques-produtos");
+// Numeração dos capítulos (01, 02…) e itens do índice.
+const capitulosHome = blocos.flatMap((b) => (b.__component === "blocks.capitulo" ? [b] : []));
+const numeroCapitulo = (b: Block) => capitulosHome.indexOf(b as (typeof capitulosHome)[number]) + 1;
+const itensIndice = capitulosHome.filter((c) => c.ancora).map((c) => ({ ancora: c.ancora!, nome: c.sobretitulo ?? c.titulo, subtitulo: c.titulo }));
 const iImagemLcp = prioridadeTopo ? blocos.findIndex((b, i) => i <= 1 && b.__component === "blocks.imagem") : -1;
 const ui = t(locale);
 const sizesLargura = estreito ? "(min-width: 46rem) 46rem, 100vw" : "(min-width: 72rem) 72rem, 100vw";
@@ -33,6 +46,15 @@ const sizesLargura = estreito ? "(min-width: 46rem) 46rem, 100vw" : "(min-width:
       case "blocks.texto":
         return <RichText conteudo={b.conteudo} />;
       case "blocks.imagem":
+        if (home)
+          return (
+            <section class="panoramica">
+              <figure>
+                <Foto img={b.imagem} sizes="100vw" larguras={[640, 960, 1280, 1600, 1920]} />
+                {b.imagem.caption && <figcaption>{b.imagem.caption}</figcaption>}
+              </figure>
+            </section>
+          );
         return (
           <figure class="bloco-imagem">
             <Foto img={b.imagem} sizes={sizesLargura} prioridade={i === iImagemLcp} />
@@ -42,6 +64,21 @@ const sizesLargura = estreito ? "(min-width: 46rem) 46rem, 100vw" : "(min-width:
       case "blocks.tabela":
         return <Tabela tabela={b} />;
       case "blocks.citacao":
+        if (home)
+          return (
+            <section class:list={["frase", { "frase--foto no-escuro": !!b.imagem }]}>
+              {b.imagem && <Foto img={b.imagem} sizes="100vw" larguras={[640, 960, 1440, 1920]} class="frase-img" />}
+              <svg class="frase-arcos" viewBox="166 62 118 166" aria-hidden="true" focusable="false">
+                <path fill="#489ed2" d="M239.58 73.19c-4.78-2.11-9.34-3.38-13.55-3.55-48.59-1.9-53.53 26.05-53.53 90.66 0 19.02 2.39 40.3 6.97 60.88-1.26-15.83-1.66-32.09-1.66-47.49 0-62.75 16.3-98.48 61.77-100.5Z" />
+                <path fill="#4076b6" d="M258.58 73.19c-4.79-2.11-9.34-3.38-13.55-3.55-48.61-1.9-53.54 26.05-53.54 90.66 0 19.02 2.4 40.3 6.98 60.88-1.26-15.83-1.67-32.09-1.67-47.49 0-62.75 16.31-98.48 61.78-100.5Z" />
+                <path fill="#a0c9e8" d="M278.53 73.33c-4.78-2.11-9.34-3.38-13.55-3.55-48.6-1.9-53.53 26.05-53.53 90.66 0 19.02 2.38 40.31 6.97 60.88-1.25-15.82-1.66-32.09-1.66-47.5 0-62.73 16.31-98.47 61.77-100.49Z" />
+              </svg>
+              <blockquote>
+                <p set:html={enfase(b.texto)} />
+                {b.autor && <cite>{b.autor}</cite>}
+              </blockquote>
+            </section>
+          );
         return (
           <blockquote class="citacao">
             <p>{b.texto}</p>
@@ -85,6 +122,19 @@ const sizesLargura = estreito ? "(min-width: 46rem) 46rem, 100vw" : "(min-width:
         const itens = b.produtoIds
           .map((id) => ({ p: indice.produto(id, locale), href: indice.link("produto", id, locale) }))
           .filter((x) => x.p && x.href);
+        if (home)
+          return (
+            <section class="destaques" id={i === iDestaques ? "experiencias" : undefined}>
+              {b.titulo && <h2 set:html={enfase(b.titulo)} />}
+              <ul class="trilho-cards">
+                {itens.map(({ p, href }, idx) => (
+                  <li>
+                    <CardProduto produto={p!} href={href!} categoria={indice.categoriaProduto(p!.categoriaId, locale)} locale={locale} lista={b.titulo ?? "destaques"} index={idx} variante="foto" destaque={idx === 0 && itens.length > 2} />
+                  </li>
+                ))}
+              </ul>
+            </section>
+          );
         return (
           <section class="destaques">
             {b.titulo && <h2>{b.titulo}</h2>}
@@ -98,6 +148,17 @@ const sizesLargura = estreito ? "(min-width: 46rem) 46rem, 100vw" : "(min-width:
           </section>
         );
       }
+      case "blocks.capitulo": {
+        const { __component, ...capitulo } = b;
+        if (capitulo.layout === "narrativa") return <CapituloNarrativa capitulo={capitulo} numero={numeroCapitulo(b)} indice={indice} locale={locale} />;
+        return <Capitulo capitulo={capitulo} indice={indice} locale={locale} />;
+      }
+      case "blocks.indice-capitulos":
+        return <IndiceCapitulos sobretitulo={b.sobretitulo} titulo={b.titulo} itens={itensIndice} />;
+      case "blocks.roteiro":
+        return <Roteiro titulo={b.titulo} itens={b.itens} />;
+      case "blocks.chamada-final":
+        return <ChamadaFinal titulo={b.titulo} texto={b.texto} imagem={b.imagem} cta={b.cta} indice={indice} locale={locale} />;
       default:
         return null;
     }
@@ -111,7 +172,7 @@ const sizesLargura = estreito ? "(min-width: 46rem) 46rem, 100vw" : "(min-width:
   }
   .bloco-imagem :global(img),
   .bloco-mapa :global(img) {
-    border-radius: var(--radius-lg) var(--radius-arco) var(--radius-lg) var(--radius-lg);
+    border-radius: var(--radius-card);
     width: 100%;
   }
   figcaption {
@@ -138,8 +199,9 @@ const sizesLargura = estreito ? "(min-width: 46rem) 46rem, 100vw" : "(min-width:
     justify-content: space-between;
     padding: var(--space-5) var(--space-6);
     margin: var(--space-7) 0;
-    background: var(--grad-arcos) left top / 100% 3px no-repeat, var(--color-surface);
-    border-radius: var(--radius-lg) var(--radius-arco) var(--radius-lg) var(--radius-lg);
+    background: var(--grad-arcos) left top / 100% 3px no-repeat, var(--color-bg);
+    box-shadow: var(--shadow-card);
+    border-radius: var(--radius-card);
   }
   .cta-produto strong {
     font-size: var(--fs-300);

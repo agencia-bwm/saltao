@@ -1,5 +1,5 @@
 ---
-/** Template "Listagem de produtos": Day Use, Hospedagem e Camping, Churrasqueiras e Quiosques, Monte sua Experiência. */
+/** Template "Listagem de produtos": Day Use, Hospedagem e Camping, Churrasqueiras e Quiosques. */
 import type { Rota, Indice } from "../lib/routes";
 import type { Produto } from "../lib/types";
 import { absoluta } from "../lib/config";
@@ -10,6 +10,7 @@ import CardProduto from "../components/CardProduto.astro";
 import RichText from "../components/RichText.astro";
 import FaqLista from "../components/FaqLista.astro";
 import { t } from "../lib/i18n";
+import Foto from "../components/Foto.astro";
 
 interface Props {
   rota: Extract<Rota, { kind: "categoria-produto" }>;
@@ -27,17 +28,18 @@ const lista = {
 const dlPagina = [{ event: "view_item_list", ecommerce: { item_list_name: doc.titulo, items: produtos.map((p, i) => itemGa4(p, doc, i)) } }];
 ---
 
-<Base {...rota} indice={indice} imagem={doc.imagemHero} jsonld={[noWebPage(rota.path, doc.titulo, doc.respostaDireta, locale, "CollectionPage"), lista, noFaq(doc.faq, rota.path)].filter((n) => n !== null)} dlPagina={dlPagina}>
+<Base {...rota} indice={indice} imagem={doc.imagemHero} jsonld={[noWebPage(rota.path, doc.titulo, doc.respostaDireta, locale, "CollectionPage"), lista, noFaq(doc.faq, rota.path)].filter((n) => n !== null)} dlPagina={dlPagina} topoSobreposto={!!doc.imagemHero}>
+  <header slot="topo">
+    <h1>{doc.titulo}</h1>
+    <p class="lead">{doc.respostaDireta}</p>
+  </header>
   <div class="container section">
-    <header class="topo">
-      <h1>{doc.titulo}</h1>
-      <p class="lead">{doc.respostaDireta}</p>
-    </header>
-    <ul class="grid-cards">
+    {doc.imagemHero && <Foto img={doc.imagemHero} prioridade sizes="(min-width: 76rem) 74rem, calc(100vw - 2rem)" proporcao={2} class="listagem-hero sobe" larguras={[480, 680, 960, 1440]} />}
+    <ul class:list={["grid-cards", "lista-produtos", { "lista-produtos--poucos": produtos.length <= 2 }]}>
       {
         produtos.map((p, i) => (
           <li>
-            <CardProduto produto={p} href={indice.link("produto", p.documentId, locale)!} categoria={doc} locale={locale} lista={doc.titulo} index={i} nivel="h2" prioridade={i === 0} />
+            <CardProduto produto={p} href={indice.link("produto", p.documentId, locale)!} categoria={doc} locale={locale} lista={doc.titulo} index={i} nivel="h2" prioridade={!doc.imagemHero && i === 0} />
           </li>
         ))
       }
@@ -48,8 +50,55 @@ const dlPagina = [{ event: "view_item_list", ecommerce: { item_list_name: doc.ti
 </Base>
 
 <style>
-  .topo {
-    margin-bottom: var(--space-6);
+  :global(.listagem-hero) {
+    width: 100%;
+    aspect-ratio: 2 / 1;
+    object-fit: cover;
+    border-radius: var(--radius-card);
+  }
+  .lista-produtos {
+    margin-top: var(--space-7);
+  }
+  @media (min-width: 48rem) {
+    :global(.listagem-hero) {
+      aspect-ratio: 21 / 9;
+    }
+  }
+  /* Com 1 ou 2 produtos, cada card ocupa a linha toda, com a foto ao lado do texto. */
+  @media (min-width: 48rem) {
+    .lista-produtos--poucos {
+      grid-template-columns: 1fr;
+    }
+    .lista-produtos--poucos :global(.card) {
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+    }
+    .lista-produtos--poucos :global(.card-midia),
+    .lista-produtos--poucos :global(.card-midia picture),
+    .lista-produtos--poucos :global(.card-midia img) {
+      height: 100%;
+    }
+    .lista-produtos--poucos :global(.card img) {
+      aspect-ratio: auto;
+      min-height: 20rem;
+    }
+    .lista-produtos--poucos :global(.card-corpo) {
+      justify-content: center;
+      padding: var(--space-7);
+    }
+    .lista-produtos--poucos :global(.card-titulo) {
+      font-size: var(--fs-500);
+      font-weight: var(--fw-leve);
+      font-family: var(--font-display-leve);
+    }
+    .lista-produtos--poucos :global(.card-texto) {
+      font-size: var(--fs-200);
+      -webkit-line-clamp: 5;
+      line-clamp: 5;
+    }
+    .lista-produtos--poucos :global(.card-preco) {
+      margin-top: var(--space-5);
+    }
   }
   .intro {
     margin-top: var(--space-7);

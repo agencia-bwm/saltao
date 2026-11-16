@@ -2,7 +2,7 @@
  * Leitura do conteúdo no Strapi 5 (API REST) e normalização para os tipos do site.
  * Roda só na build. Os nomes de campos espelham os schema.json de apps/painel/src.
  */
-import type { Block, Conteudo, Faq, Img, KV, Locale, RichText, Seo, Tabela } from "./types";
+import type { Block, Capitulo, Conteudo, Faq, Img, KV, Locale, MomentoRoteiro, RichText, Seo, Tabela } from "./types";
 import { LOCALES } from "./types";
 
 type Json = any; // resposta crua da API; validada campo a campo na normalização
@@ -36,13 +36,14 @@ export function populateQuery(spec: Record<string, Populate>): string {
 
 const seoPop = { ogImage: true } as const;
 const faqPop = true as const;
+const ctaPop = { produto: true, categoria: true, pagina: true } as const;
 const blocosPop: Populate = {
   on: {
-    "blocks.hero": { imagem: { imagem: true }, cta: { produto: true } },
+    "blocks.hero": { imagem: { imagem: true }, cta: ctaPop },
     "blocks.texto": true,
     "blocks.imagem": { imagem: { imagem: true } },
     "blocks.tabela": true,
-    "blocks.citacao": true,
+    "blocks.citacao": { imagem: { imagem: true } },
     "blocks.cta-produto": { produto: true },
     "blocks.destaques-produtos": { produtos: true },
     "blocks.fatos": { itens: true },
@@ -50,12 +51,16 @@ const blocosPop: Populate = {
     "blocks.faq": { itens: true },
     "blocks.video": { poster: { imagem: true } },
     "blocks.mapa-estatico": { imagem: { imagem: true } },
+    "blocks.roteiro": { itens: { imagem: { imagem: true } } },
+    "blocks.chamada-final": { imagem: { imagem: true }, cta: ctaPop },
+    "blocks.capitulo": { imagem: { imagem: true }, galeria: { imagem: true }, cta: ctaPop },
+    "blocks.indice-capitulos": true,
   },
 };
 
 const POPULATE: Record<string, Record<string, Populate>> = {
   global: { endereco: true, geo: true, horarios: true, redesSociais: true, distancias: true, menuPrincipal: { subitens: true }, seoPadrao: seoPop },
-  home: { hero: { imagem: { imagem: true }, cta: { produto: true } }, secoes: blocosPop, seo: seoPop },
+  home: { hero: { imagem: { imagem: true }, cta: ctaPop }, secoes: blocosPop, seo: seoPop },
   "guia-home": { seo: seoPop },
   produtos: {
     categoria: true,
@@ -144,7 +149,7 @@ function blocos(v: Json): Block[] {
     .map((b: Json): Block | null => {
       switch (b.__component) {
         case "blocks.hero":
-          return { __component: b.__component, titulo: b.titulo, respostaDireta: b.respostaDireta, imagem: imgAlt(b.imagem)!, cta: cta(b.cta) };
+          return { __component: b.__component, sobretitulo: b.sobretitulo ?? undefined, titulo: b.titulo, respostaDireta: b.respostaDireta, imagem: imgAlt(b.imagem)!, cta: cta(b.cta) };
         case "blocks.texto":
           return { __component: b.__component, conteudo: rich(b.conteudo) };
         case "blocks.imagem":
@@ -152,7 +157,7 @@ function blocos(v: Json): Block[] {
         case "blocks.tabela":
           return { __component: b.__component, ...tabela(b)! };
         case "blocks.citacao":
-          return { __component: b.__component, texto: b.texto, autor: b.autor ?? undefined };
+          return { __component: b.__component, texto: b.texto, autor: b.autor ?? undefined, imagem: imgAlt(b.imagem) };
         case "blocks.cta-produto":
           return b.produto ? { __component: b.__component, produtoId: b.produto.documentId, textoChamada: b.textoChamada ?? undefined } : null;
         case "blocks.destaques-produtos":
@@ -167,6 +172,41 @@ function blocos(v: Json): Block[] {
           return { __component: b.__component, url: b.url, poster: imgAlt(b.poster)!, titulo: b.titulo ?? undefined };
         case "blocks.mapa-estatico":
           return { __component: b.__component, imagem: imgAlt(b.imagem)!, linkMaps: b.linkMaps };
+        case "blocks.roteiro":
+          return {
+            __component: b.__component,
+            titulo: b.titulo ?? undefined,
+            itens: (Array.isArray(b.itens) ? b.itens : [])
+              .map((m: Json): MomentoRoteiro | null => {
+                const imagem = imgAlt(m.imagem);
+                return imagem ? { hora: m.hora, titulo: m.titulo, texto: m.texto ?? undefined, imagem } : null;
+              })
+              .filter((m: MomentoRoteiro | null): m is MomentoRoteiro => m !== null),
+          };
+        case "blocks.chamada-final": {
+          const imagem = imgAlt(b.imagem);
+          return imagem ? { __component: b.__component, titulo: b.titulo, texto: b.texto ?? undefined, imagem, cta: cta(b.cta) } : null;
+        }
+        case "blocks.indice-capitulos":
+          return { __component: b.__component, sobretitulo: b.sobretitulo ?? undefined, titulo: b.titulo };
+        case "blocks.capitulo": {
+          const imagem = imgAlt(b.imagem);
+          if (!imagem) return null;
+          const c: Capitulo = {
+            ancora: b.ancora ?? undefined,
+            sobretitulo: b.sobretitulo ?? undefined,
+            titulo: b.titulo,
+            texto: b.texto ?? undefined,
+            imagem,
+            galeria: (Array.isArray(b.galeria) ? b.galeria : []).map(imgAlt).filter(Boolean) as Img[],
+            destaque: b.destaque ?? undefined,
+            destaqueLegenda: b.destaqueLegenda ?? undefined,
+            layout: ({ imersivo: "imersivo", foto_esquerda: "foto-esquerda", foto_direita: "foto-direita" } as const)[b.layout as "imersivo"] ?? "narrativa",
+            tema: b.tema === "escuro" || b.tema === "profundo" ? b.tema : "claro",
+            cta: cta(b.cta),
+          };
+          return { __component: b.__component, ...c };
+        }
         default:
           return null;
       }
@@ -175,7 +215,7 @@ function blocos(v: Json): Block[] {
 }
 function cta(c: Json) {
   if (!c) return undefined;
-  return { rotulo: c.rotulo, tipo: c.tipo, produtoId: c.produto?.documentId, url: c.url ?? undefined };
+  return { rotulo: c.rotulo, tipo: c.tipo, produtoId: c.produto?.documentId, categoriaId: c.categoria?.documentId, paginaId: c.pagina?.documentId, url: c.url ?? undefined };
 }
 
 export async function carregarDoStrapi(): Promise<Conteudo> {
@@ -219,7 +259,7 @@ export async function carregarDoStrapi(): Promise<Conteudo> {
     })),
     home: mapObj(h, (d) => ({
       ...doc(d),
-      hero: { __component: "blocks.hero" as const, titulo: d.hero?.titulo, respostaDireta: d.hero?.respostaDireta, imagem: imgAlt(d.hero?.imagem)!, cta: cta(d.hero?.cta) },
+      hero: { __component: "blocks.hero" as const, sobretitulo: d.hero?.sobretitulo ?? undefined, titulo: d.hero?.titulo, respostaDireta: d.hero?.respostaDireta, imagem: imgAlt(d.hero?.imagem)!, cta: cta(d.hero?.cta) },
       secoes: blocos(d.secoes),
       seo: seo(d.seo),
     })),

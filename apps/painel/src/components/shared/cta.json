@@ -15,6 +15,8 @@
       "type": "enumeration",
       "enum": [
         "produto",
+        "categoria",
+        "pagina",
         "link",
         "whatsapp"
       ],
@@ -25,6 +27,16 @@
       "type": "relation",
       "relation": "oneToOne",
       "target": "api::produto.produto"
+    },
+    "categoria": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::categoria-produto.categoria-produto"
+    },
+    "pagina": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::pagina-institucional.pagina-institucional"
     },
     "url": {
       "type": "string",

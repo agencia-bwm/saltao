@@ -28,21 +28,20 @@ if (!relacionados.length) relacionados = indice.conteudo.artigos.filter((x) => x
 const corpo = a.ctaProdutoId && !a.corpo.some((b) => b.__component === "blocks.cta-produto") ? [...a.corpo, { __component: "blocks.cta-produto" as const, produtoId: a.ctaProdutoId }] : a.corpo;
 ---
 
-<Base {...rota} indice={indice} imagem={a.imagemDestaque} ogTipo="article" jsonld={[noWebPage(rota.path, a.titulo, a.resumo, locale), noArtigo(a, autor, rota.path, imgSchema, fotoAutor), noFaq(a.faq, rota.path)].filter((n) => n !== null)}>
+<Base {...rota} indice={indice} imagem={a.imagemDestaque} ogTipo="article" topoSobreposto jsonld={[noWebPage(rota.path, a.titulo, a.resumo, locale), noArtigo(a, autor, rota.path, imgSchema, fotoAutor), noFaq(a.faq, rota.path)].filter((n) => n !== null)}>
+  <header slot="topo" class="topo-artigo">
+    {categoria && <p class="eyebrow">{categoria.nome}</p>}
+    <h1>{a.titulo}</h1>
+    <p class="lead resumo">{a.resumo}</p>
+    <p class="meta">
+      {autor && <>{ui.por} <strong>{autor.nome}</strong> · </>}
+      {ui.publicadoEm} <time datetime={a.dataPublicacao}>{formatData(a.dataPublicacao, locale)}</time> ·
+      {ui.atualizadoEm} <time datetime={a.dataAtualizacao}>{formatData(a.dataAtualizacao, locale)}</time>
+    </p>
+  </header>
   <article class="section">
-    <header class="container-narrow">
-      {categoria && <p class="categoria">{categoria.nome}</p>}
-      <h1>{a.titulo}</h1>
-      <p class="lead resumo">{a.resumo}</p>
-      <p class="meta">
-        {autor && <>{ui.por} <strong>{autor.nome}</strong> · </>}
-        {ui.publicadoEm} <time datetime={a.dataPublicacao}>{formatData(a.dataPublicacao, locale)}</time> ·
-        {ui.atualizadoEm} <time datetime={a.dataAtualizacao}>{formatData(a.dataAtualizacao, locale)}</time>
-      </p>
-    </header>
-
     <div class="container capa">
-      <Foto img={a.imagemDestaque} prioridade sizes="(min-width: 60rem) 60rem, 100vw" proporcao={16 / 9} larguras={[640, 960, 1280]} />
+      <Foto class="sobe" img={a.imagemDestaque} prioridade sizes="(min-width: 60rem) 60rem, 100vw" proporcao={16 / 9} larguras={[640, 960, 1280]} />
     </div>
 
     <div class="container-narrow corpo">
@@ -100,25 +99,16 @@ const corpo = a.ctaProdutoId && !a.corpo.some((b) => b.__component === "blocks.c
 </Base>
 
 <style>
-  .categoria {
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    font-size: var(--fs-100);
-    font-weight: 700;
-    color: var(--color-primary);
-    margin-bottom: var(--space-2);
-  }
-  .meta {
-    font-size: var(--fs-100);
-    color: var(--color-text-muted);
+  .topo-artigo {
+    max-width: 50rem;
   }
   .capa {
     max-width: 60rem;
-    margin-block: var(--space-6);
+    margin-block: 0 var(--space-6);
   }
   .capa :global(img) {
     width: 100%;
-    border-radius: var(--radius-lg) var(--radius-arco) var(--radius-lg) var(--radius-lg);
+    border-radius: var(--radius-card);
     aspect-ratio: 16 / 9;
     object-fit: cover;
   }
@@ -134,7 +124,8 @@ const corpo = a.ctaProdutoId && !a.corpo.some((b) => b.__component === "blocks.c
     align-items: flex-start;
     margin-top: var(--space-7);
     padding: var(--space-5);
-    background: var(--color-surface);
+    background: var(--color-bg);
+    box-shadow: var(--shadow-card);
     border-radius: var(--radius-lg);
     font-size: var(--fs-100);
   }

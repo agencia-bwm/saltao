@@ -1,0 +1,93 @@
+---
+/** Bloco "Chamada final": foto de fundo inteira, título grande e dois caminhos (reservar e WhatsApp). */
+import type { Cta, Img, Locale } from "../lib/types";
+import type { Indice } from "../lib/routes";
+import { enfase } from "../lib/texto";
+import { linkReserva, linkWhatsApp } from "../lib/config";
+import { t } from "../lib/i18n";
+import Foto from "./Foto.astro";
+
+interface Props {
+  titulo: string;
+  texto?: string;
+  imagem: Img;
+  cta?: Cta;
+  indice: Indice;
+  locale: Locale;
+}
+const { titulo, texto, imagem, cta, indice, locale } = Astro.props;
+const ui = t(locale);
+const g = indice.conteudo.global[locale] ?? indice.conteudo.global.pt;
+const href =
+  cta?.tipo === "produto" && cta.produtoId ? indice.link("produto", cta.produtoId, locale) : cta?.tipo === "whatsapp" && g ? linkWhatsApp(g.whatsapp, g.whatsappMensagemPadrao) : (cta?.url ?? linkReserva({ lang: locale }));
+const whats = g ? linkWhatsApp(g.whatsapp, g.whatsappMensagemPadrao) : undefined;
+---
+
+<section class="chamada-final no-escuro">
+  <Foto img={imagem} sizes="100vw" larguras={[640, 960, 1280, 1600]} class="chamada-img" />
+  <div class="chamada-texto">
+    <h2 set:html={enfase(titulo)} />
+    {texto && <p>{texto}</p>}
+    <div class="acoes">
+      <a class="btn btn-claro" href={href} data-dl='{"event":"click_reservar","method":"chamada_final"}'>{cta?.rotulo ?? ui.reservar}</a>
+      {
+        whats && cta?.tipo !== "whatsapp" && (
+          <a class="btn btn-contorno" href={whats} rel="noopener" target="_blank" data-dl='{"event":"generate_lead","method":"whatsapp"}'>
+            {ui.whatsapp}
+          </a>
+        )
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .chamada-final {
+    position: relative;
+    display: grid;
+    isolation: isolate;
+    overflow: hidden;
+    min-height: min(80svh, 40rem);
+    color: #ffffff;
+    background: var(--brand-poco);
+  }
+  .chamada-final > :global(picture) {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+  }
+  .chamada-final :global(.chamada-img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .chamada-texto {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: var(--space-9) var(--space-4);
+    background: radial-gradient(56rem 26rem at 50% 50%, rgb(15 39 68 / 0.55), rgb(15 39 68 / 0.15) 100%);
+    text-shadow: 0 2px 22px rgb(15 39 68 / 0.6);
+  }
+  h2 {
+    max-width: 18ch;
+    margin: 0 0 var(--space-5);
+    color: #ffffff;
+    font-size: clamp(2.25rem, 1.3rem + 4vw, 4.5rem);
+    font-weight: 250;
+  }
+  p {
+    max-width: 46ch;
+    margin: 0 0 var(--space-6);
+    font-size: var(--fs-300);
+    color: var(--color-on-deep);
+  }
+  .acoes {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--space-3);
+  }
+</style>

@@ -23,9 +23,11 @@ const tituloPrivacidade = rotaPriv && rotaPriv.kind === "institucional" ? rotaPr
 ---
 
 <Base {...rota} indice={indice} jsonld={[noWebPage(rota.path, doc.titulo, doc.respostaDireta, locale, doc.tipo === "faq-contato" ? "ContactPage" : "WebPage"), noFaq(faqs, rota.path)].filter((n) => n !== null)}>
-  <div class="container section">
+  <header slot="topo">
     <h1>{doc.titulo}</h1>
     <p class="lead">{doc.respostaDireta}</p>
+  </header>
+  <div class="container section">
 
     <div class="colunas">
       <div>

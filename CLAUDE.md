@@ -22,15 +22,25 @@ Velocidade e SEO antes de efeito visual. Se piora o Core Web Vitals, não entra 
 ## Marca
 Cores do logo oficial (`packages/ui/marca/saltao-logo-original.pdf`): azul Saltão `#4076b6`, azul médio `#489ed2` (só decorativo), azul claro `#a0c9e8`; azul escuro derivado `#244a75`. Contraste AA obrigatório: texto azul só com `#4076b6` ou mais escuro.
 
-## Linguagem visual ("a queda")
-- A página desce como os 75 m da cachoeira: topo em céu (`--grad-ceu` no body), faixas fundas no meio (`--grad-profundo`), rodapé no poço (`--grad-poco`).
-- Os três arcos do logo são o único ornamento: fio `--grad-arcos` (cabeçalho, topo das páginas, submenu, preço), fios d'água no hero e marca d'água no rodapé.
-- Canto do arco: fotos e painéis usam `--radius-arco` só no canto superior direito.
+## Linguagem visual ("a queda", versão contemporânea — 16/11/2026)
+- Cabeçalho **direto sobre a foto** (pedido do Fábio, 16/11/2026): sem fundo azul, só uma sombra preta suave no alto; não é fixo (aparece sobre a foto/faixa do topo e sobe com a página). Logo e menu em branco; Reservar em `.btn-claro`. Sombras sobre fotos em preto, nunca em azul.
+- Toda página começa escura: a home com a foto do hero; as internas com a `.faixa-topo` (`--grad-faixa-topo`), que o `Base.astro` monta a partir do slot `topo` (migalhas + H1 + resposta direta). `topoSobreposto` faz a 1ª foto (`.sobe`) subir sobre a faixa.
+- Fundo das páginas em céu claro (`--color-page`); cards e painéis brancos com `--shadow-card`.
+- **Linha resort editorial** (16/11/2026, referência ayana.com — só a estrutura, nunca a marca): home clara e com muito respiro. Hero com tudo centralizado (sobretítulo espaçado, "SALTÃO" gigante e espaçado, H1 curto em caixa-alta, resposta direta, botão Reservar e convite "Descubra o parque" com fio vertical) → poema de abertura (citação sem foto, linhas com `\n`) → índice "Quatro caminhos" (`blocks.indice-capitulos`, numerado automático) → capítulos `layout: narrativa` (rótulo "01 — Cachoeiras", título em caixa-alta fina, texto centralizado, foto larga 21:9, grade de fotos com legenda numerada 1-1, 1-2, link de texto com seta) alternando céu/branco → frase sobre foto → rodapé. Linhas de uma só palavra/linha com `white-space: nowrap` para CLS zero na troca de fonte.
+- **Mosaico editorial** (layouts `imersivo`/`foto-esquerda`/`foto-direita` do capítulo continuam disponíveis no painel): sem caixas arredondadas — `--radius-card`, `--radius-arco` e `--radius-faixa` são 0. Hero com a marca gigante e fina ("SALTÃO", peso 100), texto vertical na borda e atalhos numerados no pé. Capítulos em mosaico de ponta a ponta: foto grande + bloco de cor sólida do logo (tema claro = azul claro, escuro = azul Saltão, profundo = poço) + fotos menores, sem espaço entre eles; rótulo grande e fino sobre a foto e links com seta fina comprida.
+- **Home guiada pelas fotos** (16/11/2026, pedido do Fábio): o site encanta, quem vende é o motor. **Nada de preço, card de produto ou formulário de reserva na home** — isso fica para o tema de reservas/motor. Estrutura: hero em tela cheia → capítulos em mosaico (Cachoeiras, Day Use, Apartamentos, Camping) → frase sobre foto → **rodapé** (a home termina aí; avaliações, FAQ e chamada final saíram da home).
+- **Rodapé em mosaico:** foto | contato com a marca grande (poço) | horários e redes (azul Saltão) | páginas (azul claro) | foto; barra fina com © e preferências de cookies. Fotos "assentam" ao entrar na tela (scroll-driven animation em CSS, sem JS).
+- **Menu:** Cachoeiras (item próprio) · Day Use (com Quiosques) · Apartamentos · Camping · O Saltão · Guia · Atendimento.
+- Véus sobre fotos sempre leves e só onde há texto (use `text-shadow` para a leitura); a foto tem que aparecer.
+- **Destaque no texto:** no painel, `*palavra*` vira `<em>` com o degradê dos arcos (`lib/texto.ts` → `enfase()`; use `semEnfase()` em meta/alt). Vale no título do hero, H2 da home, citação e chamada final. Sem itálico falso.
+- Blocos do painel: `blocks.capitulo` (sobretítulo, título, texto, foto, até 3 fotos extras, destaque tipo "75 m", layout imersivo/foto à esquerda/foto à direita, tema claro/escuro, âncora, CTA), `blocks.roteiro`, `blocks.chamada-final`; citação aceita foto de fundo; o CTA pode apontar para produto, categoria, página institucional, link ou WhatsApp; o hero ganhou `sobretitulo`.
+- Os três arcos do logo são o único ornamento: fios d'água no hero, marca d'água na faixa do topo e no rodapé, fio `--grad-arcos` no submenu e no preço.
+- Cantos: retos (tokens de raio = 0). Os cards ainda recortam com `clip-path: inset(0 round var(--radius-card))`, então voltar a arredondar é só mudar o token.
 - Títulos em peso leve (300/250), como o wordmark. Nada de caixa-alta em rótulos.
-- Texto azul sobre o fundo céu: usar `--color-primary-strong` (o azul Saltão fica em 4,2:1).
+- Contraste: sobre o céu, texto/link azul é sempre `--color-primary-strong` (o azul Saltão fica abaixo de 4,5:1); sobre azul, texto branco ou `--color-on-deep`.
 
 ## Templates e campos
-7 templates (`apps/site/src/templates`): Home, Listagem de produtos, Produto/pacote, Listagem do blog, Artigo, Institucional por blocos, FAQ/Contato. Cada campo do painel = um bloco visual. Rotas montadas em `src/lib/routes.ts` a partir do painel (slugs traduzidos). A build falha se houver URL duplicada.
+7 templates (`apps/site/src/templates`): Home, Listagem de produtos (Day Use, Hospedagem e Camping, Churrasqueiras e Quiosques — "Monte sua Experiência" saiu do projeto, decisão 17), Produto/pacote, Listagem do blog, Artigo, Institucional por blocos, FAQ/Contato. Cada campo do painel = um bloco visual. Rotas montadas em `src/lib/routes.ts` a partir do painel (slugs traduzidos). A build falha se houver URL duplicada.
 - Menu: `Global.menuPrincipal`; item com `subitens` vira grupo com submenu (`<details name>` exclusivo, sem JS). Sem menu no painel, `Cabecalho.astro` monta 5 grupos: O Saltão, Experiências, Hospedagem, Guia, Atendimento.
 
 ## SEO / GEO / AEO

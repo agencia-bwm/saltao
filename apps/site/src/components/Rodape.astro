@@ -4,6 +4,9 @@ import type { Indice } from "../lib/routes";
 import { t } from "../lib/i18n";
 import { linkWhatsApp } from "../lib/config";
 import RichText from "./RichText.astro";
+import Foto from "./Foto.astro";
+import fotoQuedaSrc from "../assets/fotos/cachoeira-saltao/cachoeira-saltao-poco-vertical.jpg";
+import fotoNoiteSrc from "../assets/fotos/camping/fogueira-noite-vertical.jpg";
 
 interface Props {
   locale: Locale;
@@ -15,6 +18,13 @@ const g = indice.conteudo.global[locale] ?? indice.conteudo.global.pt;
 const paginas = [...indice.conteudo.institucionais, ...indice.conteudo.atendimento].filter((p) => p.locale === locale);
 const linkPagina = (id: string) => indice.link("institucional", id, locale) ?? indice.link("atendimento", id, locale);
 const ano = new Date().getFullYear();
+const marca = (g?.nomeOficial ?? "Saltão").split(/\s+[—–-]\s+/)[0];
+const seta = '<svg viewBox="0 0 56 12" width="44" height="12" aria-hidden="true"><path d="M0 6h54m-6-5 6 5-6 5" fill="none" stroke="currentColor" stroke-width="1.2"/></svg>';
+const ALT: Record<Locale, [string, string]> = {
+  pt: ["Poço da Cachoeira do Saltão com a queda ao fundo", "Fogueira acesa à noite na área de camping"],
+  en: ["Saltão waterfall pool with the drop behind", "Campfire at night in the camping area"],
+  es: ["Poza de la cascada de Saltão con la caída al fondo", "Fogata encendida de noche en el camping"],
+};
 const DIA: Record<Locale, Record<string, string>> = {
   pt: { Mo: "seg", Tu: "ter", We: "qua", Th: "qui", Fr: "sex", Sa: "sáb", Su: "dom" },
   en: { Mo: "Mon", Tu: "Tue", We: "Wed", Th: "Thu", Fr: "Fri", Sa: "Sat", Su: "Sun" },
@@ -23,18 +33,21 @@ const DIA: Record<Locale, Record<string, string>> = {
 const dias = (s: string) => s.replace(/Mo|Tu|We|Th|Fr|Sa|Su/g, (d) => DIA[locale][d]).replace("-", " a ");
 ---
 
+<!--
+  Rodapé em mosaico (mesma linha da home): foto | contato (poço) | visita e redes (azul Saltão) | páginas (azul claro) | foto.
+  Cantos retos, blocos encostados, links com seta fina. Barra fina no pé com © e cookies.
+-->
 <footer class="rodape">
-  <!-- Fim da descida: os três arcos do logo, grandes e quase transparentes, no fundo do poço. -->
-  <svg class="arcos-fundo" viewBox="166 62 118 166" aria-hidden="true" focusable="false">
-    <path fill="#489ed2" d="M239.58 73.19c-4.78-2.11-9.34-3.38-13.55-3.55-48.59-1.9-53.53 26.05-53.53 90.66 0 19.02 2.39 40.3 6.97 60.88-1.26-15.83-1.66-32.09-1.66-47.49 0-62.75 16.3-98.48 61.77-100.5Z" />
-    <path fill="#4076b6" d="M258.58 73.19c-4.79-2.11-9.34-3.38-13.55-3.55-48.61-1.9-53.54 26.05-53.54 90.66 0 19.02 2.4 40.3 6.98 60.88-1.26-15.83-1.67-32.09-1.67-47.49 0-62.75 16.31-98.48 61.78-100.5Z" />
-    <path fill="#a0c9e8" d="M278.53 73.33c-4.78-2.11-9.34-3.38-13.55-3.55-48.6-1.9-53.53 26.05-53.53 90.66 0 19.02 2.38 40.31 6.97 60.88-1.25-15.82-1.66-32.09-1.66-47.5 0-62.73 16.31-98.47 61.77-100.49Z" />
-  </svg>
   {
     g && (
-      <div class="container colunas">
-        <section>
-          <h2>{g.nomeOficial}</h2>
+      <div class="rod-mosaico">
+        <div class="rod-foto rod-foto--1">
+          <Foto img={{ src: fotoQuedaSrc, alt: ALT[locale][0] }} sizes="(min-width: 64rem) 20vw, 50vw" larguras={[320, 480, 640]} class="rod-img" />
+        </div>
+
+        <section class="rod-bloco rod-bloco--poco">
+          <p class="rod-marca" aria-hidden="true">{marca}</p>
+          <h2 class="visually-hidden">{g.nomeOficial}</h2>
           <address>
             {g.endereco.rua}, {g.endereco.numero}
             <br />
@@ -46,54 +59,59 @@ const dias = (s: string) => s.replace(/Mo|Tu|We|Th|Fr|Sa|Su/g, (d) => DIA[locale
             <br />
             <a href={`mailto:${g.email}`}>{g.email}</a>
           </address>
-          <a class="btn btn-secundario whats" href={linkWhatsApp(g.whatsapp, g.whatsappMensagemPadrao)} rel="noopener" target="_blank" data-dl='{"event":"generate_lead","method":"whatsapp"}'>
-            {ui.whatsapp}
+          <a class="rod-link" href={linkWhatsApp(g.whatsapp, g.whatsappMensagemPadrao)} rel="noopener" target="_blank" data-dl='{"event":"generate_lead","method":"whatsapp"}'>
+            <span>{ui.whatsapp}</span>
+            <Fragment set:html={seta} />
           </a>
         </section>
-        <section>
+
+        <section class="rod-bloco rod-bloco--azul">
           <h2>{ui.horarios}</h2>
-          <ul>
+          <ul class="rod-lista">
             {g.horarios.map((h) => (
               <li>
                 {dias(h.dias)}: {h.abre}–{h.fecha}
               </li>
             ))}
           </ul>
+          {g.redesSociais.length > 0 && (
+            <>
+              <h2>{ui.seguirRedes}</h2>
+              <ul class="rod-lista rod-redes">
+                {g.redesSociais.map((r) => (
+                  <li>
+                    <a href={r.url} rel="noopener me" target="_blank">
+                      {r.rede.charAt(0).toUpperCase() + r.rede.slice(1)}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </>
+          )}
         </section>
-        <section>
-          <h2>Saltão</h2>
-          <ul>
+
+        <nav class="rod-bloco rod-bloco--claro" aria-label={marca}>
+          <h2>{marca}</h2>
+          <ul class="rod-lista rod-paginas">
             {paginas.map((p) => (
               <li>
                 <a href={linkPagina(p.documentId)}>{p.titulo}</a>
               </li>
             ))}
-            <li>
-              <button type="button" class="link-cookies" data-cc="show-preferencesModal">
-                {ui.preferenciasCookies}
-              </button>
-            </li>
           </ul>
-        </section>
-        {g.redesSociais.length > 0 && (
-          <section>
-            <h2>{ui.seguirRedes}</h2>
-            <ul>
-              {g.redesSociais.map((r) => (
-                <li>
-                  <a href={r.url} rel="noopener me" target="_blank">
-                    {r.rede.charAt(0).toUpperCase() + r.rede.slice(1)}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </section>
-        )}
+        </nav>
+
+        <div class="rod-foto rod-foto--2">
+          <Foto img={{ src: fotoNoiteSrc, alt: ALT[locale][1] }} sizes="(min-width: 64rem) 20vw, 50vw" larguras={[320, 480, 640]} class="rod-img" />
+        </div>
       </div>
     )
   }
-  {g?.rodape && g.rodape.length > 0 && <div class="container extra"><RichText conteudo={g.rodape} /></div>}
-  <p class="container copy">© {ano} {g?.nomeOficial ?? "Saltão"}</p>
+  <div class="rod-base">
+    <p>© {ano} {g?.nomeOficial ?? "Saltão"}</p>
+    {g?.rodape && g.rodape.length > 0 && <div class="rod-extra"><RichText conteudo={g.rodape} /></div>}
+    <button type="button" class="link-cookies" data-cc="show-preferencesModal">{ui.preferenciasCookies}</button>
+  </div>
 </footer>
 
 <a class="whats-flutuante" href={g ? linkWhatsApp(g.whatsapp, g.whatsappMensagemPadrao) : "#"} rel="noopener" target="_blank" aria-label={ui.whatsapp} data-dl='{"event":"generate_lead","method":"whatsapp_flutuante"}'>
@@ -102,76 +120,186 @@ const dias = (s: string) => s.replace(/Mo|Tu|We|Th|Fr|Sa|Su/g, (d) => DIA[locale
 
 <style>
   .rodape {
+    background: var(--brand-poco);
+    color: var(--color-on-deep);
+    font-size: var(--fs-100);
+  }
+  .rod-mosaico {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+  .rod-foto {
     position: relative;
     overflow: hidden;
-    margin-top: var(--space-9);
-    background: var(--grad-poco);
+    aspect-ratio: 1;
+    background: var(--brand-poco);
+  }
+  .rod-foto > :global(picture) {
+    display: block;
+    height: 100%;
+  }
+  .rod-foto :global(.rod-img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .rod-foto--1 {
+    grid-column: 1;
+    grid-row: 1;
+  }
+  .rod-foto--2 {
+    grid-column: 2;
+    grid-row: 1;
+  }
+  .rod-bloco {
+    grid-column: 1 / -1;
+    padding: var(--space-7) clamp(var(--space-5), 6vw, var(--space-7));
+  }
+  .rod-bloco--poco {
+    background: var(--brand-poco);
     color: var(--color-on-deep);
-    padding-block: var(--space-8) var(--space-5);
-    font-size: var(--fs-100);
-    /* O canto de cima curva como o topo dos arcos — a borda do poço. */
-    border-start-end-radius: clamp(2.5rem, 8vw, 7rem);
   }
-  .rodape > :not(.arcos-fundo) {
-    position: relative;
-  }
-  .arcos-fundo {
-    position: absolute;
-    right: -4%;
-    bottom: -18%;
-    width: clamp(14rem, 34vw, 30rem);
-    height: auto;
-    opacity: 0.14;
-    pointer-events: none;
-  }
-  .rodape a,
-  .link-cookies {
+  .rod-bloco--azul {
+    background: var(--brand-azul);
     color: #ffffff;
-    text-decoration-color: rgb(160 201 232 / 0.6);
   }
-  .rodape a:hover,
-  .link-cookies:hover {
-    color: var(--brand-azul-claro);
+  .rod-bloco--claro {
+    background: var(--brand-azul-claro);
+    color: var(--brand-poco);
   }
-  .colunas {
-    display: grid;
-    gap: var(--space-6);
-    grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
-  }
-  h2 {
-    font-size: var(--fs-300);
-    font-weight: var(--fw-medio);
+  .rod-marca {
+    margin: 0 0 var(--space-5);
+    font-family: var(--font-display-leve);
+    font-size: clamp(2.5rem, 1.5rem + 3vw, 3.75rem);
+    font-weight: 100;
+    line-height: 0.9;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
     color: #ffffff;
+  }
+  .rodape h2 {
     margin: 0 0 var(--space-3);
+    font-size: var(--fs-100);
+    font-weight: var(--fw-forte);
+    letter-spacing: 0.08em;
+    color: inherit;
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
   }
-  ul {
-    list-style: none;
-    padding: 0;
+  .rodape h2::before {
+    content: "";
+    width: 2rem;
+    height: 1px;
+    background: currentColor;
+    opacity: 0.6;
   }
-  li {
-    margin-bottom: var(--space-2);
+  .rod-lista + h2 {
+    margin-top: var(--space-6);
   }
   address {
     font-style: normal;
-    margin-bottom: var(--space-4);
+    line-height: 1.8;
+    margin-bottom: var(--space-5);
   }
-  .whats {
-    border-color: #ffffff;
+  .rodape a {
+    color: inherit;
+    text-decoration: none;
+  }
+  .rodape a:hover {
+    text-decoration: underline;
+    text-underline-offset: 0.25em;
+  }
+  .rod-lista {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    line-height: 1.6;
+  }
+  .rod-lista a {
+    display: inline-block;
+    padding-block: var(--space-1);
+  }
+  .rod-redes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 var(--space-4);
+  }
+  .rod-link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-3);
+    min-height: 44px;
+    font-size: var(--fs-200);
+    font-weight: var(--fw-medio);
     color: #ffffff;
   }
+  .rod-link :global(svg) {
+    transition: transform 0.35s ease;
+  }
+  .rodape .rod-link:hover {
+    text-decoration: none;
+  }
+  .rod-link:hover :global(svg) {
+    transform: translateX(8px);
+  }
+  .rod-base {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-2) var(--space-5);
+    width: min(100% - 2 * var(--space-4), var(--container));
+    margin-inline: auto;
+    padding-block: var(--space-5);
+    color: var(--color-on-deep-muted);
+  }
+  .rod-base p {
+    margin: 0;
+  }
+  .rod-extra :global(p) {
+    margin: 0;
+  }
   .link-cookies {
+    padding: var(--space-2) 0;
     background: none;
     border: 0;
-    padding: 0;
     font: inherit;
+    color: inherit;
     text-decoration: underline;
+    text-underline-offset: 0.25em;
     cursor: pointer;
   }
-  .copy {
-    margin-top: var(--space-7);
-    padding-top: var(--space-4);
-    border-top: 1px solid rgb(160 201 232 / 0.25);
-    color: var(--color-on-deep-muted);
+  .link-cookies:hover {
+    color: #ffffff;
+  }
+  /* Computador: as cinco peças lado a lado, encostadas. */
+  @media (min-width: 64rem) {
+    .rod-mosaico {
+      grid-template-columns: 1.1fr 1fr 1fr 1fr 1.1fr;
+      min-height: clamp(22rem, 26vw, 28rem);
+    }
+    .rod-foto {
+      aspect-ratio: auto;
+    }
+    .rod-foto--1 {
+      grid-column: 1;
+      grid-row: 1;
+    }
+    .rod-bloco {
+      grid-column: auto;
+      grid-row: 1;
+      padding: clamp(var(--space-6), 3vw, var(--space-7));
+    }
+    .rod-foto--2 {
+      grid-column: 5;
+      grid-row: 1;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .rod-link :global(svg) {
+      transition: none;
+    }
   }
   .whats-flutuante {
     position: fixed;

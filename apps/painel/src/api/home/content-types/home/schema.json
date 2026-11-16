@@ -30,13 +30,19 @@
     "secoes": {
       "type": "dynamiczone",
       "components": [
+        "blocks.capitulo",
+        "blocks.indice-capitulos",
         "blocks.destaques-produtos",
+        "blocks.roteiro",
+        "blocks.citacao",
+        "blocks.imagem",
         "blocks.fatos",
         "blocks.avaliacoes",
         "blocks.texto",
         "blocks.faq",
         "blocks.cta-produto",
-        "blocks.mapa-estatico"
+        "blocks.mapa-estatico",
+        "blocks.chamada-final"
       ],
       "pluginOptions": {
         "i18n": {
