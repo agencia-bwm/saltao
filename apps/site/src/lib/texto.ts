@@ -5,7 +5,9 @@
 const esc = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 
 export function enfase(texto: string): string {
-  return esc(texto).replace(/\*([^*]+)\*/g, "<em>$1</em>");
+  return esc(texto)
+    .replace(/\*([^*]+)\*/g, "<em>$1</em>")
+    .replace(/\r?\n/g, "<br />");
 }
 
 /** Mesmo texto sem os asteriscos (meta tags, alt, JSON-LD). */

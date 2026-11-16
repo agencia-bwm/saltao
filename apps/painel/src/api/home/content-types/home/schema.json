@@ -31,6 +31,7 @@
       "type": "dynamiczone",
       "components": [
         "blocks.capitulo",
+        "blocks.indice-capitulos",
         "blocks.destaques-produtos",
         "blocks.roteiro",
         "blocks.citacao",

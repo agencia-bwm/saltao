@@ -13,6 +13,8 @@ import CardProduto from "./CardProduto.astro";
 import VideoFachada from "./VideoFachada.astro";
 import Roteiro from "./Roteiro.astro";
 import Capitulo from "./Capitulo.astro";
+import CapituloNarrativa from "./CapituloNarrativa.astro";
+import IndiceCapitulos from "./IndiceCapitulos.astro";
 import ChamadaFinal from "./ChamadaFinal.astro";
 import { enfase } from "../lib/texto";
 
@@ -29,6 +31,10 @@ interface Props {
 }
 const { blocos, indice, locale, estreito = false, prioridadeTopo = false, home = false } = Astro.props;
 const iDestaques = blocos.findIndex((b) => b.__component === "blocks.destaques-produtos");
+// Numeração dos capítulos (01, 02…) e itens do índice.
+const capitulosHome = blocos.flatMap((b) => (b.__component === "blocks.capitulo" ? [b] : []));
+const numeroCapitulo = (b: Block) => capitulosHome.indexOf(b as (typeof capitulosHome)[number]) + 1;
+const itensIndice = capitulosHome.filter((c) => c.ancora).map((c) => ({ ancora: c.ancora!, nome: c.sobretitulo ?? c.titulo, subtitulo: c.titulo }));
 const iImagemLcp = prioridadeTopo ? blocos.findIndex((b, i) => i <= 1 && b.__component === "blocks.imagem") : -1;
 const ui = t(locale);
 const sizesLargura = estreito ? "(min-width: 46rem) 46rem, 100vw" : "(min-width: 72rem) 72rem, 100vw";
@@ -144,8 +150,11 @@ const sizesLargura = estreito ? "(min-width: 46rem) 46rem, 100vw" : "(min-width:
       }
       case "blocks.capitulo": {
         const { __component, ...capitulo } = b;
+        if (capitulo.layout === "narrativa") return <CapituloNarrativa capitulo={capitulo} numero={numeroCapitulo(b)} indice={indice} locale={locale} />;
         return <Capitulo capitulo={capitulo} indice={indice} locale={locale} />;
       }
+      case "blocks.indice-capitulos":
+        return <IndiceCapitulos sobretitulo={b.sobretitulo} titulo={b.titulo} itens={itensIndice} />;
       case "blocks.roteiro":
         return <Roteiro titulo={b.titulo} itens={b.itens} />;
       case "blocks.chamada-final":

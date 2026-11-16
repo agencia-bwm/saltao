@@ -36,35 +36,22 @@ const marca = (g?.nomeOficial ?? "Saltão").split(/\s+[—–-]\s+/)[0];
   <section class="hero no-escuro">
     <Foto img={hero.imagem} prioridade sizes="100vw" class="hero-img" larguras={[480, 760, 1080, 1440, 1600]} />
     <div class="hero-texto">
-      {hero.sobretitulo && <p class="hero-vertical" aria-hidden="true">{hero.sobretitulo}</p>}
-      <div class="container hero-grade">
+      <div class="hero-centro">
+        {hero.sobretitulo && <p class="hero-sobre">{hero.sobretitulo}</p>}
         <p class="hero-marca" aria-hidden="true">{marca}</p>
-        <div class="hero-conteudo">
-          {hero.sobretitulo && <p class="visually-hidden">{hero.sobretitulo}</p>}
-          <h1 set:html={enfase(hero.titulo)} />
-          <p class="resposta">{hero.respostaDireta}</p>
-          <div class="acoes">
-            <a class="btn btn-claro" href={ctaHref} data-dl='{"event":"click_reservar","method":"hero"}'>{hero.cta?.rotulo ?? ui.reservar}</a>
-            {ancoraDescubra && <a class="btn btn-contorno" href={`#${ancoraDescubra}`}>{ui.descubra} <span aria-hidden="true">↓</span></a>}
-          </div>
+        <h1 set:html={enfase(hero.titulo)} />
+        <p class="resposta">{hero.respostaDireta}</p>
+        <div class="acoes">
+          <a class="btn btn-claro" href={ctaHref} data-dl='{"event":"click_reservar","method":"hero"}'>{hero.cta?.rotulo ?? ui.reservar}</a>
         </div>
-        {
-          capitulos.length > 1 && (
-            <nav class="hero-atalhos" aria-label={ui.descubra}>
-              <ol>
-                {capitulos.map((c, i) => (
-                  <li>
-                    <a href={`#${c.ancora}`}>
-                      <span aria-hidden="true">{String(i + 1).padStart(2, "0")}</span>
-                      {c.rotulo}
-                    </a>
-                  </li>
-                ))}
-              </ol>
-            </nav>
-          )
-        }
       </div>
+      {
+        ancoraDescubra && (
+          <a class="hero-descer" href={`#${ancoraDescubra}`}>
+            <span>{ui.descubra}</span>
+          </a>
+        )
+      }
     </div>
   </section>
   <div class="container secoes">
@@ -73,7 +60,7 @@ const marca = (g?.nomeOficial ?? "Saltão").split(/\s+[—–-]\s+/)[0];
 </Base>
 
 <style>
-  /* ---------- Hero (editorial: marca gigante e fina, atalhos no pé) ---------- */
+  /* ---------- Hero (resort editorial: tudo centralizado sobre a foto) ---------- */
   .hero {
     position: relative;
     display: grid;
@@ -92,128 +79,105 @@ const marca = (g?.nomeOficial ?? "Saltão").split(/\s+[—–-]\s+/)[0];
     object-fit: cover;
     object-position: 52% 55%;
   }
-  /* Véu leve: só no alto (menu) e no pé (texto). A foto aparece. */
+  /* Sombra preta leve no centro (onde está o texto) e no pé. A foto aparece. */
   .hero-texto {
     position: relative;
     grid-area: 1 / 1;
-    display: flex;
-    align-items: flex-end;
-    padding-block: calc(var(--altura-cabecalho) + var(--space-7)) var(--space-6);
-    background:
-      linear-gradient(to top, rgb(0 0 0 / 0.62) 0%, rgb(0 0 0 / 0.22) 38%, rgb(0 0 0 / 0) 62%);
-  }
-  .hero-grade {
     display: grid;
-    gap: var(--space-6);
-    text-shadow: 0 2px 22px rgb(0 0 0 / 0.4);
+    place-items: center;
+    padding: calc(var(--altura-cabecalho) + var(--space-6)) var(--space-4) var(--space-9);
+    background:
+      radial-gradient(52rem 30rem at 50% 50%, rgb(0 0 0 / 0.32), rgb(0 0 0 / 0) 70%),
+      linear-gradient(to top, rgb(0 0 0 / 0.4) 0%, rgb(0 0 0 / 0) 30%);
   }
-  /* "SALTÃO" gigante, fino e espaçado, como o wordmark do logo. */
+  .hero-centro {
+    display: grid;
+    justify-items: center;
+    text-align: center;
+    text-shadow: 0 2px 24px rgb(0 0 0 / 0.45);
+  }
+  .hero-sobre {
+    margin: 0 0 var(--space-5);
+    font-size: var(--fs-100);
+    font-weight: var(--fw-medio);
+    letter-spacing: clamp(0.1em, 0.02em + 0.6vw, 0.32em);
+    /* Uma linha só: a quebra não pode depender da largura da fonte (CLS zero). */
+    white-space: nowrap;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-transform: uppercase;
+    color: #ffffff;
+  }
   .hero-marca {
-    margin: 0;
+    margin: 0 0 var(--space-5);
     font-family: var(--font-display-leve);
-    font-size: clamp(4.25rem, 1rem + 15vw, 15rem);
+    font-size: clamp(3.5rem, 1rem + 12vw, 12rem);
     font-weight: 100;
-    line-height: 0.82;
-    letter-spacing: 0.04em;
+    line-height: 0.85;
+    letter-spacing: 0.14em;
+    margin-right: -0.14em; /* compensa o espaçamento da última letra para centralizar de verdade */
     text-transform: uppercase;
     white-space: nowrap;
     color: #ffffff;
   }
-  /* Texto na vertical, colado na borda direita (como na referência). */
-  .hero-vertical {
-    position: absolute;
-    top: calc(var(--altura-cabecalho) + var(--space-7));
-    right: var(--space-4);
-    margin: 0;
-    writing-mode: vertical-rl;
-    font-size: var(--fs-100);
-    font-weight: var(--fw-medio);
-    letter-spacing: 0.3em;
-    color: rgb(255 255 255 / 0.85);
-  }
-  @media (max-width: 47.99rem) {
-    .hero-vertical {
-      display: none;
-    }
-  }
   .hero h1 {
-    max-width: 26ch;
+    max-width: 40ch;
     margin: 0 0 var(--space-4);
     color: #ffffff;
-    font-size: clamp(1.5rem, 1rem + 1.6vw, 2.25rem);
+    font-size: clamp(1.15rem, 0.9rem + 1vw, 1.6rem);
     font-weight: 300;
-    line-height: 1.2;
-    letter-spacing: -0.01em;
+    line-height: 1.35;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
   }
   .hero h1 :global(em) {
-    filter: drop-shadow(0 2px 14px rgb(15 39 68 / 0.7));
+    background: none;
+    -webkit-background-clip: border-box;
+    background-clip: border-box;
+    color: var(--brand-azul-claro);
+    font-weight: 400;
   }
   .resposta {
+    max-width: 46ch;
+    margin: 0 0 var(--space-6);
     font-size: var(--fs-200);
-    max-width: 52ch;
-    margin-bottom: var(--space-5);
-    color: var(--color-on-deep);
+    color: rgb(255 255 255 / 0.92);
     text-wrap: pretty;
-  }
-  .acoes {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-3);
   }
   .acoes .btn {
     min-height: 52px;
-    padding-inline: var(--space-6);
-  }
-  /* Celular: botões empilhados — a quebra não depende da largura da fonte (CLS zero na troca de fonte). */
-  @media (max-width: 47.99rem) {
-    .acoes {
-      flex-direction: column;
-      align-items: flex-start;
-    }
-  }
-  /* Atalhos no pé do hero: fio fino em cima, número e nome. */
-  .hero-atalhos ol {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: var(--space-2) var(--space-5);
-  }
-  .hero-atalhos a {
-    display: flex;
-    gap: var(--space-3);
-    align-items: baseline;
-    min-height: 44px;
-    padding-top: var(--space-3);
-    border-top: 1px solid rgb(255 255 255 / 0.45);
-    color: #ffffff;
+    padding-inline: var(--space-7);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
     font-size: var(--fs-100);
-    font-weight: var(--fw-medio);
-    letter-spacing: 0.04em;
-    text-decoration: none;
-    transition: border-color 0.3s ease;
   }
-  .hero-atalhos a span {
-    color: var(--brand-azul-claro);
-    font-weight: var(--fw-normal);
-  }
-  .hero-atalhos a:hover {
-    border-color: #ffffff;
+  /* Convite para descer: fio fino vertical + texto pequeno. */
+  .hero-descer {
+    position: absolute;
+    left: 50%;
+    bottom: var(--space-5);
+    transform: translateX(-50%);
+    display: grid;
+    justify-items: center;
+    gap: var(--space-3);
+    min-height: 44px;
+    font-size: var(--fs-100);
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    white-space: nowrap;
     color: #ffffff;
+    text-decoration: none;
+    text-shadow: 0 1px 10px rgb(0 0 0 / 0.5);
   }
-  @media (min-width: 64rem) {
-    .hero-grade {
-      grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
-      align-items: end;
-      column-gap: var(--space-8);
-    }
-    .hero-marca {
-      grid-column: 1 / -1;
-    }
-    .hero-atalhos ol {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
+  .hero-descer::after {
+    content: "";
+    width: 1px;
+    height: 3rem;
+    background: linear-gradient(to bottom, #ffffff, rgb(255 255 255 / 0));
+  }
+  .hero-descer:hover {
+    color: #ffffff;
   }
 
   /* ---------- Seções em faixas de largura total ---------- */
@@ -340,6 +304,36 @@ const marca = (g?.nomeOficial ?? "Saltão").split(/\s+[—–-]\s+/)[0];
   /* Números logo depois da foto: sem a curva no topo, colado na imagem. */
   .secoes > :global(.panoramica + .fatos) {
     margin-top: var(--space-6);
+  }
+
+  /* Poema de abertura (citação sem foto): linhas curtas, centralizadas, em caixa-alta fina. */
+  .secoes > :global(.frase:not(.frase--foto)) {
+    padding-block: clamp(5rem, 10vw, 8rem) var(--space-6);
+  }
+  .secoes > :global(.frase:not(.frase--foto) .frase-arcos) {
+    width: 2.5rem;
+  }
+  .secoes :global(.frase:not(.frase--foto) p) {
+    max-width: none;
+    font-size: clamp(1.15rem, 0.95rem + 0.9vw, 1.6rem);
+    font-weight: 300;
+    line-height: 1.9;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--brand-poco);
+  }
+  .secoes :global(.frase:not(.frase--foto) em) {
+    background: none;
+    -webkit-background-clip: border-box;
+    background-clip: border-box;
+    color: var(--color-primary-strong);
+  }
+  .secoes > :global(.indice) {
+    margin-inline: auto;
+    padding-inline: 0;
+  }
+  .secoes > :global(.narrativa) {
+    padding-inline: 0;
   }
 
   /* Frase sobre foto de ponta a ponta. */

@@ -1,0 +1,310 @@
+---
+/**
+ * Capítulo "narrativa" (home, linha de resort editorial): muito respiro, texto centralizado,
+ * foto larga e grade de fotos com legenda numerada (1-1, 1-2…). Link de texto com seta fina no fim.
+ * Fundo alterna entre o céu claro e o branco, capítulo a capítulo.
+ */
+import type { Capitulo, Locale } from "../lib/types";
+import type { Indice } from "../lib/routes";
+import { enfase } from "../lib/texto";
+import { hrefCta } from "../lib/cta";
+import Foto from "./Foto.astro";
+
+interface Props {
+  capitulo: Capitulo;
+  numero: number;
+  indice: Indice;
+  locale: Locale;
+}
+const { capitulo: c, numero, indice, locale } = Astro.props;
+const href = c.cta ? hrefCta(c.cta, indice, locale) : undefined;
+const num = String(numero).padStart(2, "0");
+const seta = '<svg viewBox="0 0 56 12" width="56" height="12" aria-hidden="true"><path d="M0 6h54m-6-5 6 5-6 5" fill="none" stroke="currentColor" stroke-width="1.2"/></svg>';
+---
+
+<section class:list={["narrativa", { "narrativa--branca": numero % 2 === 0 }]} id={c.ancora} aria-labelledby={c.ancora ? `${c.ancora}-titulo` : undefined}>
+  <header class="nar-cab">
+    <p class="nar-rotulo"><span>{num}</span>{c.sobretitulo}</p>
+    <h2 id={c.ancora ? `${c.ancora}-titulo` : undefined} set:html={enfase(c.titulo)} />
+    {
+      c.destaque && (
+        <p class="nar-destaque">
+          <strong>{c.destaque}</strong>
+          {c.destaqueLegenda && <span>{c.destaqueLegenda}</span>}
+        </p>
+      )
+    }
+    {c.texto && <p class="nar-texto">{c.texto}</p>}
+  </header>
+
+  <figure class="nar-principal">
+    <Foto img={c.imagem} sizes="(min-width: 90rem) 86rem, 100vw" larguras={[480, 760, 1080, 1440, 1920]} class="nar-foto" />
+    {c.imagem.caption && <figcaption>{c.imagem.caption}</figcaption>}
+  </figure>
+
+  {
+    c.galeria.length > 0 && (
+      <ul class:list={["nar-galeria", `nar-galeria--${c.galeria.length}`]}>
+        {c.galeria.map((g, i) => (
+          <li>
+            <figure>
+              <Foto img={g} sizes="(min-width: 60rem) 28rem, 100vw" larguras={[360, 560, 720, 960]} proporcao={4 / 5} class="nar-foto" />
+              <figcaption>
+                <span>
+                  {numero}-{i + 1}
+                </span>
+                {g.caption}
+              </figcaption>
+            </figure>
+          </li>
+        ))}
+      </ul>
+    )
+  }
+
+  {
+    href && c.cta && (
+      <p class="nar-acao">
+        <a class="nar-link" href={href}>
+          <span>{c.cta.rotulo}</span>
+          <Fragment set:html={seta} />
+        </a>
+      </p>
+    )
+  }
+</section>
+
+<style>
+  .narrativa {
+    padding-block: clamp(5rem, 10vw, 9rem);
+    background: var(--color-page);
+    color: var(--brand-poco);
+  }
+  .narrativa--branca {
+    background: var(--color-bg);
+  }
+  /* ---------- Cabeçalho centralizado ---------- */
+  .nar-cab {
+    width: min(100% - 2 * var(--space-5), 44rem);
+    margin: 0 auto clamp(var(--space-7), 6vw, var(--space-9));
+    text-align: center;
+  }
+  /* Fio vertical fino no alto: a queda d'água como ornamento. */
+  .nar-cab::before {
+    content: "";
+    display: block;
+    width: 1px;
+    height: 3.5rem;
+    margin: 0 auto var(--space-6);
+    background: linear-gradient(to bottom, rgb(64 118 182 / 0), var(--brand-azul));
+  }
+  .nar-rotulo {
+    display: inline-flex;
+    align-items: baseline;
+    gap: var(--space-3);
+    margin: 0 0 var(--space-5);
+    font-size: var(--fs-100);
+    font-weight: var(--fw-medio);
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--color-primary-strong);
+  }
+  .nar-rotulo span {
+    font-weight: var(--fw-normal);
+    letter-spacing: 0.1em;
+  }
+  .nar-rotulo span::after {
+    content: "—";
+    margin-left: var(--space-3);
+    opacity: 0.5;
+  }
+  .narrativa h2 {
+    margin: 0 auto var(--space-6);
+    max-width: 22ch;
+    font-size: clamp(1.9rem, 1.2rem + 2.6vw, 3.4rem);
+    font-weight: 200;
+    line-height: 1.15;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--brand-poco);
+  }
+  .narrativa h2 :global(em) {
+    background: none;
+    -webkit-background-clip: border-box;
+    background-clip: border-box;
+    color: var(--color-primary-strong);
+    font-weight: 400;
+  }
+  .nar-destaque {
+    display: grid;
+    justify-items: center;
+    margin: 0 0 var(--space-6);
+  }
+  .nar-destaque strong {
+    font-size: clamp(4rem, 2rem + 8vw, 8rem);
+    font-weight: 100;
+    line-height: 0.9;
+    letter-spacing: -0.04em;
+    color: var(--brand-azul-escuro);
+  }
+  .nar-destaque span {
+    margin-top: var(--space-2);
+    font-size: var(--fs-100);
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+  }
+  .nar-texto {
+    max-width: 38rem;
+    margin: 0 auto;
+    font-size: var(--fs-300);
+    line-height: 1.75;
+    color: var(--color-text-muted);
+    text-wrap: pretty;
+  }
+
+  /* ---------- Foto larga ---------- */
+  .nar-principal {
+    width: min(100% - 2 * var(--space-4), 86rem);
+    margin: 0 auto;
+    overflow: hidden;
+  }
+  .nar-principal :global(.nar-foto) {
+    display: block;
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+  }
+  @media (min-width: 48rem) {
+    .nar-principal :global(.nar-foto) {
+      aspect-ratio: 21 / 9;
+    }
+  }
+  figcaption {
+    margin-top: var(--space-3);
+    font-size: var(--fs-100);
+    color: var(--color-text-muted);
+  }
+
+  /* ---------- Grade de fotos com legenda numerada ---------- */
+  .nar-galeria {
+    list-style: none;
+    width: min(100% - 2 * var(--space-4), 74rem);
+    margin: clamp(var(--space-6), 5vw, var(--space-8)) auto 0;
+    padding: 0;
+    display: grid;
+    gap: var(--space-6) clamp(var(--space-4), 2.5vw, var(--space-6));
+    grid-template-columns: 1fr 1fr;
+  }
+  .nar-galeria--1 {
+    grid-template-columns: 1fr;
+    max-width: 36rem;
+  }
+  .nar-galeria--2 {
+    width: min(100% - 2 * var(--space-4), 54rem);
+  }
+  .nar-galeria--3 li:last-child {
+    grid-column: 1 / -1;
+  }
+  @media (min-width: 60rem) {
+    .nar-galeria--3 {
+      grid-template-columns: repeat(3, 1fr);
+    }
+    .nar-galeria--3 li:last-child {
+      grid-column: auto;
+    }
+    /* A foto do meio desce um pouco: ritmo de revista. */
+    .nar-galeria--3 li:nth-child(2) {
+      margin-top: var(--space-8);
+    }
+    .nar-galeria--2 li:nth-child(2) {
+      margin-top: var(--space-8);
+    }
+  }
+  .nar-galeria figure {
+    margin: 0;
+  }
+  .nar-galeria :global(.nar-foto) {
+    display: block;
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+  }
+  .nar-galeria--3 li:last-child :global(.nar-foto) {
+    aspect-ratio: 4 / 3;
+  }
+  @media (min-width: 60rem) {
+    .nar-galeria--3 li:last-child :global(.nar-foto) {
+      aspect-ratio: 4 / 5;
+    }
+  }
+  .nar-galeria figcaption {
+    display: flex;
+    gap: var(--space-3);
+    align-items: baseline;
+    padding-top: var(--space-3);
+    border-top: 1px solid var(--color-border);
+    color: var(--brand-poco);
+  }
+  .nar-galeria figcaption span {
+    flex-shrink: 0;
+    font-size: var(--fs-100);
+    letter-spacing: 0.1em;
+    color: var(--color-primary-strong);
+  }
+
+  /* ---------- Link final ---------- */
+  .nar-acao {
+    margin: clamp(var(--space-7), 6vw, var(--space-8)) 0 0;
+    text-align: center;
+  }
+  .nar-link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-4);
+    min-height: 44px;
+    font-size: var(--fs-100);
+    font-weight: var(--fw-medio);
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--brand-poco);
+    text-decoration: none;
+  }
+  .nar-link :global(svg) {
+    transition: transform 0.35s ease;
+  }
+  .nar-link:hover {
+    color: var(--color-primary-strong);
+  }
+  .nar-link:hover :global(svg) {
+    transform: translateX(10px);
+  }
+
+  /* As fotos assentam ao entrar na tela (só CSS). */
+  .nar-principal,
+  .nar-galeria figure {
+    overflow: hidden;
+  }
+  @supports (animation-timeline: view()) {
+    @media (prefers-reduced-motion: no-preference) {
+      .narrativa :global(.nar-foto) {
+        animation: assentar linear both;
+        animation-timeline: view();
+        animation-range: entry 0% cover 50%;
+      }
+    }
+  }
+  @keyframes assentar {
+    from {
+      transform: scale(1.12);
+    }
+    to {
+      transform: scale(1);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .nar-link :global(svg) {
+      transition: none;
+    }
+  }
+</style>

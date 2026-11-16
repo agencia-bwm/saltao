@@ -1,0 +1,19 @@
+{
+  "collectionName": "components_blocks_indice_capitulos",
+  "info": {
+    "displayName": "Índice dos capítulos",
+    "icon": "bulletList"
+  },
+  "options": {},
+  "attributes": {
+    "sobretitulo": {
+      "type": "string",
+      "maxLength": 40
+    },
+    "titulo": {
+      "type": "string",
+      "required": true,
+      "maxLength": 90
+    }
+  }
+}

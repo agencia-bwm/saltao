@@ -80,14 +80,16 @@ components = {
       "ancora": s(maxLength=40, regex="^[a-z0-9-]+$"), "sobretitulo": s(maxLength=40), "titulo": s(True, 90), "texto": text(False, 400),
       "imagem": comp("shared.image-alt", req=True), "galeria": comp("shared.image-alt", True, max=3),
       "destaque": s(maxLength=12), "destaqueLegenda": s(maxLength=60),
-      "layout": enum(["imersivo", "foto_esquerda", "foto_direita"], True, "foto_esquerda"), "tema": enum(["claro", "escuro", "profundo"], True, "claro"),
+      "layout": enum(["narrativa", "imersivo", "foto_esquerda", "foto_direita"], True, "narrativa"), "tema": enum(["claro", "escuro", "profundo"], True, "claro"),
       "cta": comp("shared.cta")}),
+    # Índice dos capítulos da home (lista numerada automática dos capítulos com âncora).
+    "indice-capitulos": ("Índice dos capítulos", "bulletList", {"sobretitulo": s(maxLength=40), "titulo": s(True, 90)}),
     "roteiro": ("Roteiro (um dia no parque)", "calendar", {"titulo": s(maxLength=90), "itens": comp("shared.roteiro-item", True, max=6)}),
     "chamada-final": ("Chamada final", "message", {"titulo": s(True, 90), "texto": text(False, 300), "imagem": comp("shared.image-alt", req=True), "cta": comp("shared.cta")}),
   },
 }
 
-BLOCOS_HOME = ["blocks.capitulo", "blocks.destaques-produtos", "blocks.roteiro", "blocks.citacao", "blocks.imagem", "blocks.fatos", "blocks.avaliacoes", "blocks.texto", "blocks.faq", "blocks.cta-produto", "blocks.mapa-estatico", "blocks.chamada-final"]
+BLOCOS_HOME = ["blocks.capitulo", "blocks.indice-capitulos", "blocks.destaques-produtos", "blocks.roteiro", "blocks.citacao", "blocks.imagem", "blocks.fatos", "blocks.avaliacoes", "blocks.texto", "blocks.faq", "blocks.cta-produto", "blocks.mapa-estatico", "blocks.chamada-final"]
 BLOCOS_INST = ["blocks.texto", "blocks.imagem", "blocks.tabela", "blocks.fatos", "blocks.faq", "blocks.mapa-estatico", "blocks.video", "blocks.cta-produto"]
 BLOCOS_ART = ["blocks.texto", "blocks.imagem", "blocks.tabela", "blocks.citacao", "blocks.cta-produto"]
 

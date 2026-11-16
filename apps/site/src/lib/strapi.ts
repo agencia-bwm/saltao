@@ -54,6 +54,7 @@ const blocosPop: Populate = {
     "blocks.roteiro": { itens: { imagem: { imagem: true } } },
     "blocks.chamada-final": { imagem: { imagem: true }, cta: ctaPop },
     "blocks.capitulo": { imagem: { imagem: true }, galeria: { imagem: true }, cta: ctaPop },
+    "blocks.indice-capitulos": true,
   },
 };
 
@@ -186,6 +187,8 @@ function blocos(v: Json): Block[] {
           const imagem = imgAlt(b.imagem);
           return imagem ? { __component: b.__component, titulo: b.titulo, texto: b.texto ?? undefined, imagem, cta: cta(b.cta) } : null;
         }
+        case "blocks.indice-capitulos":
+          return { __component: b.__component, sobretitulo: b.sobretitulo ?? undefined, titulo: b.titulo };
         case "blocks.capitulo": {
           const imagem = imgAlt(b.imagem);
           if (!imagem) return null;
@@ -198,7 +201,7 @@ function blocos(v: Json): Block[] {
             galeria: (Array.isArray(b.galeria) ? b.galeria : []).map(imgAlt).filter(Boolean) as Img[],
             destaque: b.destaque ?? undefined,
             destaqueLegenda: b.destaqueLegenda ?? undefined,
-            layout: b.layout === "imersivo" || b.layout === "foto_direita" ? (b.layout === "imersivo" ? "imersivo" : "foto-direita") : "foto-esquerda",
+            layout: ({ imersivo: "imersivo", foto_esquerda: "foto-esquerda", foto_direita: "foto-direita" } as const)[b.layout as "imersivo"] ?? "narrativa",
             tema: b.tema === "escuro" || b.tema === "profundo" ? b.tema : "claro",
             cta: cta(b.cta),
           };

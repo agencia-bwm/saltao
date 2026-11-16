@@ -483,6 +483,15 @@ const home = Object.fromEntries(
         const x = (pt: string, en: string, es: string) => (loc === "pt" ? pt : loc === "en" ? en : es);
         return [
           {
+            __component: "blocks.citacao" as const,
+            texto: x(
+              "A água cai *75 metros*\nno meio da mata da serra.\nO dia passa devagar,\ne a noite acende o céu.",
+              "The water falls *75 metres*\nthrough the forest of the hills.\nThe day goes by slowly,\nand the night lights up the sky.",
+              "El agua cae *75 metros*\nen medio del bosque de la sierra.\nEl día pasa despacio,\ny la noche enciende el cielo.",
+            ),
+          },
+          { __component: "blocks.indice-capitulos" as const, sobretitulo: x("O parque", "The park", "El parque"), titulo: x("Quatro caminhos", "Four journeys", "Cuatro caminos") },
+          {
             __component: "blocks.capitulo" as const,
             ancora: "cachoeiras",
             sobretitulo: x("Cachoeiras", "Waterfalls", "Cascadas"),
@@ -494,12 +503,12 @@ const home = Object.fromEntries(
             ),
             imagem: img(fCapCachSrc, x("Cachoeira do Saltão vista de longe, cercada de mata nativa, com visitantes na base", "Saltão waterfall seen from afar, surrounded by native forest, with visitors at its base", "Cascada de Saltão vista de lejos, rodeada de bosque nativo, con visitantes en la base")),
             galeria: [
-              img(fCapQuedaSrc, x("A queda de 75 m da Cachoeira do Saltão, em foto vertical", "Saltão's 75 m drop, vertical photo", "La caída de 75 m de Saltão, foto vertical")),
-              img(fCapCach2Src, x("Poço da segunda cachoeira do parque", "Pool of the park's second waterfall", "Poza de la segunda cascada del parque")),
+              { ...img(fCapQuedaSrc, x("A queda de 75 m da Cachoeira do Saltão, em foto vertical", "Saltão's 75 m drop, vertical photo", "La caída de 75 m de Saltão, foto vertical")), caption: x("A queda de 75 m vista do poço", "The 75 m drop seen from the pool", "La caída de 75 m vista desde la poza") },
+              { ...img(fCapCach2Src, x("Poço da segunda cachoeira do parque", "Pool of the park's second waterfall", "Poza de la segunda cascada del parque")), caption: x("A segunda cachoeira, no fim da trilha", "The second waterfall, at the end of the trail", "La segunda cascada, al final del sendero") },
             ],
             destaque: "75 m",
             destaqueLegenda: x("de queda livre", "free fall", "de caída libre"),
-            layout: "imersivo" as const,
+            layout: "narrativa" as const,
             tema: "escuro" as const,
             cta: { rotulo: x("Conheça as cachoeiras", "Discover the waterfalls", "Conoce las cascadas"), tipo: "pagina" as const, paginaId: "inst-cachoeira" },
           },
@@ -515,10 +524,10 @@ const home = Object.fromEntries(
             ),
             imagem: img(fCapDayUseSrc, x("Segunda cachoeira do parque, queda larga sobre rochas com poço amplo", "The park's second waterfall, a wide drop over rocks into a large pool", "Segunda cascada del parque, caída ancha sobre rocas con poza amplia")),
             galeria: [
-              img(fCapDayUse1Src, x("Amigos no quiosque com churrasqueira", "Friends at a barbecue kiosk", "Amigos en el quincho con parrilla")),
-              img(fCapDayUse2Src, x("Porção de linguiça com cerveja gelada", "Sausage snack with a cold beer", "Picada de chorizo con cerveza fría")),
+              { ...img(fCapDayUse1Src, x("Amigos no quiosque com churrasqueira", "Friends at a barbecue kiosk", "Amigos en el quincho con parrilla")), caption: x("Quiosques com churrasqueira à beira do rio", "Barbecue kiosks by the river", "Quinchos con parrilla junto al río") },
+              { ...img(fCapDayUse2Src, x("Porção de linguiça com cerveja gelada", "Sausage snack with a cold beer", "Picada de chorizo con cerveza fría")), caption: x("Porção e cerveja gelada no fim da tarde", "Snacks and a cold beer in the late afternoon", "Picada y cerveza fría al final de la tarde") },
             ],
-            layout: "foto-esquerda" as const,
+            layout: "narrativa" as const,
             tema: "claro" as const,
             cta: { rotulo: x("Conheça o Day Use", "Discover the Day Pass", "Conoce el Pase de Día"), tipo: "categoria" as const, categoriaId: "cat-dayuse" },
           },
@@ -534,10 +543,10 @@ const home = Object.fromEntries(
             ),
             imagem: img(fCapAptoSrc, x("Apartamento azul com buganvília florida na fachada", "Blue guest room with blooming bougainvillea on the façade", "Habitación azul con buganvilla florida en la fachada")),
             galeria: [
-              img(fCapApto1Src, x("Quarto do apartamento com duas camas", "Guest room with two beds", "Habitación con dos camas")),
-              img(fCapApto2Src, x("Café da manhã servido em bandeja de madeira", "Breakfast served on a wooden tray", "Desayuno servido en bandeja de madera")),
+              { ...img(fCapApto1Src, x("Quarto do apartamento com duas camas", "Guest room with two beds", "Habitación con dos camas")), caption: x("Quartos para até 4 pessoas", "Rooms for up to 4 people", "Habitaciones para hasta 4 personas") },
+              { ...img(fCapApto2Src, x("Café da manhã servido em bandeja de madeira", "Breakfast served on a wooden tray", "Desayuno servido en bandeja de madera")), caption: x("Café da manhã sem pressa", "A slow breakfast", "Desayuno sin prisa") },
             ],
-            layout: "foto-direita" as const,
+            layout: "narrativa" as const,
             tema: "escuro" as const,
             cta: { rotulo: x("Conheça os apartamentos", "See the rooms", "Conoce las habitaciones"), tipo: "produto" as const, produtoId: "prod-apto" },
           },
@@ -553,10 +562,10 @@ const home = Object.fromEntries(
             ),
             imagem: img(fCapCampSrc, x("Barraca grande na área de camping ao entardecer", "Large tent in the camping area at dusk", "Carpa grande en el camping al atardecer")),
             galeria: [
-              img(fCapCamp1Src, x("Fogueira acesa à noite", "Campfire at night", "Fogata encendida de noche")),
-              img(fCapCamp2Src, x("Família em frente à barraca", "Family in front of their tent", "Familia frente a su carpa")),
+              { ...img(fCapCamp1Src, x("Fogueira acesa à noite", "Campfire at night", "Fogata encendida de noche")), caption: x("Fogueira depois do jantar", "A campfire after dinner", "Fogata después de la cena") },
+              { ...img(fCapCamp2Src, x("Família em frente à barraca", "Family in front of their tent", "Familia frente a su carpa")), caption: x("Camping em família", "Family camping", "Camping en familia") },
             ],
-            layout: "foto-esquerda" as const,
+            layout: "narrativa" as const,
             tema: "profundo" as const,
             cta: { rotulo: x("Conheça o camping", "See the camping", "Conoce el camping"), tipo: "produto" as const, produtoId: "prod-camping" },
           },

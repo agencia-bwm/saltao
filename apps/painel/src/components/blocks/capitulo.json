@@ -47,12 +47,13 @@
     "layout": {
       "type": "enumeration",
       "enum": [
+        "narrativa",
         "imersivo",
         "foto_esquerda",
         "foto_direita"
       ],
       "required": true,
-      "default": "foto_esquerda"
+      "default": "narrativa"
     },
     "tema": {
       "type": "enumeration",

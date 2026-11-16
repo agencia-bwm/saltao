@@ -86,7 +86,8 @@ export type Block =
   | { __component: "blocks.mapa-estatico"; imagem: Img; linkMaps: string }
   | { __component: "blocks.roteiro"; titulo?: string; itens: MomentoRoteiro[] }
   | { __component: "blocks.chamada-final"; titulo: string; texto?: string; imagem: Img; cta?: Cta }
-  | ({ __component: "blocks.capitulo" } & Capitulo);
+  | ({ __component: "blocks.capitulo" } & Capitulo)
+  | { __component: "blocks.indice-capitulos"; sobretitulo?: string; titulo: string };
 
 /**
  * Bloco "Capítulo" (home): uma seção de revista — foto grande, título curto, texto e um link para a página.
@@ -102,7 +103,8 @@ export type Capitulo = {
   /** Número ou fato grande (ex.: "75 m") com legenda curta. */
   destaque?: string;
   destaqueLegenda?: string;
-  layout: "imersivo" | "foto-esquerda" | "foto-direita";
+  /** narrativa = texto centralizado + foto larga + grade de fotos com legenda (padrão). */
+  layout: "narrativa" | "imersivo" | "foto-esquerda" | "foto-direita";
   /** Cor do bloco de texto: claro = azul claro, escuro = azul Saltão, profundo = azul do poço. */
   tema: "claro" | "escuro" | "profundo";
   cta?: Cta;
