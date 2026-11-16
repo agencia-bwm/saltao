@@ -330,6 +330,39 @@ const temExperiencias = !!destaques;
     color: var(--color-text-muted);
   }
 
+  /* Panorâmica: foto de ponta a ponta, alta, com a legenda sobre o pé da imagem. */
+  .secoes > :global(.panoramica) {
+    padding: 0;
+  }
+  .secoes :global(.panoramica figure) {
+    position: relative;
+    margin: 0;
+  }
+  .secoes :global(.panoramica img) {
+    width: 100%;
+    height: clamp(22rem, 62vw, 50rem);
+    object-fit: cover;
+    object-position: 50% 60%;
+    border-radius: var(--radius-arco) 0 var(--radius-arco) 0;
+  }
+  .secoes :global(.panoramica figcaption) {
+    position: absolute;
+    left: max(var(--space-4), calc(50vw - var(--container) / 2));
+    bottom: var(--space-5);
+    padding: var(--space-2) var(--space-4);
+    font-size: var(--fs-100);
+    font-weight: var(--fw-medio);
+    color: #ffffff;
+    background: rgb(15 39 68 / 0.6);
+    border-radius: var(--radius-pill);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+  }
+  /* Números logo depois da foto: sem a curva no topo, colado na imagem. */
+  .secoes > :global(.panoramica + .fatos) {
+    margin-top: var(--space-6);
+  }
+
   /* Números: faixa azul média, de ponta a ponta. */
   .secoes > :global(.fatos) {
     margin-block: 0;

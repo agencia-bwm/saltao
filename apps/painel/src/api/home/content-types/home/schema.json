@@ -33,6 +33,7 @@
         "blocks.destaques-produtos",
         "blocks.roteiro",
         "blocks.citacao",
+        "blocks.imagem",
         "blocks.fatos",
         "blocks.avaliacoes",
         "blocks.texto",

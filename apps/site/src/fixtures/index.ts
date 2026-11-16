@@ -26,6 +26,7 @@ import fQuiosqueNoiteSrc from "../assets/fotos/camping/camping-noite-barracas-qu
 import fKidsSrc from "../assets/fotos/estrutura/salao-kids-brinquedos-bambu.jpg";
 import fValeSrc from "../assets/fotos/paisagem/paisagem-vale-ceu-azul.jpg";
 import fPorDoSolArvoreSrc from "../assets/fotos/paisagem/por-do-sol-dourado-arvore.jpg";
+import fPanoramicaSrc from "../assets/fotos/cachoeira-saltao/cachoeira-saltao-paredao-panoramica.jpg";
 import fRotTrilhaSrc from "../assets/fotos/cachoeira-2/cachoeira-2-trilha-bambuzal-vertical.jpg";
 import fRotPocoSrc from "../assets/fotos/cachoeira-saltao/cachoeira-saltao-poco-vertical.jpg";
 import fRotPorcaoSrc from "../assets/fotos/gastronomia/porcao-linguica-cerveja-vertical.jpg";
@@ -497,6 +498,14 @@ const home = Object.fromEntries(
                   ],
         },
         { __component: "blocks.citacao" as const, texto: loc === "pt" ? "Aqui o barulho que fica é o da *água caindo*." : loc === "en" ? "Here, the only noise left is the *falling water*." : "Aquí el único ruido que queda es el del *agua cayendo*." },
+        {
+          __component: "blocks.imagem" as const,
+          imagem: {
+            src: fPanoramicaSrc,
+            alt: loc === "pt" ? "Cachoeira de 75 m do Saltão caindo pelo paredão de rocha alaranjada, com mata dos dois lados e visitantes no poço" : loc === "en" ? "Saltão's 75 m waterfall falling down the orange rock face, with forest on both sides and visitors at the pool" : "Cascada de 75 m de Saltão cayendo por la pared de roca anaranjada, con bosque a ambos lados y visitantes en la poza",
+            caption: loc === "pt" ? "Cachoeira do Saltão: 75 m de queda livre." : loc === "en" ? "Saltão waterfall: a 75 m free fall." : "Cascada de Saltão: 75 m de caída libre.",
+          },
+        },
         { __component: "blocks.fatos" as const, titulo: loc === "pt" ? "O Saltão em números" : loc === "en" ? "Saltão in numbers" : "Saltão en números", itens: [{ chave: loc === "pt" ? "Cachoeira" : loc === "en" ? "Waterfall" : "Cascada", valor: "75 m" }, { chave: loc === "pt" ? "Quiosques" : loc === "en" ? "Kiosks" : "Quinchos", valor: "80" }, { chave: loc === "pt" ? "Churrasqueiras" : loc === "en" ? "Barbecue grills" : "Parrillas", valor: "102" }] },
         { __component: "blocks.avaliacoes" as const, titulo: loc === "pt" ? "Quem visitou recomenda" : loc === "en" ? "What visitors say" : "Lo que dicen los visitantes", avaliacaoIds: ["av-1", "av-2"] },
         { __component: "blocks.faq" as const, titulo: loc === "pt" ? "Perguntas frequentes" : loc === "en" ? "FAQ" : "Preguntas frecuentes", itens: [loc === "pt" ? faq("Onde fica o Saltão?", "Na Rodovia Ulisses Guimarães, km 23, em Itirapina (SP), na Serra do Itaqueri.") : loc === "en" ? faq("Where is Saltão?", "At Rodovia Ulisses Guimarães, km 23, Itirapina (São Paulo state), in Serra do Itaqueri.") : faq("¿Dónde queda Saltão?", "En la Rodovia Ulisses Guimarães, km 23, Itirapina (estado de São Paulo), en la Serra do Itaqueri.")] },

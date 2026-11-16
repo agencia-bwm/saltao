@@ -39,6 +39,15 @@ const sizesLargura = estreito ? "(min-width: 46rem) 46rem, 100vw" : "(min-width:
       case "blocks.texto":
         return <RichText conteudo={b.conteudo} />;
       case "blocks.imagem":
+        if (home)
+          return (
+            <section class="panoramica">
+              <figure>
+                <Foto img={b.imagem} sizes="100vw" larguras={[640, 960, 1280, 1600, 1920]} />
+                {b.imagem.caption && <figcaption>{b.imagem.caption}</figcaption>}
+              </figure>
+            </section>
+          );
         return (
           <figure class="bloco-imagem">
             <Foto img={b.imagem} sizes={sizesLargura} prioridade={i === iImagemLcp} />

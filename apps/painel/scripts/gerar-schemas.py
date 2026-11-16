@@ -79,7 +79,7 @@ components = {
   },
 }
 
-BLOCOS_HOME = ["blocks.destaques-produtos", "blocks.roteiro", "blocks.citacao", "blocks.fatos", "blocks.avaliacoes", "blocks.texto", "blocks.faq", "blocks.cta-produto", "blocks.mapa-estatico", "blocks.chamada-final"]
+BLOCOS_HOME = ["blocks.destaques-produtos", "blocks.roteiro", "blocks.citacao", "blocks.imagem", "blocks.fatos", "blocks.avaliacoes", "blocks.texto", "blocks.faq", "blocks.cta-produto", "blocks.mapa-estatico", "blocks.chamada-final"]
 BLOCOS_INST = ["blocks.texto", "blocks.imagem", "blocks.tabela", "blocks.fatos", "blocks.faq", "blocks.mapa-estatico", "blocks.video", "blocks.cta-produto"]
 BLOCOS_ART = ["blocks.texto", "blocks.imagem", "blocks.tabela", "blocks.citacao", "blocks.cta-produto"]
 
