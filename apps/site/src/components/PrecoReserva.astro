@@ -29,13 +29,24 @@ const href = linkReserva({ produto: produto.motorProdutoId, setor: produto.setor
   <p class="aviso">{ui.precoIndicativo}</p>
 </aside>
 
+<!-- Celular: barra fixa no pé da tela com preço e Reservar, sempre à mão durante a rolagem. -->
+<div class="barra-reserva">
+  <p class="barra-preco">
+    <span>{ui.aPartirDe}</span>
+    <strong>{formatPreco(produto.precoAPartirDe, locale)}</strong>
+    <span>{ui.unidade[produto.unidadePreco]}</span>
+  </p>
+  <a class="btn btn-claro" href={href} data-dl={dl({ event: "click_reservar", method: "barra_fixa", ecommerce: { items: [itemGa4(produto, categoria)] } })}>{ui.reservar}</a>
+</div>
+
 <style>
+  /* Computador: a caixa acompanha a rolagem ao lado do conteúdo. */
   .preco-reserva {
     position: sticky;
-    top: 5.5rem;
+    top: calc(var(--altura-cabecalho) + var(--space-5));
     padding: var(--space-6) var(--space-5) var(--space-5);
     border: 1px solid var(--color-border);
-    border-radius: var(--radius-lg);
+    border-radius: var(--radius-card);
     background: var(--grad-arcos) top / 100% 3px no-repeat, var(--color-bg);
     box-shadow: var(--shadow-md);
   }
@@ -50,7 +61,7 @@ const href = linkReserva({ produto: produto.motorProdutoId, setor: produto.setor
     font-size: var(--fs-500);
     color: var(--color-text);
   }
-  .btn {
+  .preco-reserva .btn {
     width: 100%;
   }
   /* No celular o preço e o botão vêm antes do conteúdo (logo abaixo da foto). */
@@ -58,6 +69,60 @@ const href = linkReserva({ produto: produto.motorProdutoId, setor: produto.setor
     .preco-reserva {
       order: -1;
       position: static;
+    }
+  }
+  .barra-reserva {
+    display: none;
+  }
+  @media (max-width: 59.99rem) {
+    .barra-reserva {
+      position: fixed;
+      inset: auto 0 0;
+      z-index: 45;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-3);
+      padding: var(--space-3) var(--space-4) calc(var(--space-3) + env(safe-area-inset-bottom));
+      color: #ffffff;
+      background: var(--color-vidro);
+      -webkit-backdrop-filter: blur(14px) saturate(1.3);
+      backdrop-filter: blur(14px) saturate(1.3);
+      box-shadow: 0 -1px 0 var(--color-linha-clara);
+    }
+    .barra-preco {
+      display: flex;
+      flex-wrap: wrap;
+      column-gap: var(--space-1);
+      align-items: baseline;
+      min-width: 0;
+      margin: 0;
+      font-size: var(--fs-100);
+      line-height: 1.25;
+      color: var(--color-on-deep);
+    }
+    .barra-preco span:first-child {
+      flex-basis: 100%;
+      color: var(--color-on-deep-muted);
+    }
+    .barra-preco strong {
+      font-size: var(--fs-300);
+      color: #ffffff;
+    }
+    .barra-reserva .btn {
+      flex: 0 0 auto;
+      min-height: 48px;
+      padding-inline: var(--space-6);
+    }
+    .barra-preco span:last-child {
+      white-space: nowrap;
+    }
+    /* Abre espaço no pé da página e sobe o botão do WhatsApp acima da barra. */
+    :global(body:has(.barra-reserva)) {
+      padding-bottom: 5rem;
+    }
+    :global(body:has(.barra-reserva) .whats-flutuante) {
+      bottom: calc(5rem + var(--space-3));
     }
   }
   .aviso {

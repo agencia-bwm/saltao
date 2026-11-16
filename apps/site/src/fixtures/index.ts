@@ -227,9 +227,9 @@ const produtos: Conteudo["produtos"] = produtosBase.flatMap((b) =>
 
 /* ---------------- Categorias de produto ---------------- */
 const catDefs = [
-  ["cat-dayuse", "dayuse", fTrilha, ["prod-dayuse"], 1],
-  ["cat-hosp", "hosp", fAptos, ["prod-apto", "prod-camping"], 2],
-  ["cat-quiosques", "quiosques", fQuiosque, ["prod-quiosque"], 3],
+  ["cat-dayuse", "dayuse", fCachMoldura, ["prod-dayuse"], 1],
+  ["cat-hosp", "hosp", fCampVale, ["prod-apto", "prod-camping"], 2],
+  ["cat-quiosques", "quiosques", fQuiosqueNoite, ["prod-quiosque"], 3],
 ] as const;
 
 const categoriasProduto: Conteudo["categoriasProduto"] = catDefs.flatMap(([id, key, im, prods, ordem]) =>
