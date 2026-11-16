@@ -193,6 +193,60 @@ a:hover {
   background: var(--grad-botao-hover);
   color: var(--color-on-accent);
 }
+/* Claro: azul do arco direito com texto no azul do poço (12:1) — CTA sobre foto escura. */
+.btn-claro {
+  background: var(--brand-azul-claro);
+  color: var(--brand-poco);
+  box-shadow: 0 10px 24px -12px rgb(15 39 68 / 0.6);
+}
+.btn-claro:hover {
+  background: #ffffff;
+  color: var(--brand-poco);
+}
+.btn .seta {
+  transition: transform 0.2s ease;
+}
+.btn:hover .seta {
+  transform: translateX(3px);
+}
+/* Círculo com seta dos cards. */
+.seta-circulo {
+  display: inline-grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+}
+.seta-circulo-claro {
+  background: #ffffff;
+  color: var(--brand-poco);
+  box-shadow: var(--shadow-sm);
+}
+.seta-circulo-escuro {
+  width: 3rem;
+  height: 3rem;
+  background: var(--brand-poco);
+  color: #ffffff;
+}
+/* Sobretítulo das seções: rótulo curto com o fio dos arcos à esquerda (sem caixa-alta). */
+.sobretitulo {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-3);
+  font-size: var(--fs-100);
+  font-weight: var(--fw-forte);
+  letter-spacing: 0.02em;
+  color: var(--color-primary-strong);
+}
+.sobretitulo::before {
+  content: "";
+  width: 2rem;
+  height: 3px;
+  border-radius: 2px;
+  background: var(--grad-arcos);
+}
 .btn-secundario {
   background: transparent;
   border-color: var(--color-primary);
@@ -239,6 +293,11 @@ th {
   color: var(--brand-poco);
 }
 
+@media (prefers-reduced-motion: reduce) {
+  .btn .seta {
+    transition: none;
+  }
+}
 @media (prefers-reduced-motion: no-preference) {
   html {
     scroll-behavior: smooth;

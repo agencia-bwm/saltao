@@ -26,6 +26,8 @@ import fKidsSrc from "../assets/fotos/estrutura/salao-kids-brinquedos-bambu.jpg"
 import fValeSrc from "../assets/fotos/paisagem/paisagem-vale-ceu-azul.jpg";
 import fPorDoSolSrc from "../assets/fotos/paisagem/por-do-sol-sol-tocando-horizonte.jpg";
 import fPorDoSolArvoreSrc from "../assets/fotos/paisagem/por-do-sol-dourado-arvore.jpg";
+import fQueda75Src from "../assets/fotos/cachoeira-saltao/cachoeira-saltao-queda-75m-vertical-01.jpg";
+import fPorcaoSrc from "../assets/fotos/gastronomia/porcao-linguica-pao-cerveja.jpg";
 import mapaProvisorio from "../assets/placeholder/trilha.jpg";
 
 
@@ -55,6 +57,8 @@ const fKids = img(fKidsSrc, "Brinquedos de bambu e rede de proteção no salão 
 const fVale = img(fValeSrc, "Vista panorâmica do vale com lago e céu azul limpo");
 const fPorDoSol = img(fPorDoSolSrc, "Sol tocando o horizonte com palmeira e eucaliptos em silhueta");
 const fPorDoSolArvore = img(fPorDoSolArvoreSrc, "Pôr do sol dourado sobre campos e árvore isolada");
+const fQueda75 = img(fQueda75Src, "Cachoeira do Saltão, queda d'água de 75 metros sobre paredão de rocha avermelhada");
+const fPorcao = img(fPorcaoSrc, "Porção de linguiça com pão de alho, salada, limão e copo de cerveja");
 const p = (...textos: string[]): RichText => textos.map((text) => ({ type: "paragraph", children: [{ type: "text", text }] }));
 const h2 = (text: string): RichText[number] => ({ type: "heading", level: 2, children: [{ type: "text", text }] });
 const ul = (...itens: string[]): RichText[number] => ({
@@ -461,23 +465,104 @@ const global = Object.fromEntries(
   ]),
 ) as Conteudo["global"];
 
+/* ---------------- Home (layout nov/2026: hero em painel, essência, vitrine, experiências) ---------------- */
+const tr = <T,>(loc: Locale, pt: T, en: T, es: T): T => (loc === "pt" ? pt : loc === "en" ? en : es);
+const HERO = {
+  pt: { sobre: "Itirapina (SP) · Serra do Itaqueri", titulo: "Saltão: 75 metros de cachoeira e", destaque: "natureza para desacelerar.", selo: "Cachoeira de 75 m · 3 cachoeiras vistas do Mirante das Águas", card: "Fique para dormir" },
+  en: { sobre: "Itirapina, Brazil · Serra do Itaqueri", titulo: "Saltão: a 75-metre waterfall and", destaque: "nature to slow down.", selo: "75 m waterfall · 3 waterfalls seen from the Mirante das Águas", card: "Stay the night" },
+  es: { sobre: "Itirapina (Brasil) · Serra do Itaqueri", titulo: "Saltão: 75 metros de cascada y", destaque: "naturaleza para bajar el ritmo.", selo: "Cascada de 75 m · 3 cascadas vistas desde el Mirante das Águas", card: "Quédate a dormir" },
+};
+const LINKS = {
+  pt: { dayuse: "/day-use/", hosp: "/hospedagem/", aptos: "/hospedagem/apartamentos/", camping: "/hospedagem/camping/", quiosques: "/churrasqueiras-e-quiosques/", cachoeira: "/cachoeira-saltao/", restaurante: "/restaurante-saltao/", conheca: "/conheca-o-saltao/", guia: "/guia/" },
+  en: { dayuse: "/en/day-pass/", hosp: "/en/lodging/", aptos: "/en/lodging/rooms/", camping: "/en/lodging/camping/", quiosques: "/en/barbecue-kiosks/", cachoeira: "/en/day-pass/", restaurante: "/en/day-pass/", conheca: "/en/day-pass/", guia: "/en/lodging/" },
+  es: { dayuse: "/es/pase-de-dia/", hosp: "/es/hospedaje/", aptos: "/es/hospedaje/habitaciones/", camping: "/es/hospedaje/camping/", quiosques: "/es/quinchos-y-parrillas/", cachoeira: "/es/pase-de-dia/", restaurante: "/es/pase-de-dia/", conheca: "/es/pase-de-dia/", guia: "/es/hospedaje/" },
+};
+
 const home = Object.fromEntries(
-  locales.map((loc) => [
-    loc,
-    {
-      documentId: "home",
-      locale: loc,
-      updatedAt: T,
-      hero: { __component: "blocks.hero" as const, titulo: L[loc].hero, respostaDireta: L[loc].heroResp, imagem: img(fHeroSrc, loc === "pt" ? fHero.alt : loc === "en" ? "Saltão's 75 m waterfall surrounded by native forest, with visitors at its base" : "Cascada de 75 m de Saltão rodeada de bosque nativo, con visitantes en la base"), cta: { rotulo: L[loc].reservar, tipo: "link" as const, url: "https://reservas.saltao.com.br/reservar" } },
-      secoes: [
-        { __component: "blocks.destaques-produtos" as const, titulo: loc === "pt" ? "Escolha sua experiência" : loc === "en" ? "Choose your experience" : "Elige tu experiencia", produtoIds: ["prod-dayuse", "prod-apto", "prod-camping", "prod-quiosque"] },
-        { __component: "blocks.fatos" as const, titulo: loc === "pt" ? "O Saltão em números" : loc === "en" ? "Saltão in numbers" : "Saltão en números", itens: [{ chave: loc === "pt" ? "Cachoeira" : loc === "en" ? "Waterfall" : "Cascada", valor: "75 m" }, { chave: loc === "pt" ? "Quiosques" : loc === "en" ? "Kiosks" : "Quinchos", valor: "80" }, { chave: loc === "pt" ? "Churrasqueiras" : loc === "en" ? "Barbecue grills" : "Parrillas", valor: "102" }] },
-        { __component: "blocks.avaliacoes" as const, titulo: loc === "pt" ? "Quem visitou recomenda" : loc === "en" ? "What visitors say" : "Lo que dicen los visitantes", avaliacaoIds: ["av-1", "av-2"] },
-        { __component: "blocks.faq" as const, titulo: loc === "pt" ? "Perguntas frequentes" : loc === "en" ? "FAQ" : "Preguntas frecuentes", itens: [loc === "pt" ? faq("Onde fica o Saltão?", "Na Rodovia Ulisses Guimarães, km 23, em Itirapina (SP), na Serra do Itaqueri.") : loc === "en" ? faq("Where is Saltão?", "At Rodovia Ulisses Guimarães, km 23, Itirapina (São Paulo state), in Serra do Itaqueri.") : faq("¿Dónde queda Saltão?", "En la Rodovia Ulisses Guimarães, km 23, Itirapina (estado de São Paulo), en la Serra do Itaqueri.")] },
-      ],
-      seo: seo(loc === "pt" ? "Saltão — Parque de Ecoturismo | Cachoeira, Day Use e Hospedagem" : loc === "en" ? "Saltão Ecotourism Park | Waterfall, Day Pass and Lodging" : "Saltão Parque de Ecoturismo | Cascada, Pase de Día y Hospedaje", L[loc].heroResp.slice(0, 150)),
-    },
-  ]),
+  locales.map((loc) => {
+    const h = HERO[loc];
+    const l = LINKS[loc];
+    return [
+      loc,
+      {
+        documentId: "home",
+        locale: loc,
+        updatedAt: T,
+        hero: {
+          __component: "blocks.hero" as const,
+          sobretitulo: h.sobre,
+          titulo: h.titulo,
+          tituloDestaque: h.destaque,
+          respostaDireta: L[loc].heroResp,
+          imagem: img(fHeroSrc, tr(loc, fHero.alt, "Saltão's 75 m waterfall surrounded by native forest, with visitors at its base", "Cascada de 75 m de Saltão rodeada de bosque nativo, con visitantes en la base")),
+          cta: { rotulo: L[loc].reservar, tipo: "link" as const, url: "https://reservas.saltao.com.br/reservar" },
+          selo: h.selo,
+          cardRotulo: h.card,
+          cardProdutoId: "prod-camping",
+        },
+        secoes: [
+          {
+            __component: "blocks.essencia" as const,
+            sobretitulo: tr(loc, "O Saltão", "About Saltão", "El Saltão"),
+            titulo: tr(loc, "Natureza de verdade para quem quer", "Real nature for those who want to", "Naturaleza de verdad para quien quiere"),
+            tituloDestaque: tr(loc, "desacelerar.", "slow down.", "bajar el ritmo."),
+            texto: tr(
+              loc,
+              "Um parque de ecoturismo na Serra do Itaqueri, com mata nativa, trilhas, poços de água limpa e energia solar. O programa é simples: cachoeira de manhã, almoço caseiro, churrasco com a turma e o pôr do sol no fim da tarde.",
+              "An ecotourism park in Serra do Itaqueri, with native forest, trails, clear pools and solar power. The plan is simple: waterfall in the morning, home-style lunch, a barbecue with friends and the sunset to close the day.",
+              "Un parque de ecoturismo en la Serra do Itaqueri, con bosque nativo, senderos, pozas de agua limpia y energía solar. El plan es simple: cascada por la mañana, almuerzo casero, asado con amigos y el atardecer para cerrar el día.",
+            ),
+            fotos: [fCachMoldura, fPorDoSolArvore, fCampVale],
+            itens: [
+              { icone: "sol" as const, rotulo: tr(loc, "Energia solar", "Solar power", "Energía solar") },
+              { icone: "trilha" as const, rotulo: tr(loc, "Trilhas na mata", "Forest trails", "Senderos en el bosque") },
+              { icone: "familia" as const, rotulo: tr(loc, "Para toda a família", "For the whole family", "Para toda la familia") },
+              { icone: "escudo" as const, rotulo: tr(loc, "Segurança", "Safety", "Seguridad") },
+            ],
+          },
+          {
+            __component: "blocks.vitrine" as const,
+            sobretitulo: tr(loc, "Escolha seu jeito", "Pick your way", "Elige tu forma"),
+            titulo: tr(loc, "Day use, apartamentos e camping", "Day pass, rooms and camping", "Pase de día, habitaciones y camping"),
+            texto: tr(
+              loc,
+              "Venha passar o dia ou fique para dormir no parque e aproveite a cachoeira sem pressa.",
+              "Come for the day or stay the night in the park and enjoy the waterfall at your own pace.",
+              "Ven a pasar el día o quédate a dormir en el parque y disfruta la cascada sin prisa.",
+            ),
+            atalhos: [
+              { rotulo: tr(loc, "Day Use", "Day Pass", "Pase de Día"), link: l.dayuse },
+              { rotulo: tr(loc, "Apartamentos", "Rooms", "Habitaciones"), link: l.aptos },
+              { rotulo: "Camping", link: l.camping },
+              { rotulo: tr(loc, "Churrasqueiras", "Barbecue kiosks", "Parrillas"), link: l.quiosques },
+            ],
+            itens: [
+              { imagem: fQueda75, local: tr(loc, "Day Use", "Day Pass", "Pase de Día"), titulo: tr(loc, "Um dia inteiro na cachoeira", "A whole day at the waterfall", "Un día entero en la cascada"), texto: tr(loc, "Poço, trilhas e área de lazer. Ingresso por pessoa.", "Pools, trails and leisure areas. Tickets per person.", "Pozas, senderos y áreas de ocio. Entrada por persona."), link: l.dayuse },
+              { imagem: fAptos, local: tr(loc, "Apartamentos", "Rooms", "Habitaciones"), titulo: tr(loc, "Acorde no meio da mata", "Wake up in the forest", "Despierta en el bosque"), texto: tr(loc, "Café da manhã incluso.", "Breakfast included.", "Desayuno incluido."), link: l.aptos },
+              { imagem: fQuiosque, local: tr(loc, "Quiosques", "Kiosks", "Quinchos"), titulo: tr(loc, "Churrasco com a turma", "Barbecue with friends", "Asado con amigos"), texto: tr(loc, "Quiosques com churrasqueira para grupos.", "Kiosks with barbecue grills for groups.", "Quinchos con parrilla para grupos."), link: l.quiosques },
+            ],
+            linkTodos: { rotulo: tr(loc, "Conheça o parque", "Plan your day", "Planea tu día"), link: l.conheca },
+          },
+          {
+            __component: "blocks.experiencias" as const,
+            sobretitulo: tr(loc, "Além da cachoeira", "Beyond the waterfall", "Más allá de la cascada"),
+            titulo: tr(loc, "Experiências para o dia todo", "Experiences for the whole day", "Experiencias para todo el día"),
+            linkTodos: { rotulo: tr(loc, "Guia da Serra do Itaqueri", "See lodging", "Ver hospedaje"), link: l.guia },
+            itens: [
+              { imagem: fTrilha, icone: "trilha" as const, titulo: tr(loc, "Cachoeiras e trilhas", "Waterfalls and trails", "Cascadas y senderos"), texto: tr(loc, "Bambuzal, mata nativa e três quedas no Mirante das Águas.", "Bamboo groves, native forest and three falls from the Mirante das Águas.", "Bambús, bosque nativo y tres caídas desde el Mirante das Águas."), link: l.cachoeira },
+              { imagem: fPorcao, icone: "talheres" as const, titulo: tr(loc, "Restaurante", "Restaurant", "Restaurante"), texto: tr(loc, "Comida caseira, porções e cerveja gelada.", "Home-style food, snacks and cold beer.", "Comida casera, porciones y cerveza fría."), link: l.restaurante },
+              { imagem: fFogueira, icone: "fogueira" as const, titulo: tr(loc, "Noites de camping", "Camping nights", "Noches de camping"), texto: tr(loc, "Barraca, fogueira e céu estrelado.", "Tents, campfire and starry skies.", "Carpa, fogata y cielo estrellado."), link: l.camping },
+              { imagem: fPorDoSol, icone: "sol" as const, titulo: tr(loc, "Pôr do sol", "Sunset", "Atardecer"), texto: tr(loc, "O fim de tarde mais bonito da serra.", "The most beautiful evening in the hills.", "El atardecer más lindo de la sierra."), link: l.conheca },
+            ],
+          },
+          { __component: "blocks.fatos" as const, titulo: tr(loc, "O Saltão em números", "Saltão in numbers", "Saltão en números"), itens: [{ chave: tr(loc, "Cachoeira", "Waterfall", "Cascada"), valor: "75 m" }, { chave: tr(loc, "Quiosques", "Kiosks", "Quinchos"), valor: "80" }, { chave: tr(loc, "Churrasqueiras", "Barbecue grills", "Parrillas"), valor: "102" }] },
+          { __component: "blocks.avaliacoes" as const, titulo: tr(loc, "Quem visitou recomenda", "What visitors say", "Lo que dicen los visitantes"), avaliacaoIds: ["av-1", "av-2"] },
+          { __component: "blocks.faq" as const, titulo: tr(loc, "Perguntas frequentes", "FAQ", "Preguntas frecuentes"), itens: [tr(loc, faq("Onde fica o Saltão?", "Na Rodovia Ulisses Guimarães, km 23, em Itirapina (SP), na Serra do Itaqueri."), faq("Where is Saltão?", "At Rodovia Ulisses Guimarães, km 23, Itirapina (São Paulo state), in Serra do Itaqueri."), faq("¿Dónde queda Saltão?", "En la Rodovia Ulisses Guimarães, km 23, Itirapina (estado de São Paulo), en la Serra do Itaqueri."))] },
+        ],
+        seo: seo(tr(loc, "Saltão — Parque de Ecoturismo | Cachoeira, Day Use e Hospedagem", "Saltão Ecotourism Park | Waterfall, Day Pass and Lodging", "Saltão Parque de Ecoturismo | Cascada, Pase de Día y Hospedaje"), L[loc].heroResp.slice(0, 150)),
+      },
+    ];
+  }),
 ) as Conteudo["home"];
 
 const guiaHome: Conteudo["guiaHome"] = {

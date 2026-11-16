@@ -1,0 +1,91 @@
+---
+/** Bloco "Vitrine": texto + atalhos à esquerda, um card grande e dois menores. Faixa azul-céu na largura toda. */
+import type { Block } from "../lib/types";
+import Foto from "./Foto.astro";
+import Icone from "./Icone.astro";
+
+type Props = Extract<Block, { __component: "blocks.vitrine" }>;
+const { sobretitulo, titulo, texto, atalhos, itens, linkTodos } = Astro.props;
+const [grande, ...menores] = itens;
+---
+
+<section class="vitrine sangria">
+  <div class="grade">
+    <div class="texto">
+      {sobretitulo && <p class="sobretitulo">{sobretitulo}</p>}
+      <h2>{titulo}</h2>
+      {texto && <p class="lead">{texto}</p>}
+      {
+        atalhos.length > 0 && (
+          <ul class="atalhos">
+            {atalhos.map((a) => (
+              <li>
+                <a href={a.link}>{a.rotulo}</a>
+              </li>
+            ))}
+          </ul>
+        )
+      }
+      {
+        linkTodos && (
+          <a class="link-todos" href={linkTodos.link}>
+            <span class="seta-circulo seta-circulo-escuro" aria-hidden="true">
+              <Icone nome="seta" tamanho={18} />
+            </span>
+            {linkTodos.rotulo}
+          </a>
+        )
+      }
+    </div>
+
+    {
+      grande && (
+        <article class="cartao cartao-grande">
+          <Foto formatos={["avif"]} img={grande.imagem} sizes="(min-width: 64rem) 26rem, 88vw" larguras={[360, 480, 640, 960]} proporcao={4 / 5} />
+          <div class="cartao-texto">
+            {grande.local && (
+              <p class="local">
+                <Icone nome="pin" tamanho={16} />
+                {grande.local}
+              </p>
+            )}
+            <h3>
+              <a href={grande.link}>{grande.titulo}</a>
+            </h3>
+            {grande.texto && <p class="desc">{grande.texto}</p>}
+          </div>
+          <span class="seta-circulo seta-circulo-claro" aria-hidden="true">
+            <Icone nome="seta" tamanho={18} />
+          </span>
+        </article>
+      )
+    }
+
+    {
+      menores.length > 0 && (
+        <div class="menores">
+          {menores.map((c) => (
+            <article class="cartao">
+              <Foto formatos={["avif"]} img={c.imagem} sizes="(min-width: 64rem) 18rem, 88vw" larguras={[360, 480, 640]} proporcao={4 / 3} />
+              <div class="cartao-texto">
+                {c.local && (
+                  <p class="local">
+                    <Icone nome="pin" tamanho={15} />
+                    {c.local}
+                  </p>
+                )}
+                <h3>
+                  <a href={c.link}>{c.titulo}</a>
+                </h3>
+                {c.texto && <p class="desc">{c.texto}</p>}
+              </div>
+              <span class="seta-circulo seta-circulo-claro" aria-hidden="true">
+                <Icone nome="seta" tamanho={16} />
+              </span>
+            </article>
+          ))}
+        </div>
+      )
+    }
+  </div>
+</section>

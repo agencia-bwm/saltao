@@ -1,0 +1,20 @@
+---
+/** Home em inglês e espanhol (/en/, /es/) — só os idiomas que têm home publicada no painel. */
+import type { GetStaticPaths } from "astro";
+import { indice } from "../../lib/cms";
+import type { Rota } from "../../lib/routes";
+import HomeTpl from "../../templates/HomeTpl.astro";
+
+export const getStaticPaths = (async () => {
+  const idx = await indice();
+  return idx.rotas
+    .filter((r) => r.kind === "home" && r.locale !== "pt")
+    .map((r) => ({ params: { idioma: r.path.replace(/^\/|\/$/g, "") }, props: { locale: r.locale } }));
+}) satisfies GetStaticPaths;
+
+const idx = await indice();
+const { locale } = Astro.props;
+const rota = idx.rotas.find((r) => r.kind === "home" && r.locale === locale) as Extract<Rota, { kind: "home" }>;
+---
+
+<HomeTpl rota={rota} indice={idx} />

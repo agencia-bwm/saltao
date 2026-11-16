@@ -20,8 +20,11 @@ interface Props {
   estreito?: boolean;
   /** Página sem hero (Institucional): a primeira imagem nos 2 primeiros blocos é a imagem LCP. */
   prioridadeTopo?: boolean;
+  /** Soma ao índice dos ids (quando a página chama Blocos mais de uma vez). */
+  idBase?: number;
 }
-const { blocos, indice, locale, estreito = false, prioridadeTopo = false } = Astro.props;
+// Os blocos exclusivos da home (essência, vitrine, experiências) ficam no HomeTpl, para o CSS deles não entrar nas outras páginas.
+const { blocos, indice, locale, estreito = false, prioridadeTopo = false, idBase = 0 } = Astro.props;
 const iImagemLcp = prioridadeTopo ? blocos.findIndex((b, i) => i <= 1 && b.__component === "blocks.imagem") : -1;
 const ui = t(locale);
 const sizesLargura = estreito ? "(min-width: 46rem) 46rem, 100vw" : "(min-width: 72rem) 72rem, 100vw";
@@ -51,7 +54,7 @@ const sizesLargura = estreito ? "(min-width: 46rem) 46rem, 100vw" : "(min-width:
       case "blocks.fatos":
         return <Fatos itens={b.itens} titulo={b.titulo} />;
       case "blocks.faq":
-        return <FaqLista itens={b.itens} titulo={b.titulo} id={`faq-${i}`} />;
+        return <FaqLista itens={b.itens} titulo={b.titulo} id={`faq-${idBase + i}`} />;
       case "blocks.avaliacoes":
         return <Avaliacoes avaliacoes={b.avaliacaoIds.map((id) => indice.avaliacao(id)).filter((a) => a !== undefined)} titulo={b.titulo} locale={locale} />;
       case "blocks.video":

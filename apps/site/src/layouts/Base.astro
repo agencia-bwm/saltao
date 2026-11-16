@@ -10,6 +10,7 @@ import type { Indice, Migalha } from "../lib/routes";
 import { HTML_LANG, OG_LOCALE, t } from "../lib/i18n";
 import { absoluta, GTM_ID } from "../lib/config";
 import { grafo, noBreadcrumbs, noGlobal } from "../lib/schema";
+import { medidas, QUALIDADE } from "../lib/foto";
 import Cabecalho from "../components/Cabecalho.astro";
 import Rodape from "../components/Rodape.astro";
 import Migalhas from "../components/Migalhas.astro";
@@ -30,8 +31,11 @@ interface Props {
   jsonld?: Record<string, unknown>[];
   /** Eventos do dataLayer disparados ao abrir a página (view_item, view_item_list). */
   dlPagina?: Record<string, unknown>[];
+  /** Imagem LCP pedida já no <head> (AVIF, mesmas URLs do <Foto prioridade>): o navegador não espera o HTML chegar até ela. */
+  preload?: { img: Img; larguras: number[]; sizes: string };
 }
-const { locale, path, alternates, breadcrumbs, seo, indice, imagem, ogTipo = "website", jsonld = [], dlPagina = [] } = Astro.props;
+const { locale, path, alternates, breadcrumbs, seo, indice, imagem, ogTipo = "website", jsonld = [], dlPagina = [], preload } = Astro.props;
+const pre = preload ? await getImage({ src: preload.img.src as ImageMetadata, ...medidas(preload.img, preload.larguras), format: "avif", quality: QUALIDADE.prioridade }) : null;
 const ui = t(locale);
 const g = indice.conteudo.global[locale] ?? indice.conteudo.global.pt;
 
@@ -82,6 +86,7 @@ const privacidade = indice.link("institucional", "inst-privacidade", locale) ?? 
     }
     <meta name="twitter:card" content="summary_large_image" />
 
+    {pre && preload && <link rel="preload" as="image" type="image/avif" imagesrcset={pre.srcSet.attribute} imagesizes={preload.sizes} fetchpriority="high" />}
     <meta name="theme-color" content="#4076b6" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="icon" href="/favicon.ico" sizes="32x32" />

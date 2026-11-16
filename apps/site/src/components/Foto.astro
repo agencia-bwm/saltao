@@ -6,6 +6,7 @@
  */
 import { Picture } from "astro:assets";
 import type { Img } from "../lib/types";
+import { medidas, QUALIDADE } from "../lib/foto";
 
 interface Props {
   img: Img;
@@ -15,15 +16,12 @@ interface Props {
   class?: string;
   /** Proporção forçada (ex.: 16/10) — recorta para evitar CLS entre imagens diferentes. */
   proporcao?: number;
+  /** Formatos modernos. Abaixo da dobra na home usamos só AVIF (+ JPG de reserva) para o HTML ficar menor. */
+  formatos?: ("avif" | "webp")[];
 }
-const { img, sizes = "100vw", prioridade = false, larguras = [400, 640, 960, 1280, 1600], class: cls, proporcao } = Astro.props;
+const { img, sizes = "100vw", prioridade = false, larguras = [400, 640, 960, 1280, 1600], class: cls, proporcao, formatos = ["avif", "webp"] } = Astro.props;
 
-const remota = typeof img.src === "string";
-const larguraOriginal = remota ? (img.width ?? 1600) : (img.src as ImageMetadata).width;
-const alturaOriginal = remota ? (img.height ?? 1000) : (img.src as ImageMetadata).height;
-const width = Math.min(1600, larguraOriginal);
-const height = proporcao ? Math.round(width / proporcao) : Math.round((alturaOriginal / larguraOriginal) * width);
-const widths = larguras.filter((w) => w <= larguraOriginal);
+const { width, height, widths } = medidas(img, larguras, proporcao);
 ---
 
 <Picture
@@ -31,11 +29,11 @@ const widths = larguras.filter((w) => w <= larguraOriginal);
   alt={img.alt}
   width={width}
   height={height}
-  widths={widths.length ? widths : [width]}
+  widths={widths}
   sizes={sizes}
-  formats={["avif", "webp"]}
+  formats={formatos}
   fallbackFormat="jpg"
-  quality={prioridade ? 35 : 50}
+  quality={prioridade ? QUALIDADE.prioridade : QUALIDADE.normal}
   fit={proporcao ? "cover" : undefined}
   loading={prioridade ? "eager" : "lazy"}
   decoding={prioridade ? "sync" : "async"}

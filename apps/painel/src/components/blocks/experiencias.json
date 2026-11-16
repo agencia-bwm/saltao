@@ -1,0 +1,32 @@
+{
+  "collectionName": "components_blocks_experiencias",
+  "info": {
+    "displayName": "Experiências (4 cards)",
+    "icon": "grid"
+  },
+  "options": {},
+  "attributes": {
+    "sobretitulo": {
+      "type": "string",
+      "maxLength": 60
+    },
+    "titulo": {
+      "type": "string",
+      "required": true,
+      "maxLength": 90
+    },
+    "linkTodos": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.link"
+    },
+    "itens": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.card-foto",
+      "required": true,
+      "min": 1,
+      "max": 4
+    }
+  }
+}

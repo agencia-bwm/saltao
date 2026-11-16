@@ -5,6 +5,7 @@ import type { Indice, Rota } from "../lib/routes";
 import { homePath, guiaPath } from "../lib/routes";
 import { t } from "../lib/i18n";
 import { linkReserva } from "../lib/config";
+import Icone from "./Icone.astro";
 import logo from "../assets/marca/logo-horizontal.svg";
 
 interface Props {
@@ -150,7 +151,11 @@ const idiomas = (Object.keys(NOMES) as Locale[]).map((l) => ({ l, href: rota.alt
       </nav>
     </details>
 
-    <a class="btn btn-reservar reservar" href={linkReserva({ lang: locale })}>{ui.reservar}</a>
+    <a class="btn reservar" href={linkReserva({ lang: locale })} data-dl='{"event":"click_reservar","method":"cabecalho"}'>
+      <Icone nome="calendario" tamanho={18} />
+      {ui.reservar}
+      <Icone nome="seta" tamanho={16} class="seta" />
+    </a>
   </div>
 </header>
 
@@ -161,13 +166,9 @@ const idiomas = (Object.keys(NOMES) as Locale[]).map((l) => ({ l, href: rota.alt
     z-index: 50;
     background: var(--color-bg);
   }
-  /* Os três arcos do logo, lado a lado, como fio sob o cabeçalho. */
-  .cabecalho::after {
-    content: "";
-    position: absolute;
-    inset: auto 0 0;
-    height: 3px;
-    background: var(--grad-arcos);
+  /* Barra branca limpa (layout nov/2026): no lugar do fio dos arcos, uma linha fina. */
+  .cabecalho {
+    border-bottom: 1px solid rgb(211 226 240 / 0.6);
   }
   .barra {
     width: min(100% - 2 * var(--space-4), 92rem);
@@ -192,10 +193,23 @@ const idiomas = (Object.keys(NOMES) as Locale[]).map((l) => ({ l, href: rota.alt
       height: 36px;
     }
   }
+  /* Reservar: pílula no azul do poço, como o botão do layout. */
   .reservar {
     flex-shrink: 0;
     min-height: 44px;
     padding-inline: var(--space-4);
+    background: var(--brand-poco);
+    color: #ffffff;
+    font-size: var(--fs-100);
+  }
+  .reservar:hover {
+    background: var(--brand-azul-escuro);
+    color: #ffffff;
+  }
+  @media (max-width: 30rem) {
+    .reservar :global(svg) {
+      display: none;
+    }
   }
   summary {
     cursor: pointer;
@@ -281,6 +295,10 @@ const idiomas = (Object.keys(NOMES) as Locale[]).map((l) => ({ l, href: rota.alt
   @media (min-width: 70rem) {
     .menu-mobile {
       display: none;
+    }
+    .nav-desktop {
+      flex: 1;
+      justify-content: center;
     }
     .nav-desktop,
     .nav-desktop > ul {
