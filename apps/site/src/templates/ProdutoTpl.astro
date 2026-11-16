@@ -38,14 +38,13 @@ const relacionados = p.relacionadosIds.map((id) => indice.produto(id, locale)).f
 const dlPagina = [{ event: "view_item", ecommerce: { currency: "BRL", value: p.precoAPartirDe, items: [itemGa4(p, categoria)] } }];
 ---
 
-<Base {...rota} indice={indice} imagem={hero} jsonld={[noWebPage(rota.path, p.titulo, p.respostaRapida, locale, "ItemPage"), noProduto(p, rota.path, imagensSchema, g, locale), noFaq(p.faq, rota.path)].filter((n) => n !== null)} dlPagina={dlPagina}>
+<Base {...rota} indice={indice} imagem={hero} jsonld={[noWebPage(rota.path, p.titulo, p.respostaRapida, locale, "ItemPage"), noProduto(p, rota.path, imagensSchema, g, locale), noFaq(p.faq, rota.path)].filter((n) => n !== null)} dlPagina={dlPagina} topoSobreposto={!!hero}>
+  <header slot="topo">
+    <h1>{p.titulo}</h1>
+    <p class="lead">{p.respostaRapida}</p>
+  </header>
   <article class="container section produto">
-    <header class="topo">
-      <h1>{p.titulo}</h1>
-      <p class="lead">{p.respostaRapida}</p>
-    </header>
-
-    {hero && <Foto img={hero} prioridade sizes="(min-width: 72rem) 72rem, 100vw" proporcao={16 / 9} class="hero-img" larguras={[640, 960, 1280, 1600]} />}
+    {hero && <Foto img={hero} prioridade sizes="(min-width: 72rem) 72rem, 100vw" proporcao={16 / 9} class="hero-img sobe" larguras={[640, 960, 1280, 1600]} />}
 
     <div class="colunas">
       <div class="principal">
@@ -146,9 +145,6 @@ const dlPagina = [{ event: "view_item", ecommerce: { currency: "BRL", value: p.p
 </Base>
 
 <style>
-  .topo {
-    margin-bottom: var(--space-5);
-  }
   .produto :global(.hero-img) {
     width: 100%;
     border-radius: var(--radius-lg) var(--radius-arco) var(--radius-lg) var(--radius-lg);
@@ -189,7 +185,7 @@ const dlPagina = [{ event: "view_item", ecommerce: { currency: "BRL", value: p.p
     content: "✓";
     position: absolute;
     left: 0;
-    color: var(--color-primary);
+    color: var(--color-primary-strong);
     font-weight: 700;
   }
   .x li::before {

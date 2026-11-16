@@ -13,7 +13,10 @@
   --brand-ceu: #eaf4fc;           /* derivado do azul claro: topo das páginas */
   --brand-poco: #0f2744;          /* derivado do azul escuro: fundo do poço (rodapé) */
 
-  --color-bg: #ffffff;
+  --color-bg: #ffffff;            /* cards e painéis */
+  --color-page: #f2f7fc;          /* fundo das páginas: céu bem claro (texto azul só com o azul escuro: 8,6:1) */
+  --color-vidro: rgb(15 39 68 / 0.82);   /* cabeçalho fixo depois da rolagem (poço translúcido) */
+  --color-linha-clara: rgb(255 255 255 / 0.16); /* divisórias sobre fundo azul */
   --color-surface: var(--brand-ceu);
   --color-text: #13263d;
   --color-text-muted: #46586d;    /* 7,1:1 em branco; 6,4:1 no céu */
@@ -35,6 +38,15 @@
   --grad-ceu: linear-gradient(180deg, var(--brand-ceu) 0, rgb(234 244 252 / 0) 32rem);
   --grad-profundo: linear-gradient(165deg, var(--brand-azul) 0%, var(--brand-azul-escuro) 55%, var(--brand-poco) 100%);
   --grad-poco: linear-gradient(180deg, var(--brand-azul-escuro) 0%, var(--brand-poco) 70%);
+  /* Topo das páginas internas: poço → azul Saltão, com um brilho do azul médio no alto à direita. */
+  --grad-faixa-topo:
+    radial-gradient(48rem 26rem at 88% -10%, rgb(72 158 210 / 0.55), rgb(72 158 210 / 0) 70%),
+    radial-gradient(36rem 22rem at 0% 110%, rgb(64 118 182 / 0.45), rgb(64 118 182 / 0) 70%),
+    linear-gradient(160deg, var(--brand-poco) 0%, var(--brand-azul-escuro) 60%, #2e5a8c 100%);
+  /* Faixa média (avaliações): azul Saltão → azul escuro; texto branco ≥ 4,68:1 em toda a faixa. */
+  --grad-faixa-media:
+    radial-gradient(40rem 24rem at 100% 0%, rgb(160 201 232 / 0.28), rgb(160 201 232 / 0) 70%),
+    linear-gradient(135deg, var(--brand-azul) 0%, var(--brand-azul-escuro) 100%);
   --grad-foto: linear-gradient(180deg, rgb(15 39 68 / 0) 35%, rgb(15 39 68 / 0.55) 70%, rgb(15 39 68 / 0.85) 100%);
 
   /* Tipografia — Urbanist (variável, 100–900, WOFF2 latino, hospedada no site) */
@@ -75,8 +87,11 @@
   --radius-pill: 999px;
   --shadow-sm: 0 1px 2px rgb(15 39 68 / 0.08);
   --shadow-md: 0 12px 32px -12px rgb(15 39 68 / 0.28);
+  --shadow-card: 0 1px 2px rgb(15 39 68 / 0.06), 0 10px 30px -18px rgb(15 39 68 / 0.35);
+  --shadow-card-hover: 0 2px 4px rgb(15 39 68 / 0.08), 0 24px 44px -20px rgb(15 39 68 / 0.45);
 
   /* Layout */
   --container: 74rem;
+  --altura-cabecalho: 4.5rem;     /* o cabeçalho é fixo e fica por cima da foto/faixa do topo */
   --container-narrow: 46rem;
 }

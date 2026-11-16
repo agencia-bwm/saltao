@@ -42,14 +42,20 @@ const evento = dl({ event: "select_item", ecommerce: { item_list_name: lista, it
     height: 100%;
     background: var(--color-bg);
     border-radius: var(--radius-lg) var(--radius-arco) var(--radius-lg) var(--radius-lg);
-    box-shadow: var(--shadow-sm), 0 0 0 1px var(--color-border);
+    box-shadow: var(--shadow-card);
     overflow: hidden;
-    transition: box-shadow 0.2s ease;
+    transition:
+      box-shadow 0.25s ease,
+      transform 0.25s ease;
   }
   .card :global(img) {
     width: 100%;
     aspect-ratio: 16 / 10;
     object-fit: cover;
+    transition: transform 0.6s ease;
+  }
+  .card:hover :global(img) {
+    transform: scale(1.04);
   }
   .card-corpo {
     display: flex;
@@ -73,10 +79,11 @@ const evento = dl({ event: "select_item", ecommerce: { item_list_name: lista, it
     inset: 0;
   }
   .card:hover {
-    box-shadow: var(--shadow-md), 0 0 0 1px var(--brand-azul-claro);
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-card-hover);
   }
   .card:hover .card-titulo a {
-    color: var(--color-primary);
+    color: var(--color-primary-strong);
   }
   .card:focus-within {
     outline: 3px solid var(--color-focus);
@@ -113,8 +120,15 @@ const evento = dl({ event: "select_item", ecommerce: { item_list_name: lista, it
     color: var(--color-primary-strong);
   }
   @media (prefers-reduced-motion: reduce) {
-    .card {
+    .card,
+    .card :global(img) {
       transition: none;
+    }
+    .card:hover {
+      transform: none;
+    }
+    .card:hover :global(img) {
+      transform: none;
     }
   }
 </style>

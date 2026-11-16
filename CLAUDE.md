@@ -22,15 +22,17 @@ Velocidade e SEO antes de efeito visual. Se piora o Core Web Vitals, não entra 
 ## Marca
 Cores do logo oficial (`packages/ui/marca/saltao-logo-original.pdf`): azul Saltão `#4076b6`, azul médio `#489ed2` (só decorativo), azul claro `#a0c9e8`; azul escuro derivado `#244a75`. Contraste AA obrigatório: texto azul só com `#4076b6` ou mais escuro.
 
-## Linguagem visual ("a queda")
-- A página desce como os 75 m da cachoeira: topo em céu (`--grad-ceu` no body), faixas fundas no meio (`--grad-profundo`), rodapé no poço (`--grad-poco`).
-- Os três arcos do logo são o único ornamento: fio `--grad-arcos` (cabeçalho, topo das páginas, submenu, preço), fios d'água no hero e marca d'água no rodapé.
-- Canto do arco: fotos e painéis usam `--radius-arco` só no canto superior direito.
+## Linguagem visual ("a queda", versão contemporânea — 16/11/2026)
+- Cabeçalho **fixo por cima da foto**: transparente no alto e vidro azul-poço (`--color-vidro` + blur) ao rolar, via scroll-driven animation em CSS (sem JS; sem suporte, já nasce em vidro). Logo e menu em branco; Reservar em `.btn-claro`.
+- Toda página começa escura: a home com a foto do hero; as internas com a `.faixa-topo` (`--grad-faixa-topo`), que o `Base.astro` monta a partir do slot `topo` (migalhas + H1 + resposta direta). `topoSobreposto` faz a 1ª foto (`.sobe`) subir sobre a faixa.
+- Fundo das páginas em céu claro (`--color-page`); cards e painéis brancos com `--shadow-card`. Home em faixas de largura total: céu (destaques) → poço (números) → azul médio (avaliações, `--grad-faixa-media`) → céu (FAQ) → rodapé no poço.
+- Os três arcos do logo são o único ornamento: fios d'água no hero, marca d'água na faixa do topo e no rodapé, fio `--grad-arcos` no submenu e no preço.
+- Canto do arco: fotos e painéis usam `--radius-arco` só no canto superior direito; faixas usam a curva grande embaixo à esquerda.
 - Títulos em peso leve (300/250), como o wordmark. Nada de caixa-alta em rótulos.
-- Texto azul sobre o fundo céu: usar `--color-primary-strong` (o azul Saltão fica em 4,2:1).
+- Contraste: sobre o céu, texto/link azul é sempre `--color-primary-strong` (o azul Saltão fica abaixo de 4,5:1); sobre azul, texto branco ou `--color-on-deep`.
 
 ## Templates e campos
-7 templates (`apps/site/src/templates`): Home, Listagem de produtos, Produto/pacote, Listagem do blog, Artigo, Institucional por blocos, FAQ/Contato. Cada campo do painel = um bloco visual. Rotas montadas em `src/lib/routes.ts` a partir do painel (slugs traduzidos). A build falha se houver URL duplicada.
+7 templates (`apps/site/src/templates`): Home, Listagem de produtos (Day Use, Hospedagem e Camping, Churrasqueiras e Quiosques — "Monte sua Experiência" saiu do projeto, decisão 17), Produto/pacote, Listagem do blog, Artigo, Institucional por blocos, FAQ/Contato. Cada campo do painel = um bloco visual. Rotas montadas em `src/lib/routes.ts` a partir do painel (slugs traduzidos). A build falha se houver URL duplicada.
 - Menu: `Global.menuPrincipal`; item com `subitens` vira grupo com submenu (`<details name>` exclusivo, sem JS). Sem menu no painel, `Cabecalho.astro` monta 5 grupos: O Saltão, Experiências, Hospedagem, Guia, Atendimento.
 
 ## SEO / GEO / AEO

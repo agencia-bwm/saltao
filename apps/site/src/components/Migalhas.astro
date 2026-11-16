@@ -27,7 +27,7 @@ const { itens } = Astro.props;
 <style>
   .migalhas {
     font-size: var(--fs-100);
-    padding-top: var(--space-4);
+    padding-top: calc(var(--altura-cabecalho) + var(--space-4));
   }
   ol {
     display: flex;
@@ -44,5 +44,13 @@ const { itens } = Astro.props;
   }
   li[aria-current] {
     color: var(--color-text-muted);
+  }
+  /* Dentro da faixa azul do topo. */
+  :global(.faixa-topo) .migalhas {
+    padding-top: 0;
+  }
+  :global(.faixa-topo) li + li::before,
+  :global(.faixa-topo) li[aria-current] {
+    color: var(--color-on-deep-muted);
   }
 </style>

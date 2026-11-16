@@ -36,7 +36,7 @@
 html {
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
-  scroll-padding-top: 5rem;
+  scroll-padding-top: calc(var(--altura-cabecalho) + var(--space-4));
 }
 body {
   margin: 0;
@@ -45,8 +45,8 @@ body {
   font-weight: var(--fw-normal);
   line-height: var(--lh-body);
   color: var(--color-text);
-  /* Topo de toda página começa no céu e clareia até o branco — o rodapé termina no poço. */
-  background: var(--grad-ceu) no-repeat, var(--color-bg);
+  /* Toda página fica sobre um céu bem claro; o topo é azul profundo e o rodapé termina no poço. */
+  background: var(--color-page);
   overflow-x: clip;
   -webkit-font-smoothing: antialiased;
 }
@@ -100,12 +100,13 @@ table,
 blockquote {
   margin: 0 0 var(--space-4);
 }
+/* Sobre o fundo céu, o azul Saltão não chega a 4,5:1 — links usam o azul escuro. */
 a {
-  color: var(--color-primary);
+  color: var(--color-primary-strong);
   text-underline-offset: 0.15em;
 }
 a:hover {
-  color: var(--color-primary-strong);
+  color: var(--brand-poco);
 }
 :focus-visible {
   outline: 3px solid var(--color-focus);
@@ -129,14 +130,67 @@ a:hover {
   max-width: 60ch;
   text-wrap: pretty;
 }
-/* Topo das páginas internas: título + resposta direta, com o fio dos arcos embaixo. */
-.topo {
-  padding-bottom: var(--space-6);
-  margin-bottom: var(--space-7);
-  background: var(--grad-arcos) left bottom / 6rem 3px no-repeat;
+/* Topo das páginas internas: faixa azul profunda que passa por baixo do cabeçalho fixo,
+   com migalhas, H1 e resposta direta em branco e os arcos do logo como marca d'água. */
+.faixa-topo {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  padding: calc(var(--altura-cabecalho) + var(--space-4)) 0 var(--space-8);
+  background: var(--grad-faixa-topo);
+  color: var(--color-on-deep);
+  border-end-start-radius: clamp(2.5rem, 8vw, 7rem);
 }
-.topo .lead {
+.faixa-topo--sobreposta {
+  padding-bottom: calc(var(--space-8) + var(--space-8));
+}
+.faixa-topo .arcos-topo {
+  position: absolute;
+  z-index: -1;
+  right: max(-4rem, calc(50% - 46rem));
+  top: -2rem;
+  width: clamp(14rem, 30vw, 26rem);
+  height: auto;
+  opacity: 0.22;
+}
+.faixa-topo a {
+  color: var(--color-on-deep);
+}
+.faixa-topo a:hover {
+  color: #ffffff;
+}
+.faixa-topo h1 {
+  max-width: 22ch;
+  margin: var(--space-6) 0 var(--space-4);
+  color: #ffffff;
+  font-size: clamp(2.25rem, 1.4rem + 3.6vw, 4.25rem);
+  font-weight: 250;
+}
+.faixa-topo .lead {
+  max-width: 58ch;
   margin-bottom: 0;
+  color: var(--color-on-deep);
+}
+.faixa-topo .eyebrow {
+  margin: var(--space-6) 0 calc(-1 * var(--space-4));
+  color: var(--brand-azul-claro);
+  font-size: var(--fs-100);
+  font-weight: var(--fw-forte);
+  letter-spacing: 0.06em;
+}
+.faixa-topo .voltar {
+  margin: var(--space-5) 0 0;
+}
+.faixa-topo .meta {
+  margin: var(--space-5) 0 0;
+  font-size: var(--fs-100);
+  color: var(--color-on-deep-muted);
+}
+/* Conteúdo que "sobe" sobre a faixa (foto do produto, capa do artigo). */
+.sobe {
+  position: relative;
+  margin-top: calc(-1 * var(--space-8) - var(--space-7));
+  box-shadow: var(--shadow-md);
 }
 /* Faixa que ocupa a largura toda da tela mesmo dentro de um .container. */
 .sangria {
@@ -195,8 +249,18 @@ a:hover {
 }
 .btn-secundario {
   background: transparent;
-  border-color: var(--color-primary);
-  color: var(--color-primary);
+  border-color: var(--color-primary-strong);
+  color: var(--color-primary-strong);
+}
+/* Botão claro: sobre o azul profundo (cabeçalho e faixas). */
+.btn-claro {
+  background: #ffffff;
+  color: var(--brand-azul-escuro);
+  box-shadow: 0 6px 18px -8px rgb(0 0 0 / 0.45);
+}
+.btn-claro:hover {
+  background: var(--color-on-deep);
+  color: var(--brand-poco);
 }
 .btn-secundario:hover {
   background: var(--color-surface);

@@ -28,11 +28,11 @@ const dlPagina = [{ event: "view_item_list", ecommerce: { item_list_name: doc.ti
 ---
 
 <Base {...rota} indice={indice} imagem={doc.imagemHero} jsonld={[noWebPage(rota.path, doc.titulo, doc.respostaDireta, locale, "CollectionPage"), lista, noFaq(doc.faq, rota.path)].filter((n) => n !== null)} dlPagina={dlPagina}>
+  <header slot="topo">
+    <h1>{doc.titulo}</h1>
+    <p class="lead">{doc.respostaDireta}</p>
+  </header>
   <div class="container section">
-    <header class="topo">
-      <h1>{doc.titulo}</h1>
-      <p class="lead">{doc.respostaDireta}</p>
-    </header>
     <ul class="grid-cards">
       {
         produtos.map((p, i) => (
@@ -48,9 +48,6 @@ const dlPagina = [{ event: "view_item_list", ecommerce: { item_list_name: doc.ti
 </Base>
 
 <style>
-  .topo {
-    margin-bottom: var(--space-6);
-  }
   .intro {
     margin-top: var(--space-7);
   }

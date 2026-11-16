@@ -14,10 +14,12 @@ const produtos = cats.map((c) => idx.produto(c.produtoIds[0], locale)).filter((p
 ---
 
 <Base locale={locale} path="/404/" alternates={{}} breadcrumbs={[]} seo={{ metaTitle: `${ui.naoEncontrada} | Saltão`, metaDescription: ui.naoEncontradaTexto, noindex: true }} indice={idx}>
-  <div class="container section">
+  <header slot="topo">
     <h1>{ui.naoEncontrada}</h1>
     <p class="lead">{ui.naoEncontradaTexto}</p>
-    <p><a class="btn btn-secundario" href={homePath(locale)}>{ui.voltarInicio}</a></p>
+    <p class="voltar"><a class="btn btn-claro" href={homePath(locale)}>{ui.voltarInicio}</a></p>
+  </header>
+  <div class="container section">
     <ul class="grid-cards">
       {produtos.map((p, i) => <li><CardProduto produto={p} href={idx.link("produto", p.documentId, locale)!} locale={locale} lista="404" index={i} nivel="h2" /></li>)}
     </ul>

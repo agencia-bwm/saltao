@@ -1,5 +1,9 @@
 ---
-/** Cabeçalho: menu (sem JS — <details> no mobile), seletor de idioma e botão Reservar sempre visível. */
+/**
+ * Cabeçalho fixo por cima da foto/faixa azul do topo: transparente no alto da página e, ao rolar,
+ * vira vidro azul-poço (scroll-driven animation em CSS, sem JS; sem suporte, já nasce em vidro).
+ * Menu sem JS (<details> no mobile), seletor de idioma e botão Reservar sempre visível.
+ */
 import type { Locale } from "../lib/types";
 import type { Indice, Rota } from "../lib/routes";
 import { homePath, guiaPath } from "../lib/routes";
@@ -150,41 +154,55 @@ const idiomas = (Object.keys(NOMES) as Locale[]).map((l) => ({ l, href: rota.alt
       </nav>
     </details>
 
-    <a class="btn btn-reservar reservar" href={linkReserva({ lang: locale })}>{ui.reservar}</a>
+    <a class="btn btn-claro reservar" href={linkReserva({ lang: locale })}>{ui.reservar}</a>
   </div>
 </header>
 
 <style>
   .cabecalho {
-    position: sticky;
-    top: 0;
+    position: fixed;
+    inset: 0 0 auto;
     z-index: 50;
-    background: var(--color-bg);
+    color: #ffffff;
+    background-color: var(--color-vidro);
+    -webkit-backdrop-filter: blur(14px) saturate(1.3);
+    backdrop-filter: blur(14px) saturate(1.3);
+    box-shadow: 0 1px 0 var(--color-linha-clara);
   }
-  /* Os três arcos do logo, lado a lado, como fio sob o cabeçalho. */
-  .cabecalho::after {
-    content: "";
-    position: absolute;
-    inset: auto 0 0;
-    height: 3px;
-    background: var(--grad-arcos);
+  /* No alto da página o cabeçalho é transparente, por cima da foto; ao rolar 8rem ele "fecha". */
+  @supports (animation-timeline: scroll()) {
+    .cabecalho {
+      animation: cabecalho-vidro linear both;
+      animation-timeline: scroll(root block);
+      animation-range: 0 8rem;
+    }
+    @keyframes cabecalho-vidro {
+      from {
+        background-color: rgb(15 39 68 / 0);
+        -webkit-backdrop-filter: none;
+        backdrop-filter: none;
+        box-shadow: 0 1px 0 rgb(255 255 255 / 0);
+      }
+    }
   }
   .barra {
     width: min(100% - 2 * var(--space-4), 92rem);
     display: flex;
     align-items: center;
     gap: var(--space-4);
-    min-height: 4.5rem;
+    min-height: var(--altura-cabecalho);
   }
   .marca {
     margin-right: auto;
     display: block;
     flex-shrink: 0;
   }
+  /* Logo em branco sobre o azul (mesmo SVG, sem segundo arquivo). */
   .marca img {
     width: 151px;
     max-width: none;
     height: 44px;
+    filter: brightness(0) invert(1);
   }
   @media (max-width: 23rem) {
     .marca img {
@@ -195,7 +213,7 @@ const idiomas = (Object.keys(NOMES) as Locale[]).map((l) => ({ l, href: rota.alt
   .reservar {
     flex-shrink: 0;
     min-height: 44px;
-    padding-inline: var(--space-4);
+    padding-inline: var(--space-5);
   }
   summary {
     cursor: pointer;
@@ -203,15 +221,15 @@ const idiomas = (Object.keys(NOMES) as Locale[]).map((l) => ({ l, href: rota.alt
     min-height: 44px;
     display: flex;
     align-items: center;
-    padding: 0 var(--space-3);
-    border: 1px solid var(--color-border);
+    padding: 0 var(--space-4);
+    border: 1px solid rgb(255 255 255 / 0.45);
     border-radius: var(--radius-pill);
-    padding-inline: var(--space-4);
     font-weight: var(--fw-medio);
   }
   .menu-mobile[open] summary {
-    border-color: var(--color-primary);
-    color: var(--color-primary);
+    background: #ffffff;
+    border-color: #ffffff;
+    color: var(--brand-azul-escuro);
   }
   summary::-webkit-details-marker {
     display: none;
@@ -224,24 +242,23 @@ const idiomas = (Object.keys(NOMES) as Locale[]).map((l) => ({ l, href: rota.alt
   nav a {
     display: block;
     padding: var(--space-3) var(--space-4);
-    color: var(--color-text);
+    color: #ffffff;
     text-decoration: none;
     font-weight: var(--fw-medio);
   }
   nav a:hover {
-    color: var(--color-primary);
+    color: var(--brand-azul-claro);
   }
   nav a[aria-current="page"],
   nav a[aria-current="true"] {
-    color: var(--color-primary);
     text-decoration: underline;
     text-decoration-thickness: 2px;
     text-underline-offset: 0.4em;
-    text-decoration-color: var(--brand-azul-medio);
+    text-decoration-color: var(--brand-azul-claro);
   }
   .idiomas {
     display: flex;
-    border-top: 1px solid var(--color-border);
+    border-top: 1px solid var(--color-linha-clara);
   }
   abbr {
     text-decoration: none;
@@ -252,18 +269,17 @@ const idiomas = (Object.keys(NOMES) as Locale[]).map((l) => ({ l, href: rota.alt
   .menu-mobile {
     order: 3;
   }
+  /* Painel do menu no celular: poço sólido, links brancos. */
   .menu-mobile nav {
     position: absolute;
     left: 0;
     right: 0;
     top: 100%;
-    background: var(--color-bg);
-    box-shadow: var(--shadow-md);
-    padding: var(--space-3) 0 var(--space-2);
-  }
-  .menu-mobile nav {
-    max-height: calc(100svh - 4.5rem);
+    max-height: calc(100svh - var(--altura-cabecalho));
     overflow-y: auto;
+    padding: var(--space-3) 0 var(--space-2);
+    background: var(--brand-poco);
+    box-shadow: var(--shadow-md);
   }
   .grupo-mobile {
     padding-top: var(--space-2);
@@ -272,7 +288,7 @@ const idiomas = (Object.keys(NOMES) as Locale[]).map((l) => ({ l, href: rota.alt
     display: block;
     padding: var(--space-2) var(--space-4) 0;
     font-size: var(--fs-100);
-    color: var(--color-text-muted);
+    color: var(--color-on-deep-muted);
   }
   .grupo-mobile a {
     padding-left: var(--space-6);
@@ -299,18 +315,14 @@ const idiomas = (Object.keys(NOMES) as Locale[]).map((l) => ({ l, href: rota.alt
       gap: var(--space-1);
       min-height: 44px;
       padding: var(--space-2) var(--space-3);
+      border: 0;
       border-radius: var(--radius-pill);
-      color: var(--color-text);
+      color: #ffffff;
       font-weight: var(--fw-medio);
       text-decoration: none;
     }
     .grupo {
       position: relative;
-    }
-    .grupo summary {
-      cursor: pointer;
-      list-style: none;
-      border: 0;
     }
     .grupo summary::-webkit-details-marker {
       display: none;
@@ -318,11 +330,14 @@ const idiomas = (Object.keys(NOMES) as Locale[]).map((l) => ({ l, href: rota.alt
     .grupo summary:hover,
     .nav-desktop .itens > li > a:hover,
     .grupo details[open] summary {
-      background: var(--color-surface);
-      color: var(--color-primary-strong);
+      background: rgb(255 255 255 / 0.14);
+      color: #ffffff;
     }
-    .grupo summary.ativo {
-      color: var(--color-primary);
+    .grupo summary.ativo,
+    .nav-desktop .itens > li > a[aria-current="page"] {
+      box-shadow: inset 0 -2px 0 var(--brand-azul-claro);
+      border-radius: var(--radius-sm);
+      text-decoration: none;
     }
     .seta {
       transition: transform 0.15s ease;
@@ -345,13 +360,19 @@ const idiomas = (Object.keys(NOMES) as Locale[]).map((l) => ({ l, href: rota.alt
       padding: var(--space-2) var(--space-3);
       border-radius: var(--radius-sm);
       font-size: var(--fs-100);
+      color: var(--color-text);
     }
     .sub a:hover {
       background: var(--color-surface);
+      color: var(--color-primary-strong);
+    }
+    .sub a[aria-current="page"] {
+      color: var(--color-primary-strong);
+      text-decoration-color: var(--brand-azul-medio);
     }
     .nav-desktop .idiomas {
       border-top: 0;
-      border-left: 1px solid var(--color-border);
+      border-left: 1px solid var(--color-linha-clara);
       margin-left: var(--space-3);
       padding-left: var(--space-2);
     }
