@@ -141,6 +141,8 @@ const cardCat = cardProd ? indice.categoriaProduto(cardProd.categoriaId, locale)
   .hero-wrap {
     position: relative;
     width: 100%;
+    /* Sobe por trás do cabeçalho (4,5rem): a foto aparece dos lados da barra do menu. */
+    margin-top: -4.5rem;
   }
   .hero {
     position: relative;
@@ -163,7 +165,7 @@ const cardCat = cardProd ? indice.categoriaProduto(cardProd.categoriaId, locale)
   .hero-veu {
     display: flex;
     align-items: center;
-    padding-block: var(--space-8) clamp(var(--space-9), 14vw, 12rem);
+    padding-block: calc(4.5rem + var(--space-8)) clamp(var(--space-9), 14vw, 12rem);
     background:
       linear-gradient(to right, rgb(15 39 68 / 0.78) 0%, rgb(15 39 68 / 0.5) 38%, rgb(15 39 68 / 0) 68%),
       linear-gradient(to top, rgb(15 39 68 / 0.55) 0%, rgb(15 39 68 / 0) 45%);
@@ -326,7 +328,7 @@ const cardCat = cardProd ? indice.categoriaProduto(cardProd.categoriaId, locale)
   @media (min-width: 64rem) {
     .card-flutuante {
       position: absolute;
-      top: clamp(var(--space-7), 9vw, 7.5rem);
+      top: calc(4.5rem + clamp(var(--space-7), 9vw, 7.5rem));
       /* Alinhado à borda direita do conteúdo (84rem), não da tela. */
       right: max(var(--space-5), calc((100% - 84rem) / 2));
       width: 21rem;
