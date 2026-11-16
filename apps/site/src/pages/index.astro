@@ -1,0 +1,11 @@
+---
+/** Home em português (/). Rota própria para o CSS da home não entrar nas outras páginas. */
+import { indice } from "../lib/cms";
+import type { Rota } from "../lib/routes";
+import HomeTpl from "../templates/HomeTpl.astro";
+
+const idx = await indice();
+const rota = idx.rotas.find((r) => r.kind === "home" && r.locale === "pt") as Extract<Rota, { kind: "home" }>;
+---
+
+<HomeTpl rota={rota} indice={idx} />

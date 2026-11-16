@@ -16,6 +16,7 @@ Velocidade e SEO antes de efeito visual. Se piora o Core Web Vitals, não entra 
 - Zero JS por padrão. Ilhas só para preço/disponibilidade/Reservar (Preact ou JS puro), sempre com fallback estático.
 - Imagens só via `components/Foto.astro` (astro:assets, AVIF+WebP, srcset, width/height). Hero: `prioridade`; o resto é lazy.
 - Nada de jQuery, slider, animação em JS, widget de terceiro. Vídeo = fachada (`VideoFachada.astro`). Mapa = imagem estática.
+- Home tem rota própria (`pages/index.astro`, `pages/[idioma]/index.astro`) para o CSS dela não entrar inline nas outras páginas. O CSS dos blocos abaixo da dobra fica em `styles/home-abaixo.css` (carregado por `<link>` no corpo, seletores prefixados pela seção) — o HTML comprimido da home precisa caber perto de 14 KB, senão o LCP simulado passa da meta. Hero da home tem preload AVIF no `<head>` (`Base` prop `preload`, mesmas medidas de `lib/foto.ts`).
 - Fonte: **Urbanist** variável (OFL), uma família só, `public/fonts/urbanist-latin-wght.woff2` (28 KB, subset latino; cache imutável de 1 ano — se trocar a fonte, troque o nome do arquivo), sem preload (competia com a foto LCP), `font-display: swap` e reservas com largura medida por peso (`Urbanist Fallback` 98,6% para texto, `Urbanist Fallback Leve` 97,2% para h1/h2) para CLS zero. Se mudar pesos dos títulos, meça de novo. Não adicionar outra família sem medir.
 - CSS: tokens de `packages/ui/src/tokens.css`; nunca cor/medida solta nos componentes.
 
@@ -24,7 +25,8 @@ Cores do logo oficial (`packages/ui/marca/saltao-logo-original.pdf`): azul Salt�
 
 ## Linguagem visual ("a queda")
 - A página desce como os 75 m da cachoeira: topo em céu (`--grad-ceu` no body), faixas fundas no meio (`--grad-profundo`), rodapé no poço (`--grad-poco`).
-- Os três arcos do logo são o único ornamento: fio `--grad-arcos` (cabeçalho, topo das páginas, submenu, preço), fios d'água no hero e marca d'água no rodapé.
+- Os três arcos do logo são o único ornamento: fio `--grad-arcos` (sobretítulos `.sobretitulo`, topo das páginas, submenu, preço), selo do hero, mosaico da home e marca d'água no rodapé.
+- Layout da home (nov/2026, referência enviada pelo Fábio): cabeçalho branco com Reservar em pílula azul-poço; hero em painel com borda de baixo em onda e card flutuante de produto; blocos `essencia` (mosaico + ícones), `vitrine` (1 card grande + 2) e `experiencias` (4 cards); rodapé com topo em onda. Ícones só via `components/Icone.astro` (lista em `ICONES`, igual no gerador do painel).
 - Canto do arco: fotos e painéis usam `--radius-arco` só no canto superior direito.
 - Títulos em peso leve (300/250), como o wordmark. Nada de caixa-alta em rótulos.
 - Texto azul sobre o fundo céu: usar `--color-primary-strong` (o azul Saltão fica em 4,2:1).

@@ -1,0 +1,42 @@
+{
+  "collectionName": "components_blocks_vitrine",
+  "info": {
+    "displayName": "Vitrine (1 card grande + 2)",
+    "icon": "apps"
+  },
+  "options": {},
+  "attributes": {
+    "sobretitulo": {
+      "type": "string",
+      "maxLength": 60
+    },
+    "titulo": {
+      "type": "string",
+      "required": true,
+      "maxLength": 90
+    },
+    "texto": {
+      "type": "text",
+      "maxLength": 300
+    },
+    "atalhos": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.link",
+      "max": 5
+    },
+    "itens": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.card-foto",
+      "required": true,
+      "min": 1,
+      "max": 3
+    },
+    "linkTodos": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.link"
+    }
+  }
+}

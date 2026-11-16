@@ -30,6 +30,9 @@
     "secoes": {
       "type": "dynamiczone",
       "components": [
+        "blocks.essencia",
+        "blocks.vitrine",
+        "blocks.experiencias",
         "blocks.destaques-produtos",
         "blocks.fatos",
         "blocks.avaliacoes",

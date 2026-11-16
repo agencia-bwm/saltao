@@ -2,11 +2,12 @@
 /**
  * Rota única: todas as páginas (3 idiomas) nascem da tabela de rotas montada a partir do painel.
  * Assim os slugs traduzidos vêm do Strapi e a build falha se houver URL duplicada.
+ * A home tem rota própria (pages/index.astro e pages/[idioma]/index.astro): o CSS dela,
+ * mais pesado, fica só na home em vez de entrar inline em todas as páginas.
  */
 import type { GetStaticPaths } from "astro";
 import { indice } from "../lib/cms";
 import type { Rota } from "../lib/routes";
-import HomeTpl from "../templates/HomeTpl.astro";
 import ListagemTpl from "../templates/ListagemTpl.astro";
 import ProdutoTpl from "../templates/ProdutoTpl.astro";
 import GuiaTpl from "../templates/GuiaTpl.astro";
@@ -16,7 +17,7 @@ import AtendimentoTpl from "../templates/AtendimentoTpl.astro";
 
 export const getStaticPaths = (async () => {
   const idx = await indice();
-  return idx.rotas.map((rota) => ({
+  return idx.rotas.filter((rota) => rota.kind !== "home").map((rota) => ({
     params: { path: rota.path.replace(/^\/|\/$/g, "") || undefined },
     props: { chave: rota.chave, locale: rota.locale },
   }));
@@ -27,7 +28,6 @@ const { chave, locale } = Astro.props;
 const rota = idx.rotas.find((r) => r.chave === chave && r.locale === locale) as Rota;
 ---
 
-{rota.kind === "home" && <HomeTpl rota={rota} indice={idx} />}
 {rota.kind === "categoria-produto" && <ListagemTpl rota={rota} indice={idx} />}
 {rota.kind === "produto" && <ProdutoTpl rota={rota} indice={idx} />}
 {rota.kind === "guia" && <GuiaTpl rota={rota} indice={idx} />}

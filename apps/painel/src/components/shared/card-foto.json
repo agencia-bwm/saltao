@@ -1,0 +1,53 @@
+{
+  "collectionName": "components_shared_card_foto",
+  "info": {
+    "displayName": "Card com foto",
+    "icon": "picture"
+  },
+  "options": {},
+  "attributes": {
+    "imagem": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.image-alt",
+      "required": true
+    },
+    "local": {
+      "type": "string",
+      "maxLength": 40
+    },
+    "titulo": {
+      "type": "string",
+      "required": true,
+      "maxLength": 60
+    },
+    "texto": {
+      "type": "string",
+      "maxLength": 140
+    },
+    "link": {
+      "type": "string",
+      "required": true,
+      "maxLength": 300
+    },
+    "icone": {
+      "type": "enumeration",
+      "enum": [
+        "folha",
+        "sol",
+        "cachoeira",
+        "trilha",
+        "familia",
+        "escudo",
+        "barraca",
+        "cama",
+        "talheres",
+        "fogueira",
+        "churrasqueira",
+        "mapa",
+        "coracao",
+        "estrela"
+      ]
+    }
+  }
+}

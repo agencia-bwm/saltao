@@ -67,9 +67,41 @@ export interface Tabela {
   linhas: string[][];
 }
 
+/* ---------- Home (layout nov/2026) ---------- */
+/** Ícones desenhados em components/Icone.astro — mesma lista do gerador de schemas do painel. */
+export const ICONES = ["folha", "sol", "cachoeira", "trilha", "familia", "escudo", "barraca", "cama", "talheres", "fogueira", "churrasqueira", "mapa", "coracao", "estrela"] as const;
+export type Icone = (typeof ICONES)[number];
+export interface LinkRotulo {
+  rotulo: string;
+  link: string;
+}
+export interface CardFoto {
+  imagem: Img;
+  local?: string;
+  titulo: string;
+  texto?: string;
+  link: string;
+  icone?: Icone;
+}
+
 /* ---------- Blocos (dynamic zones) ---------- */
 export type Block =
-  | { __component: "blocks.hero"; titulo: string; respostaDireta: string; imagem: Img; cta?: Cta }
+  | {
+      __component: "blocks.hero";
+      sobretitulo?: string;
+      titulo: string;
+      /** Fim do H1, destacado em azul claro. */
+      tituloDestaque?: string;
+      respostaDireta: string;
+      imagem: Img;
+      cta?: Cta;
+      selo?: string;
+      cardRotulo?: string;
+      cardProdutoId?: string;
+    }
+  | { __component: "blocks.essencia"; sobretitulo?: string; titulo: string; tituloDestaque?: string; texto: string; fotos: Img[]; itens: { icone: Icone; rotulo: string }[] }
+  | { __component: "blocks.vitrine"; sobretitulo?: string; titulo: string; texto?: string; atalhos: LinkRotulo[]; itens: CardFoto[]; linkTodos?: LinkRotulo }
+  | { __component: "blocks.experiencias"; sobretitulo?: string; titulo: string; linkTodos?: LinkRotulo; itens: CardFoto[] }
   | { __component: "blocks.texto"; conteudo: RichText }
   | { __component: "blocks.imagem"; imagem: Img }
   | ({ __component: "blocks.tabela" } & Tabela)

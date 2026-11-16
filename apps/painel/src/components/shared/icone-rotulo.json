@@ -1,0 +1,35 @@
+{
+  "collectionName": "components_shared_icone_rotulo",
+  "info": {
+    "displayName": "Ícone com rótulo",
+    "icon": "star"
+  },
+  "options": {},
+  "attributes": {
+    "icone": {
+      "type": "enumeration",
+      "enum": [
+        "folha",
+        "sol",
+        "cachoeira",
+        "trilha",
+        "familia",
+        "escudo",
+        "barraca",
+        "cama",
+        "talheres",
+        "fogueira",
+        "churrasqueira",
+        "mapa",
+        "coracao",
+        "estrela"
+      ],
+      "required": true
+    },
+    "rotulo": {
+      "type": "string",
+      "required": true,
+      "maxLength": 40
+    }
+  }
+}

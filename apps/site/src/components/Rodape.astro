@@ -24,6 +24,11 @@ const dias = (s: string) => s.replace(/Mo|Tu|We|Th|Fr|Sa|Su/g, (d) => DIA[locale
 ---
 
 <footer class="rodape">
+  <!-- Topo em onda (layout nov/2026): o fundo da página "cai" no poço, com uma faixa de água clara. -->
+  <svg class="onda-topo" viewBox="0 0 1440 160" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+    <path class="onda-clara" d="M0 0h1440v58c-170 46-360 70-560 46C640 76 420 18 220 30 130 36 60 54 0 74Z" />
+    <path class="onda-branca" d="M0 0h1440v30c-190 44-390 60-600 34C620 38 420 0 230 8 140 12 64 28 0 46Z" />
+  </svg>
   <!-- Fim da descida: os três arcos do logo, grandes e quase transparentes, no fundo do poço. -->
   <svg class="arcos-fundo" viewBox="166 62 118 166" aria-hidden="true" focusable="false">
     <path fill="#489ed2" d="M239.58 73.19c-4.78-2.11-9.34-3.38-13.55-3.55-48.59-1.9-53.53 26.05-53.53 90.66 0 19.02 2.39 40.3 6.97 60.88-1.26-15.83-1.66-32.09-1.66-47.49 0-62.75 16.3-98.48 61.77-100.5Z" />
@@ -107,12 +112,24 @@ const dias = (s: string) => s.replace(/Mo|Tu|We|Th|Fr|Sa|Su/g, (d) => DIA[locale
     margin-top: var(--space-9);
     background: var(--grad-poco);
     color: var(--color-on-deep);
-    padding-block: var(--space-8) var(--space-5);
+    padding-block: calc(clamp(3rem, 9vw, 8rem) + var(--space-6)) var(--space-5);
     font-size: var(--fs-100);
-    /* O canto de cima curva como o topo dos arcos — a borda do poço. */
-    border-start-end-radius: clamp(2.5rem, 8vw, 7rem);
   }
-  .rodape > :not(.arcos-fundo) {
+  .rodape > .onda-topo {
+    position: absolute;
+    inset: -1px 0 auto;
+    width: 100%;
+    height: clamp(3rem, 9vw, 8rem);
+    pointer-events: none;
+  }
+  .onda-clara {
+    fill: var(--brand-azul-claro);
+    opacity: 0.55;
+  }
+  .onda-branca {
+    fill: var(--color-bg);
+  }
+  .rodape > :not(.arcos-fundo):not(.onda-topo) {
     position: relative;
   }
   .arcos-fundo {

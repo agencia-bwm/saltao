@@ -1,0 +1,49 @@
+---
+/** Bloco "Experiências": até 4 cards com foto, ícone, título e linha curta. No celular, rolagem lateral (CSS, sem JS). */
+import type { Block } from "../lib/types";
+import Foto from "./Foto.astro";
+import Icone from "./Icone.astro";
+
+type Props = Extract<Block, { __component: "blocks.experiencias" }>;
+const { sobretitulo, titulo, linkTodos, itens } = Astro.props;
+---
+
+<section class="experiencias">
+  <header class="topo-exp">
+    <div>
+      {sobretitulo && <p class="sobretitulo">{sobretitulo}</p>}
+      <h2>{titulo}</h2>
+    </div>
+    {
+      linkTodos && (
+        <a class="ver-todos" href={linkTodos.link}>
+          {linkTodos.rotulo}
+          <Icone nome="seta" tamanho={18} />
+        </a>
+      )
+    }
+  </header>
+  <ul class="lista">
+    {
+      itens.map((c) => (
+        <li class="exp">
+          <Foto formatos={["avif"]} img={c.imagem} sizes="(min-width: 64rem) 17rem, 78vw" larguras={[320, 480, 640]} proporcao={1 / 1.08} />
+          {c.icone && (
+            <span class="selo-icone">
+              <Icone nome={c.icone} tamanho={22} />
+            </span>
+          )}
+          <div class="exp-texto">
+            <h3>
+              <a href={c.link}>{c.titulo}</a>
+            </h3>
+            {c.texto && <p>{c.texto}</p>}
+          </div>
+          <span class="seta-circulo seta-circulo-claro" aria-hidden="true">
+            <Icone nome="seta" tamanho={16} />
+          </span>
+        </li>
+      ))
+    }
+  </ul>
+</section>
