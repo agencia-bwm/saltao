@@ -1,0 +1,382 @@
+---
+/**
+ * Bloco "Capítulo" (home): seção de revista, guiada pela foto.
+ * - imersivo: foto de ponta a ponta em tela cheia, texto e número grande por cima, fotos menores ao lado.
+ * - foto-esquerda / foto-direita: foto grande sangrando até a borda da tela, texto curto do outro lado.
+ * Sem preço, sem card, sem formulário: o capítulo desperta o desejo e leva à página da seção.
+ * As fotos "assentam" ao entrar na tela (scroll-driven animation em CSS, sem JS; desliga com prefers-reduced-motion).
+ */
+import type { Capitulo, Locale } from "../lib/types";
+import type { Indice } from "../lib/routes";
+import { enfase } from "../lib/texto";
+import { hrefCta } from "../lib/cta";
+import Foto from "./Foto.astro";
+
+interface Props {
+  capitulo: Capitulo;
+  indice: Indice;
+  locale: Locale;
+}
+const { capitulo: c, indice, locale } = Astro.props;
+const href = c.cta ? hrefCta(c.cta, indice, locale) : undefined;
+const imersivo = c.layout === "imersivo";
+const escuro = imersivo || c.tema === "escuro";
+---
+
+<section
+  class:list={["capitulo", `capitulo--${c.layout}`, { "capitulo--escuro no-escuro": escuro }]}
+  id={c.ancora}
+  aria-labelledby={c.ancora ? `${c.ancora}-titulo` : undefined}
+>
+  <div class="cap-midia">
+    <Foto img={c.imagem} sizes={imersivo ? "100vw" : "(min-width: 60rem) 58vw, 100vw"} larguras={[480, 760, 1080, 1440, 1920]} class="cap-foto" />
+  </div>
+
+  <div class="cap-conteudo">
+    <div class="cap-texto">
+      {c.sobretitulo && <p class="cap-sobre">{c.sobretitulo}</p>}
+      <h2 id={c.ancora ? `${c.ancora}-titulo` : undefined} set:html={enfase(c.titulo)} />
+      {c.texto && <p class="cap-paragrafo">{c.texto}</p>}
+      {
+        href && c.cta && (
+          <a class="cap-link" href={href}>
+            <span>{c.cta.rotulo}</span>
+            <svg viewBox="0 0 20 20" width="20" height="20" aria-hidden="true">
+              <path d="M4 10h11m-4.5-4.5L15 10l-4.5 4.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </a>
+        )
+      }
+    </div>
+
+    {
+      (c.destaque || c.galeria.length > 0) && (
+        <div class="cap-lateral">
+          {c.destaque && (
+            <p class="cap-destaque">
+              <strong>{c.destaque}</strong>
+              {c.destaqueLegenda && <span>{c.destaqueLegenda}</span>}
+            </p>
+          )}
+          {c.galeria.length > 0 && (
+            <ul class="cap-galeria">
+              {c.galeria.map((g) => (
+                <li>
+                  <Foto img={g} sizes="(min-width: 60rem) 12rem, 40vw" larguras={[240, 360, 480]} proporcao={3 / 4} />
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      )
+    }
+  </div>
+</section>
+
+<style>
+  .capitulo {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+  }
+  .cap-midia {
+    overflow: hidden;
+  }
+  /* A <picture> precisa ocupar a caixa inteira para a foto cobrir toda a altura. */
+  .cap-midia > :global(picture) {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+  .cap-midia :global(.cap-foto) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* ---------- Texto (comum) ---------- */
+  .cap-sobre {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-3);
+    margin: 0 0 var(--space-5);
+    font-size: var(--fs-100);
+    font-weight: var(--fw-forte);
+    letter-spacing: 0.06em;
+    color: var(--color-primary-strong);
+  }
+  /* Fio com os três azuis do logo antes do nome da seção. */
+  .cap-sobre::before {
+    content: "";
+    width: 2.5rem;
+    height: 2px;
+    background: var(--grad-arcos);
+    border-radius: 2px;
+  }
+  .capitulo h2 {
+    max-width: 14ch;
+    margin: 0 0 var(--space-5);
+    font-size: clamp(2.5rem, 1.2rem + 4.6vw, 5.25rem);
+    font-weight: 250;
+    line-height: 1.02;
+    letter-spacing: -0.035em;
+  }
+  .cap-paragrafo {
+    max-width: 40ch;
+    margin: 0 0 var(--space-6);
+    font-size: var(--fs-300);
+    line-height: 1.55;
+    color: var(--color-text-muted);
+    text-wrap: pretty;
+  }
+  .cap-link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-3);
+    min-height: 44px;
+    font-size: var(--fs-300);
+    font-weight: var(--fw-medio);
+    color: var(--brand-poco);
+    text-decoration: none;
+  }
+  .cap-link span {
+    background: linear-gradient(currentColor, currentColor) left bottom / 100% 1px no-repeat;
+    padding-bottom: 2px;
+    transition: background-size 0.3s ease;
+  }
+  .cap-link svg {
+    transition: transform 0.3s ease;
+  }
+  .cap-link:hover span {
+    background-size: 0 1px;
+  }
+  .cap-link:hover svg {
+    transform: translateX(6px);
+  }
+
+  /* Tema escuro (e imersivo): texto claro. */
+  .capitulo--escuro {
+    color: var(--color-on-deep);
+    background: var(--grad-faixa-topo);
+  }
+  .capitulo--escuro h2,
+  .capitulo--escuro .cap-link {
+    color: #ffffff;
+  }
+  .capitulo--escuro .cap-sobre {
+    color: var(--brand-azul-claro);
+  }
+  .capitulo--escuro .cap-paragrafo {
+    color: var(--color-on-deep);
+  }
+
+  /* ---------- Destaque e galeria ---------- */
+  .cap-destaque {
+    display: grid;
+    margin: 0 0 var(--space-5);
+  }
+  .cap-destaque strong {
+    font-size: clamp(4.5rem, 2rem + 9vw, 10rem);
+    font-weight: 200;
+    line-height: 0.9;
+    letter-spacing: -0.06em;
+    background: linear-gradient(180deg, #ffffff 30%, var(--brand-azul-claro) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .cap-destaque span {
+    margin-top: var(--space-2);
+    font-size: var(--fs-100);
+    color: var(--color-on-deep);
+  }
+  .cap-galeria {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    gap: var(--space-3);
+  }
+  .cap-galeria li {
+    width: clamp(7.5rem, 22vw, 12rem);
+  }
+  .cap-galeria :global(img) {
+    width: 100%;
+    aspect-ratio: 3 / 4;
+    object-fit: cover;
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-md);
+  }
+
+  /* ---------- Imersivo: foto em tela cheia ---------- */
+  .capitulo--imersivo {
+    display: grid;
+    min-height: min(100svh, 60rem);
+    background: var(--brand-poco);
+  }
+  .capitulo--imersivo .cap-midia {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+  }
+  .capitulo--imersivo .cap-midia::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    /* Véu leve, só onde há texto: a foto aparece. */
+    background:
+      linear-gradient(to top, rgb(15 39 68 / 0.85) 0%, rgb(15 39 68 / 0.3) 38%, rgb(15 39 68 / 0) 62%),
+      linear-gradient(to right, rgb(15 39 68 / 0.4), rgb(15 39 68 / 0) 50%);
+  }
+  .capitulo--imersivo .cap-conteudo {
+    align-self: end;
+    width: min(100% - 2 * var(--space-4), var(--container));
+    margin-inline: auto;
+    padding-block: var(--space-9) var(--space-8);
+    display: grid;
+    gap: var(--space-7);
+    align-items: end;
+  }
+  /* No celular o texto ocupa quase a altura toda: véu um pouco mais alto. */
+  @media (max-width: 59.99rem) {
+    .capitulo--imersivo .cap-midia::after {
+      background: linear-gradient(to top, rgb(15 39 68 / 0.9) 0%, rgb(15 39 68 / 0.6) 55%, rgb(15 39 68 / 0.25) 85%);
+    }
+  }
+  .capitulo--imersivo .cap-texto,
+  .capitulo--imersivo .cap-destaque span {
+    text-shadow: 0 2px 18px rgb(15 39 68 / 0.55);
+  }
+  .capitulo--imersivo .cap-galeria :global(img) {
+    box-shadow: 0 18px 40px -16px rgb(0 0 0 / 0.6);
+  }
+  @media (min-width: 60rem) {
+    .capitulo--imersivo .cap-conteudo {
+      grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+    }
+    .capitulo--imersivo .cap-lateral {
+      justify-self: end;
+    }
+  }
+
+  /* ---------- Foto à esquerda / à direita: a foto sangra até a borda da tela ---------- */
+  .capitulo--foto-esquerda .cap-midia,
+  .capitulo--foto-direita .cap-midia {
+    height: min(78svh, 34rem);
+  }
+  .capitulo--foto-esquerda .cap-conteudo,
+  .capitulo--foto-direita .cap-conteudo {
+    width: min(100% - 2 * var(--space-4), var(--container));
+    margin-inline: auto;
+    padding-block: var(--space-7) var(--space-8);
+    display: grid;
+    gap: var(--space-6);
+  }
+  @media (min-width: 60rem) {
+    .capitulo--foto-esquerda,
+    .capitulo--foto-direita {
+      display: grid;
+      grid-template-columns: 58vw minmax(0, 1fr);
+      align-items: stretch;
+      min-height: min(92svh, 52rem);
+    }
+    .capitulo--foto-esquerda .cap-conteudo,
+    .capitulo--foto-direita .cap-conteudo {
+      align-self: center;
+    }
+    /* A foto ocupa a altura toda do capítulo, qualquer que seja o tamanho do texto. */
+    .capitulo--foto-esquerda .cap-midia,
+    .capitulo--foto-direita .cap-midia {
+      position: relative;
+    }
+    .capitulo--foto-esquerda .cap-midia > :global(picture),
+    .capitulo--foto-direita .cap-midia > :global(picture) {
+      position: absolute;
+      inset: 0;
+    }
+    .capitulo--foto-esquerda h2,
+    .capitulo--foto-direita h2 {
+      font-size: clamp(2.5rem, 1rem + 3.4vw, 4.25rem);
+    }
+    .capitulo--foto-esquerda .cap-galeria li,
+    .capitulo--foto-direita .cap-galeria li {
+      width: clamp(7rem, 10vw, 9.5rem);
+    }
+    .capitulo--foto-direita {
+      grid-template-columns: minmax(0, 1fr) 58vw;
+    }
+    .capitulo--foto-direita .cap-midia {
+      order: 2;
+    }
+    .capitulo--foto-esquerda .cap-midia,
+    .capitulo--foto-direita .cap-midia {
+      height: auto;
+      min-height: min(92svh, 52rem);
+    }
+    /* Canto grande do arco só do lado de dentro, virado para o texto. */
+    .capitulo--foto-esquerda .cap-midia {
+      border-radius: 0 var(--radius-arco) var(--radius-arco) 0;
+    }
+    .capitulo--foto-direita .cap-midia {
+      border-radius: var(--radius-arco) 0 0 var(--radius-arco);
+    }
+    .capitulo--foto-esquerda .cap-conteudo,
+    .capitulo--foto-direita .cap-conteudo {
+      width: auto;
+      margin: 0;
+      padding-block: var(--space-8);
+    }
+    .capitulo--foto-esquerda .cap-conteudo {
+      padding-inline: clamp(var(--space-6), 5vw, var(--space-9)) max(var(--space-4), calc((100vw - var(--container)) / 2));
+    }
+    .capitulo--foto-direita .cap-conteudo {
+      padding-inline: max(var(--space-4), calc((100vw - var(--container)) / 2)) clamp(var(--space-6), 5vw, var(--space-9));
+    }
+    /* A galeria encosta na foto grande, como fotos soltas sobre a mesa. */
+    .capitulo--foto-esquerda .cap-galeria li:first-child,
+    .capitulo--foto-direita .cap-galeria li:first-child {
+      margin-top: var(--space-6);
+    }
+  }
+
+  /* ---------- Movimento: a foto assenta ao entrar na tela (só CSS) ---------- */
+  @supports (animation-timeline: view()) {
+    @media (prefers-reduced-motion: no-preference) {
+      .cap-midia :global(.cap-foto) {
+        animation: assentar linear both;
+        animation-timeline: view();
+        animation-range: entry 0% cover 45%;
+      }
+      .cap-texto,
+      .cap-lateral {
+        animation: subir linear both;
+        animation-timeline: view();
+        animation-range: entry 5% cover 30%;
+      }
+    }
+  }
+  @keyframes assentar {
+    from {
+      transform: scale(1.14);
+    }
+    to {
+      transform: scale(1);
+    }
+  }
+  @keyframes subir {
+    from {
+      opacity: 0;
+      transform: translateY(2.5rem);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .cap-link span,
+    .cap-link svg {
+      transition: none;
+    }
+  }
+</style>

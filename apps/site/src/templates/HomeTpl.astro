@@ -1,12 +1,12 @@
 ---
 /**
- * Template Home — linha editorial: hero em tela cheia com o menu por cima, reserva rápida (formulário GET, sem JS),
- * e as seções do painel em faixas de largura total (céu → poço → céu → azul → céu → foto → rodapé).
+ * Template Home — linha editorial guiada pelas fotos: hero em tela cheia com o menu por cima e as seções do painel
+ * em faixas de largura total. Os capítulos (Cachoeiras, Day Use, Apartamentos, Camping) são o corpo da página;
+ * reservar é com o motor — aqui não há formulário nem grade de preços.
  */
 import type { Rota, Indice } from "../lib/routes";
-import type { Produto } from "../lib/types";
 import { noFaq, noWebPage } from "../lib/schema";
-import { linkReserva, RESERVAS_URL } from "../lib/config";
+import { hrefCta } from "../lib/cta";
 import { t } from "../lib/i18n";
 import { enfase } from "../lib/texto";
 import Base from "../layouts/Base.astro";
@@ -22,13 +22,11 @@ const { doc, locale } = rota;
 const ui = t(locale);
 const hero = doc.hero;
 const faqs = doc.secoes.flatMap((b) => (b.__component === "blocks.faq" ? b.itens : []));
-const ctaHref = hero.cta?.tipo === "produto" && hero.cta.produtoId ? indice.link("produto", hero.cta.produtoId, locale) : (hero.cta?.url ?? linkReserva({ lang: locale }));
+const ctaHref = hrefCta(hero.cta, indice, locale);
 
-// Reserva rápida: os produtos do primeiro bloco de destaques (ou todos os do idioma).
-const destaques = doc.secoes.find((b) => b.__component === "blocks.destaques-produtos");
-const idsReserva = destaques?.__component === "blocks.destaques-produtos" ? destaques.produtoIds : indice.conteudo.produtos.filter((p) => p.locale === locale).map((p) => p.documentId);
-const produtosReserva = idsReserva.map((id) => indice.produto(id, locale)).filter((p): p is Produto => !!p);
-const temExperiencias = !!destaques;
+// O 2º botão do hero desce até o primeiro capítulo que tem âncora (ex.: #cachoeiras).
+const primeiroCapitulo = doc.secoes.find((b) => b.__component === "blocks.capitulo" && b.ancora);
+const ancoraDescubra = primeiroCapitulo?.__component === "blocks.capitulo" ? primeiroCapitulo.ancora : undefined;
 ---
 
 <Base {...rota} indice={indice} imagem={hero.imagem} jsonld={[noWebPage(rota.path, doc.seo.metaTitle, hero.respostaDireta, locale), noFaq(faqs, rota.path)].filter((n) => n !== null)}>
@@ -48,33 +46,10 @@ const temExperiencias = !!destaques;
           <p class="resposta">{hero.respostaDireta}</p>
           <div class="acoes">
             <a class="btn btn-claro" href={ctaHref} data-dl='{"event":"click_reservar","method":"hero"}'>{hero.cta?.rotulo ?? ui.reservar}</a>
-            {temExperiencias && <a class="btn btn-contorno" href="#experiencias">{ui.verExperiencias} <span aria-hidden="true">↓</span></a>}
+            {ancoraDescubra && <a class="btn btn-contorno" href={`#${ancoraDescubra}`}>{ui.descubra} <span aria-hidden="true">↓</span></a>}
           </div>
         </div>
 
-        {
-          produtosReserva.length > 0 && (
-            <form class="reserva-rapida" method="get" action={`${RESERVAS_URL}/reservar`} aria-labelledby="rr-titulo">
-              <p class="rr-titulo" id="rr-titulo">{ui.reservaRapida}</p>
-              <input type="hidden" name="lang" value={locale} />
-              <label>
-                <span>{ui.oQueReservar}</span>
-                <select name="produto" required>
-                  {produtosReserva.map((p) => (
-                    <option value={p.motorProdutoId}>{p.titulo}</option>
-                  ))}
-                </select>
-              </label>
-              <label>
-                <span>{ui.dataVisita}</span>
-                <input type="date" name="data" required />
-              </label>
-              <button class="btn btn-reservar" type="submit" data-dl='{"event":"check_availability","method":"reserva_rapida"}'>
-                {ui.verDisponibilidade}
-              </button>
-            </form>
-          )
-        }
       </div>
     </div>
   </section>
@@ -115,9 +90,9 @@ const temExperiencias = !!destaques;
     align-items: flex-end;
     padding-block: calc(var(--altura-cabecalho) + var(--space-8)) var(--space-8);
     background:
-      linear-gradient(to bottom, rgb(15 39 68 / 0.6) 0, rgb(15 39 68 / 0) 10rem),
-      linear-gradient(to top, rgb(15 39 68 / 0.92) 0%, rgb(15 39 68 / 0.5) 45%, rgb(15 39 68 / 0) 75%),
-      linear-gradient(to right, rgb(36 74 117 / 0.6), rgb(15 39 68 / 0) 65%);
+      linear-gradient(to bottom, rgb(15 39 68 / 0.5) 0, rgb(15 39 68 / 0) 8rem),
+      linear-gradient(to top, rgb(15 39 68 / 0.8) 0%, rgb(15 39 68 / 0.3) 35%, rgb(15 39 68 / 0) 60%),
+      linear-gradient(to right, rgb(15 39 68 / 0.45), rgb(15 39 68 / 0) 55%);
   }
   .hero-grade {
     display: grid;
@@ -147,6 +122,9 @@ const temExperiencias = !!destaques;
     -webkit-backdrop-filter: blur(8px);
     backdrop-filter: blur(8px);
   }
+  .hero-conteudo {
+    text-shadow: 0 2px 20px rgb(15 39 68 / 0.5);
+  }
   .hero h1 {
     max-width: 15ch;
     margin-bottom: var(--space-5);
@@ -164,8 +142,8 @@ const temExperiencias = !!destaques;
   @media (max-width: 63.99rem) {
     .hero-texto {
       background:
-        linear-gradient(rgb(15 39 68 / 0.35), rgb(15 39 68 / 0.35)),
-        linear-gradient(to top, rgb(15 39 68 / 0.92) 0%, rgb(15 39 68 / 0.5) 50%, rgb(15 39 68 / 0.2) 100%);
+        linear-gradient(rgb(15 39 68 / 0.2), rgb(15 39 68 / 0.2)),
+        linear-gradient(to top, rgb(15 39 68 / 0.85) 0%, rgb(15 39 68 / 0.4) 50%, rgb(15 39 68 / 0.15) 100%);
     }
   }
   .resposta {
@@ -185,84 +163,30 @@ const temExperiencias = !!destaques;
     padding-inline: var(--space-6);
   }
 
-  /* Reserva rápida: painel de vidro, envia para o motor com produto e data (zero JS). */
-  .reserva-rapida {
-    grid-column: 1 / -1;
-    display: grid;
-    gap: var(--space-3);
-    padding: var(--space-5);
-    color: #ffffff;
-    background: rgb(15 39 68 / 0.55);
-    border: 1px solid var(--color-linha-clara);
-    border-radius: var(--radius-card);
-    -webkit-backdrop-filter: blur(16px) saturate(1.2);
-    backdrop-filter: blur(16px) saturate(1.2);
-  }
-  .rr-titulo {
-    margin: 0;
-    font-weight: var(--fw-medio);
-    color: var(--brand-azul-claro);
-    font-size: var(--fs-100);
-  }
-  .reserva-rapida label {
-    display: grid;
-    gap: var(--space-1);
-    font-size: var(--fs-100);
-    color: var(--color-on-deep);
-  }
-  .reserva-rapida select,
-  .reserva-rapida input {
-    min-height: 48px;
-    padding: 0 var(--space-3);
-    font: inherit;
-    font-size: var(--fs-200);
-    color: var(--brand-poco);
-    background: #ffffff;
-    border: 0;
-    border-radius: var(--radius-md);
-  }
-  .reserva-rapida .btn {
-    min-height: 52px;
-  }
   @media (min-width: 64rem) {
-    .hero-grade {
-      grid-template-columns: auto minmax(0, 1fr) 21rem;
-    }
-    .reserva-rapida {
-      grid-column: 3;
-      margin-bottom: var(--space-2);
+    .hero h1 {
+      max-width: 16ch;
     }
   }
 
   /* ---------- Seções em faixas de largura total ---------- */
-  .secoes {
-    counter-reset: secao;
-  }
   .secoes > :global(section) {
     margin: 0 calc(50% - 50vw);
     padding: clamp(var(--space-8), 9vw, var(--space-9)) calc(50vw - 50%);
   }
-  /* Títulos de seção editoriais: número da seção acima, título grande e leve. */
+  /* Títulos de seção: grandes e leves. */
   .secoes > :global(section > h2) {
     max-width: 20ch;
     margin: 0 0 var(--space-7);
     font-size: clamp(2.1rem, 1.3rem + 3vw, 3.75rem);
     font-weight: 250;
   }
-  .secoes > :global(section:not(.chamada-final) > h2)::before {
-    counter-increment: secao;
-    content: counter(secao, decimal-leading-zero);
-    display: flex;
-    align-items: center;
-    gap: var(--space-3);
-    margin-bottom: var(--space-4);
-    font-size: var(--fs-100);
-    font-weight: var(--fw-forte);
-    letter-spacing: 0.08em;
-    color: var(--color-primary-strong);
+  /* Capítulos: cuidam do próprio espaço (foto até a borda). */
+  .secoes > :global(.capitulo) {
+    padding: 0;
   }
-  .secoes > :global(section.no-escuro:not(.chamada-final) > h2)::before {
-    color: var(--brand-azul-claro);
+  .secoes > :global(.capitulo + .capitulo:not(.capitulo--escuro)) {
+    margin-top: var(--space-6);
   }
 
   /* Experiências: trilho com scroll-snap no celular; grade "bento" no computador
@@ -372,6 +296,37 @@ const temExperiencias = !!destaques;
   /* Números logo depois da foto: sem a curva no topo, colado na imagem. */
   .secoes > :global(.panoramica + .fatos) {
     margin-top: var(--space-6);
+  }
+
+  /* Frase sobre foto de ponta a ponta. */
+  .secoes > :global(.frase--foto) {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    min-height: min(80svh, 44rem);
+    align-content: center;
+    background: var(--brand-poco);
+  }
+  .secoes :global(.frase--foto > picture) {
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+  }
+  .secoes :global(.frase--foto .frase-img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .secoes > :global(.frase--foto)::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: radial-gradient(60rem 26rem at 50% 55%, rgb(15 39 68 / 0.5), rgb(15 39 68 / 0.12));
+  }
+  .secoes :global(.frase--foto p) {
+    color: #ffffff;
+    text-shadow: 0 2px 24px rgb(15 39 68 / 0.6);
   }
 
   /* Números: faixa azul média, de ponta a ponta. */

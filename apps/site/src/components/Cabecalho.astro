@@ -38,22 +38,21 @@ if (!menu.length) {
     return x ? { rotulo: x.titulo, href: indice.link("categoria-produto", x.documentId, locale)! } : null;
   };
   const so = (xs: (Link | null)[]) => xs.filter((x): x is Link => x !== null);
-  // Hospedagem: a categoria (visão geral) + cada acomodação.
+  // Cada acomodação (Apartamentos, Camping) vira item próprio do menu.
   const hosp = cats.find((k) => k.documentId === "cat-hosp");
-  const hospFilhos: Link[] = hosp
-    ? [
-        { rotulo: ui.visaoGeral, href: indice.link("categoria-produto", hosp.documentId, locale)! },
-        ...hosp.produtoIds.flatMap((id) => {
-          const pr = indice.produto(id, locale);
-          const href = indice.link("produto", id, locale);
-          return pr && href ? [{ rotulo: pr.titulo, href }] : [];
-        }),
-      ]
-    : [];
+  const acomodacoes: Entrada[] = (hosp?.produtoIds ?? []).flatMap((id) => {
+    const pr = indice.produto(id, locale);
+    const href = indice.link("produto", id, locale);
+    return pr && href ? [{ rotulo: pr.titulo, href, filhos: [] }] : [];
+  });
+  const dayuse = cats.find((k) => k.documentId === "cat-dayuse");
+  // Cachoeiras: item de destaque, logo no início (a página forte do site atual).
+  const cachoeiras = pagina("institucional", "inst-cachoeira");
   const grupos: Entrada[] = [
-    { rotulo: ui.grupoParque, filhos: so([pagina("institucional", "inst-conheca"), pagina("institucional", "inst-cachoeira"), pagina("institucional", "inst-restaurante"), pagina("institucional", "inst-seguranca")]) },
-    { rotulo: ui.grupoExperiencias, filhos: so([cat("cat-dayuse"), cat("cat-quiosques")]) },
-    hosp ? { rotulo: hosp.titulo.split(/\s+(e|and|y)\s+/)[0], filhos: hospFilhos } : { rotulo: "", filhos: [] },
+    ...(cachoeiras ? [{ rotulo: ui.cachoeiras, href: cachoeiras.href, filhos: [] }] : []),
+    { rotulo: dayuse?.titulo ?? "Day Use", filhos: so([dayuse ? { rotulo: ui.visaoGeral, href: indice.link("categoria-produto", dayuse.documentId, locale)! } : null, cat("cat-quiosques")]) },
+    ...acomodacoes,
+    { rotulo: ui.grupoParque, filhos: so([pagina("institucional", "inst-conheca"), pagina("institucional", "inst-restaurante"), pagina("institucional", "inst-seguranca")]) },
     ...(indice.porPath.has(guiaPath(locale)) ? [{ rotulo: ui.guiaCurto, href: guiaPath(locale), filhos: [] }] : []),
     { rotulo: ui.grupoAtendimento, filhos: so([pagina("atendimento", "at-faq"), pagina("institucional", "inst-como-chegar"), pagina("atendimento", "at-minha-reserva")]) },
   ];

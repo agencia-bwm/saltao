@@ -48,7 +48,8 @@ components = {
     "source-link": ("Fonte", "link", {"titulo": s(True, 200), "url": s(True, 500, regex="^https?://")}),
     "url": ("URL", "link", {"url": s(True, 500, regex="^https?://")}),
     "image-alt": ("Imagem com alt", "picture", {"imagem": media(req=True), "alt": s(True, 125), "legenda": s(maxLength=200)}),
-    "cta": ("Chamada (CTA)", "cursor", {"rotulo": s(True, 40), "tipo": enum(["produto", "link", "whatsapp"], True, "link"), "produto": rel("oneToOne", PROD), "url": s(maxLength=500)}),
+    "cta": ("Chamada (CTA)", "cursor", {"rotulo": s(True, 40), "tipo": enum(["produto", "categoria", "pagina", "link", "whatsapp"], True, "link"), "produto": rel("oneToOne", PROD),
+            "categoria": rel("oneToOne", "api::categoria-produto.categoria-produto"), "pagina": rel("oneToOne", "api::pagina-institucional.pagina-institucional"), "url": s(maxLength=500)}),
     "endereco": ("Endereço", "pinMap", {"rua": s(True), "numero": s(True, 20), "bairro": s(), "cidade": s(True), "uf": s(True, 2), "cep": s(True, 9)}),
     "geo": ("Coordenadas", "pinMap", {"latitude": {"type": "decimal", "required": True}, "longitude": {"type": "decimal", "required": True}}),
     "horario": ("Horário", "clock", {"dias": s(True, 30, regex="^(Mo|Tu|We|Th|Fr|Sa|Su)([-,](Mo|Tu|We|Th|Fr|Sa|Su))*$"), "abre": s(True, 5, regex="^\\d{2}:\\d{2}$"), "fecha": s(True, 5, regex="^\\d{2}:\\d{2}$")}),
@@ -66,7 +67,7 @@ components = {
     "texto": ("Texto", "feather", {"conteudo": dict(BLOCKS, required=True)}),
     "imagem": ("Imagem", "picture", {"imagem": comp("shared.image-alt", req=True)}),
     "tabela": ("Tabela", "grid", {"titulo": s(maxLength=120), "cabecalho": {"type": "json", "required": True}, "linhas": {"type": "json", "required": True}}),
-    "citacao": ("Citação", "quote", {"texto": text(True, 500), "autor": s(maxLength=120)}),
+    "citacao": ("Citação", "quote", {"texto": text(True, 500), "autor": s(maxLength=120), "imagem": comp("shared.image-alt")}),
     "cta-produto": ("CTA de produto", "shoppingCart", {"produto": rel("oneToOne", PROD), "textoChamada": s(maxLength=160)}),
     "destaques-produtos": ("Destaques de produtos", "apps", {"titulo": s(maxLength=90), "produtos": rel("oneToMany", PROD)}),
     "fatos": ("Fatos (números)", "chartBubble", {"titulo": s(maxLength=90), "itens": comp("shared.key-value", True)}),
@@ -74,12 +75,19 @@ components = {
     "faq": ("Perguntas frequentes", "question", {"titulo": s(maxLength=90), "itens": comp("shared.faq-item", True)}),
     "video": ("Vídeo (fachada)", "play", {"url": s(True, 300, regex="^https://(www\\.)?(youtube\\.com|youtu\\.be)/"), "poster": comp("shared.image-alt", req=True), "titulo": s(maxLength=120)}),
     "mapa-estatico": ("Mapa estático", "pinMap", {"imagem": comp("shared.image-alt", req=True), "linkMaps": s(True, 500, regex="^https://")}),
+    # Capítulo da home: seção de revista com foto grande. layout: imersivo (foto de ponta a ponta) ou foto à esquerda/direita.
+    "capitulo": ("Capítulo (seção com foto grande)", "landscape", {
+      "ancora": s(maxLength=40, regex="^[a-z0-9-]+$"), "sobretitulo": s(maxLength=40), "titulo": s(True, 90), "texto": text(False, 400),
+      "imagem": comp("shared.image-alt", req=True), "galeria": comp("shared.image-alt", True, max=3),
+      "destaque": s(maxLength=12), "destaqueLegenda": s(maxLength=60),
+      "layout": enum(["imersivo", "foto_esquerda", "foto_direita"], True, "foto_esquerda"), "tema": enum(["claro", "escuro"], True, "claro"),
+      "cta": comp("shared.cta")}),
     "roteiro": ("Roteiro (um dia no parque)", "calendar", {"titulo": s(maxLength=90), "itens": comp("shared.roteiro-item", True, max=6)}),
     "chamada-final": ("Chamada final", "message", {"titulo": s(True, 90), "texto": text(False, 300), "imagem": comp("shared.image-alt", req=True), "cta": comp("shared.cta")}),
   },
 }
 
-BLOCOS_HOME = ["blocks.destaques-produtos", "blocks.roteiro", "blocks.citacao", "blocks.imagem", "blocks.fatos", "blocks.avaliacoes", "blocks.texto", "blocks.faq", "blocks.cta-produto", "blocks.mapa-estatico", "blocks.chamada-final"]
+BLOCOS_HOME = ["blocks.capitulo", "blocks.destaques-produtos", "blocks.roteiro", "blocks.citacao", "blocks.imagem", "blocks.fatos", "blocks.avaliacoes", "blocks.texto", "blocks.faq", "blocks.cta-produto", "blocks.mapa-estatico", "blocks.chamada-final"]
 BLOCOS_INST = ["blocks.texto", "blocks.imagem", "blocks.tabela", "blocks.fatos", "blocks.faq", "blocks.mapa-estatico", "blocks.video", "blocks.cta-produto"]
 BLOCOS_ART = ["blocks.texto", "blocks.imagem", "blocks.tabela", "blocks.citacao", "blocks.cta-produto"]
 

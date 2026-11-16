@@ -14,6 +14,8 @@ export const SEG: Record<Locale, { guia: string; categoria: string; pagina: stri
 
 const ui = {
   pt: {
+    cachoeiras: "Cachoeiras",
+    descubra: "Descubra o parque",
     reservaRapida: "Reserva rápida",
     oQueReservar: "O que você quer reservar",
     dataVisita: "Data",
@@ -78,6 +80,8 @@ const ui = {
     } satisfies Record<UnidadePreco, string>,
   },
   en: {
+    cachoeiras: "Waterfalls",
+    descubra: "Discover the park",
     reservaRapida: "Quick booking",
     oQueReservar: "What would you like to book",
     dataVisita: "Date",
@@ -142,6 +146,8 @@ const ui = {
     } satisfies Record<UnidadePreco, string>,
   },
   es: {
+    cachoeiras: "Cascadas",
+    descubra: "Descubre el parque",
     reservaRapida: "Reserva rápida",
     oQueReservar: "¿Qué quieres reservar?",
     dataVisita: "Fecha",

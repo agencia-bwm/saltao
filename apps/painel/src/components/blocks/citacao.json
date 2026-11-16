@@ -14,6 +14,11 @@
     "autor": {
       "type": "string",
       "maxLength": 120
+    },
+    "imagem": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.image-alt"
     }
   }
 }
