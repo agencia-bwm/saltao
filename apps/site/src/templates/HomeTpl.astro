@@ -53,14 +53,21 @@ const ctaHref = hero.cta?.tipo === "produto" && hero.cta.produtoId ? indice.link
     /* A borda de baixo curva como o topo dos arcos do logo. */
     border-end-start-radius: clamp(2.5rem, 8vw, 7rem);
   }
-  .hero > :global(picture),
+  /* A foto é fundo absoluto: a altura do hero vem do min-height, não da proporção da foto. */
+  .hero > :global(picture) {
+    position: absolute;
+    inset: 0;
+  }
   .hero-texto {
+    position: relative;
     grid-area: 1 / 1;
   }
   .hero :global(.hero-img) {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    /* Foto vertical: enquadra a queda e o poço com os visitantes. */
+    object-position: 52% 58%;
   }
   /* Véu no azul do poço (não preto): legibilidade sem apagar a foto. */
   .hero-texto {
