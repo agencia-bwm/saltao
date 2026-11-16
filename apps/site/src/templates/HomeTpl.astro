@@ -194,7 +194,7 @@ const temExperiencias = !!destaques;
     color: #ffffff;
     background: rgb(15 39 68 / 0.55);
     border: 1px solid var(--color-linha-clara);
-    border-radius: var(--radius-lg) var(--radius-arco) var(--radius-lg) var(--radius-lg);
+    border-radius: var(--radius-card);
     -webkit-backdrop-filter: blur(16px) saturate(1.2);
     backdrop-filter: blur(16px) saturate(1.2);
   }
@@ -265,14 +265,15 @@ const temExperiencias = !!destaques;
     color: var(--brand-azul-claro);
   }
 
-  /* Experiências: trilho de cards em foto (scroll-snap no celular, 4 colunas no computador). */
+  /* Experiências: trilho com scroll-snap no celular; grade "bento" no computador
+     (1º card grande 2×2, 2º largo 2×1, os demais 1×1). */
   .secoes :global(.trilho-cards) {
     list-style: none;
     margin: 0;
     padding: 0 0 var(--space-3);
     display: grid;
     grid-auto-flow: column;
-    grid-auto-columns: min(78vw, 20rem);
+    grid-auto-columns: min(82vw, 21rem);
     gap: var(--space-4);
     overflow-x: auto;
     scroll-snap-type: x mandatory;
@@ -283,13 +284,23 @@ const temExperiencias = !!destaques;
   }
   @media (min-width: 60rem) {
     .secoes :global(.trilho-cards) {
-      grid-auto-columns: minmax(0, 1fr);
+      grid-auto-flow: row dense;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      grid-auto-rows: minmax(16rem, 19rem);
+      gap: var(--space-4);
       overflow: visible;
-      gap: var(--space-5);
+      padding-bottom: 0;
     }
-    /* Escada: os cards descem como a água. */
-    .secoes :global(.trilho-cards > li:nth-child(even)) {
-      margin-top: var(--space-7);
+    .secoes :global(.trilho-cards > li:first-child) {
+      grid-column: span 2;
+      grid-row: span 2;
+    }
+    .secoes :global(.trilho-cards > li:nth-child(2)),
+    .secoes :global(.trilho-cards > li:last-child:nth-child(3)) {
+      grid-column: span 2;
+    }
+    .secoes :global(.trilho-cards .card-foto) {
+      min-height: 0;
     }
   }
 

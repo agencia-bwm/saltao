@@ -30,7 +30,8 @@ Cores do logo oficial (`packages/ui/marca/saltao-logo-original.pdf`): azul Salt�
 - **Destaque no texto:** no painel, `*palavra*` vira `<em>` com o degradê dos arcos (`lib/texto.ts` → `enfase()`; use `semEnfase()` em meta/alt). Vale no título do hero, H2 da home, citação e chamada final. Sem itálico falso.
 - Blocos novos do painel: `blocks.roteiro` (até 6 momentos: hora, título, texto, foto vertical) e `blocks.chamada-final` (título, texto, foto, CTA); o hero ganhou `sobretitulo`.
 - Os três arcos do logo são o único ornamento: fios d'água no hero, marca d'água na faixa do topo e no rodapé, fio `--grad-arcos` no submenu e no preço.
-- Canto do arco: fotos e painéis usam `--radius-arco` só no canto superior direito; faixas usam a curva grande embaixo à esquerda.
+- Cantos: cards e fotos usam `--radius-card` (cantos iguais) recortado com `clip-path: inset(0 round …)` — o zoom no hover nunca deixa o canto quadrado. `--radius-arco` (canto grande assimétrico) fica só em faixas e painéis grandes.
+- Destaques da home: grade "bento" no computador (1º card 2×2 com resumo, 2º 2×1, demais 1×1), trilho com scroll-snap no celular. Hover: card sobe 6px, foto aproxima 3%, seta enche de branco.
 - Títulos em peso leve (300/250), como o wordmark. Nada de caixa-alta em rótulos.
 - Contraste: sobre o céu, texto/link azul é sempre `--color-primary-strong` (o azul Saltão fica abaixo de 4,5:1); sobre azul, texto branco ou `--color-on-deep`.
 

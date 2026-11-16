@@ -121,7 +121,7 @@ const sizesLargura = estreito ? "(min-width: 46rem) 46rem, 100vw" : "(min-width:
               <ul class="trilho-cards">
                 {itens.map(({ p, href }, idx) => (
                   <li>
-                    <CardProduto produto={p!} href={href!} categoria={indice.categoriaProduto(p!.categoriaId, locale)} locale={locale} lista={b.titulo ?? "destaques"} index={idx} variante="foto" />
+                    <CardProduto produto={p!} href={href!} categoria={indice.categoriaProduto(p!.categoriaId, locale)} locale={locale} lista={b.titulo ?? "destaques"} index={idx} variante="foto" destaque={idx === 0 && itens.length > 2} />
                   </li>
                 ))}
               </ul>
@@ -157,7 +157,7 @@ const sizesLargura = estreito ? "(min-width: 46rem) 46rem, 100vw" : "(min-width:
   }
   .bloco-imagem :global(img),
   .bloco-mapa :global(img) {
-    border-radius: var(--radius-lg) var(--radius-arco) var(--radius-lg) var(--radius-lg);
+    border-radius: var(--radius-card);
     width: 100%;
   }
   figcaption {
@@ -186,7 +186,7 @@ const sizesLargura = estreito ? "(min-width: 46rem) 46rem, 100vw" : "(min-width:
     margin: var(--space-7) 0;
     background: var(--grad-arcos) left top / 100% 3px no-repeat, var(--color-bg);
     box-shadow: var(--shadow-card);
-    border-radius: var(--radius-lg) var(--radius-arco) var(--radius-lg) var(--radius-lg);
+    border-radius: var(--radius-card);
   }
   .cta-produto strong {
     font-size: var(--fs-300);
