@@ -14,13 +14,31 @@ interface Props {
   nivel?: "h2" | "h3";
   /** Primeiro card de uma listagem: é a imagem LCP da página. */
   prioridade?: boolean;
+  /** "foto": card alto, texto por cima da foto (home). */
+  variante?: "padrao" | "foto";
 }
-const { produto, href, categoria, locale, lista = "lista", index, nivel = "h3", prioridade = false } = Astro.props;
+const { produto, href, categoria, locale, lista = "lista", index, nivel = "h3", prioridade = false, variante = "padrao" } = Astro.props;
 const ui = t(locale);
 const H = nivel;
 const evento = dl({ event: "select_item", ecommerce: { item_list_name: lista, items: [itemGa4(produto, categoria, index)] } });
 ---
 
+{
+  variante === "foto" ? (
+    <article class="card-foto">
+      {produto.galeria[0] && <Foto img={produto.galeria[0]} sizes="(min-width: 60rem) 18rem, 78vw" larguras={[360, 560, 720]} proporcao={4 / 5} prioridade={prioridade} />}
+      <p class="chip">
+        {ui.aPartirDe} <strong>{formatPreco(produto.precoAPartirDe, locale)}</strong> <span>{ui.unidade[produto.unidadePreco]}</span>
+      </p>
+      <div class="card-foto-texto">
+        {categoria && <p class="card-foto-cat">{categoria.titulo}</p>}
+        <H class="card-foto-titulo">
+          <a href={href} data-dl={evento}>{produto.titulo}</a>
+        </H>
+        <span class="seta" aria-hidden="true">→</span>
+      </div>
+    </article>
+  ) : (
 <article class="card">
   {produto.galeria[0] && <Foto img={produto.galeria[0]} sizes="(min-width: 72rem) 22rem, (min-width: 40rem) 45vw, calc(100vw - 2rem)" larguras={[400, 680, 800]} proporcao={16 / 10} prioridade={prioridade} />}
   <div class="card-corpo">
@@ -33,6 +51,8 @@ const evento = dl({ event: "select_item", ecommerce: { item_list_name: lista, it
     </p>
   </div>
 </article>
+  )
+}
 
 <style>
   .card {
@@ -118,6 +138,116 @@ const evento = dl({ event: "select_item", ecommerce: { item_list_name: lista, it
   .card-preco strong {
     font-size: var(--fs-400);
     color: var(--color-primary-strong);
+  }
+  /* Variante "foto": card alto, foto inteira, texto branco sobre o véu azul embaixo. */
+  .card-foto {
+    position: relative;
+    height: 100%;
+    overflow: hidden;
+    color: #ffffff;
+    background: var(--brand-poco);
+    border-radius: var(--radius-lg) var(--radius-arco) var(--radius-lg) var(--radius-lg);
+    box-shadow: var(--shadow-card);
+    isolation: isolate;
+  }
+  .card-foto :global(img) {
+    width: 100%;
+    height: 100%;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+    transition: transform 0.7s ease;
+  }
+  .card-foto::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgb(15 39 68 / 0.92) 0%, rgb(15 39 68 / 0.55) 32%, rgb(15 39 68 / 0) 60%);
+    pointer-events: none;
+  }
+  .chip {
+    position: absolute;
+    z-index: 1;
+    top: var(--space-4);
+    left: var(--space-4);
+    margin: 0;
+    padding: var(--space-1) var(--space-3);
+    font-size: var(--fs-100);
+    color: var(--brand-poco);
+    background: rgb(255 255 255 / 0.9);
+    border-radius: var(--radius-pill);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+  }
+  .chip strong {
+    color: var(--brand-azul-escuro);
+  }
+  .card-foto-texto {
+    position: absolute;
+    z-index: 1;
+    inset: 0;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-content: end;
+    align-items: end;
+    column-gap: var(--space-3);
+    padding: var(--space-5);
+  }
+  .card-foto-cat {
+    grid-column: 1 / -1;
+    margin: 0 0 var(--space-1);
+    font-size: var(--fs-100);
+    color: var(--brand-azul-claro);
+  }
+  .card-foto-titulo {
+    margin: 0;
+    font-size: var(--fs-400);
+    font-weight: var(--fw-medio);
+    color: #ffffff;
+  }
+  .card-foto-titulo a {
+    color: inherit;
+    text-decoration: none;
+  }
+  .card-foto-titulo a::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+  }
+  .card-foto-titulo a:focus-visible {
+    outline: none;
+  }
+  .card-foto:focus-within {
+    outline: 3px solid var(--color-focus);
+    outline-offset: 2px;
+  }
+  .seta {
+    display: grid;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: 50%;
+    border: 1px solid rgb(255 255 255 / 0.5);
+    font-size: var(--fs-300);
+    transition:
+      background 0.25s ease,
+      color 0.25s ease;
+  }
+  .card-foto:hover :global(img) {
+    transform: scale(1.05);
+  }
+  .card-foto:hover .seta {
+    background: #ffffff;
+    color: var(--brand-azul-escuro);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .card-foto :global(img),
+    .seta {
+      transition: none;
+    }
+    .card-foto:hover :global(img) {
+      transform: none;
+    }
   }
   @media (prefers-reduced-motion: reduce) {
     .card,

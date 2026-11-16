@@ -1,0 +1,115 @@
+---
+/** Bloco "Roteiro": um dia no parque em momentos (hora + foto + legenda). Trilho com scroll-snap no celular, sem JS. */
+import type { MomentoRoteiro } from "../lib/types";
+import { enfase } from "../lib/texto";
+import Foto from "./Foto.astro";
+
+interface Props {
+  titulo?: string;
+  itens: MomentoRoteiro[];
+}
+const { titulo, itens } = Astro.props;
+---
+
+{
+  itens.length > 0 && (
+    <section class="roteiro no-escuro">
+      {titulo && <h2 set:html={enfase(titulo)} />}
+      <ol class="trilho">
+        {itens.map((m) => (
+          <li>
+            <p class="hora">{m.hora}</p>
+            <figure>
+              <Foto img={m.imagem} sizes="(min-width: 64rem) 14rem, 62vw" larguras={[320, 480, 640]} proporcao={3 / 4} />
+              <figcaption>
+                <strong>{m.titulo}</strong>
+                {m.texto && <span>{m.texto}</span>}
+              </figcaption>
+            </figure>
+          </li>
+        ))}
+      </ol>
+    </section>
+  )
+}
+
+<style>
+  .roteiro {
+    color: var(--color-on-deep);
+  }
+  .roteiro h2 {
+    color: #ffffff;
+  }
+  .trilho {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: min(62vw, 16rem);
+    gap: var(--space-5);
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: thin;
+    scrollbar-color: rgb(160 201 232 / 0.4) transparent;
+    padding-bottom: var(--space-4);
+  }
+  li {
+    scroll-snap-align: start;
+    position: relative;
+    padding-top: var(--space-5);
+    /* Linha do tempo: um fio claro no alto, com um ponto em cada momento. */
+    border-top: 1px solid var(--color-linha-clara);
+  }
+  li::before {
+    content: "";
+    position: absolute;
+    top: -5px;
+    left: 0;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: var(--brand-azul-claro);
+    box-shadow: 0 0 0 4px rgb(160 201 232 / 0.2);
+  }
+  .hora {
+    margin: 0 0 var(--space-3);
+    font-size: var(--fs-500);
+    font-weight: 200;
+    line-height: 1;
+    letter-spacing: var(--tracking-display);
+    color: #ffffff;
+  }
+  figure {
+    margin: 0;
+  }
+  figure :global(img) {
+    width: 100%;
+    aspect-ratio: 3 / 4;
+    object-fit: cover;
+    border-radius: var(--radius-md) var(--radius-arco) var(--radius-md) var(--radius-md);
+  }
+  figcaption {
+    display: grid;
+    gap: var(--space-1);
+    padding-top: var(--space-3);
+    font-size: var(--fs-100);
+    color: var(--color-on-deep-muted);
+  }
+  figcaption strong {
+    font-size: var(--fs-200);
+    font-weight: var(--fw-medio);
+    color: #ffffff;
+  }
+  /* No computador cabem todos lado a lado, em escada (como a água descendo). */
+  @media (min-width: 64rem) {
+    .trilho {
+      grid-auto-columns: minmax(0, 1fr);
+      overflow: visible;
+      padding-bottom: 0;
+    }
+    li:nth-child(even) {
+      margin-top: var(--space-7);
+    }
+  }
+</style>

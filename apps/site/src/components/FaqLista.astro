@@ -9,12 +9,13 @@ interface Props {
   id?: string;
 }
 const { itens, titulo, id } = Astro.props;
+import { enfase } from "../lib/texto";
 ---
 
 {
   itens.length > 0 && (
     <section class="faq" aria-labelledby={id ? `${id}-titulo` : undefined}>
-      {titulo && <h2 id={id ? `${id}-titulo` : undefined}>{titulo}</h2>}
+      {titulo && <h2 id={id ? `${id}-titulo` : undefined} set:html={enfase(titulo)} />}
       {itens.map((f) => (
         <details>
           <summary>{f.pergunta}</summary>

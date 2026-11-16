@@ -69,7 +69,7 @@ export interface Tabela {
 
 /* ---------- Blocos (dynamic zones) ---------- */
 export type Block =
-  | { __component: "blocks.hero"; titulo: string; respostaDireta: string; imagem: Img; cta?: Cta }
+  | { __component: "blocks.hero"; sobretitulo?: string; titulo: string; respostaDireta: string; imagem: Img; cta?: Cta }
   | { __component: "blocks.texto"; conteudo: RichText }
   | { __component: "blocks.imagem"; imagem: Img }
   | ({ __component: "blocks.tabela" } & Tabela)
@@ -80,7 +80,12 @@ export type Block =
   | { __component: "blocks.avaliacoes"; titulo?: string; avaliacaoIds: string[] }
   | { __component: "blocks.faq"; titulo?: string; itens: Faq[] }
   | { __component: "blocks.video"; url: string; poster: Img; titulo?: string }
-  | { __component: "blocks.mapa-estatico"; imagem: Img; linkMaps: string };
+  | { __component: "blocks.mapa-estatico"; imagem: Img; linkMaps: string }
+  | { __component: "blocks.roteiro"; titulo?: string; itens: MomentoRoteiro[] }
+  | { __component: "blocks.chamada-final"; titulo: string; texto?: string; imagem: Img; cta?: Cta };
+
+/** Um momento do bloco "Roteiro" (um dia no parque): hora, título curto e foto. */
+export type MomentoRoteiro = { hora: string; titulo: string; texto?: string; imagem: Img };
 
 /* ---------- Content types ---------- */
 interface Doc {

@@ -1,0 +1,30 @@
+{
+  "collectionName": "components_shared_roteiro_item",
+  "info": {
+    "displayName": "Momento do roteiro",
+    "icon": "clock"
+  },
+  "options": {},
+  "attributes": {
+    "hora": {
+      "type": "string",
+      "required": true,
+      "maxLength": 20
+    },
+    "titulo": {
+      "type": "string",
+      "required": true,
+      "maxLength": 80
+    },
+    "texto": {
+      "type": "string",
+      "maxLength": 160
+    },
+    "imagem": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.image-alt",
+      "required": true
+    }
+  }
+}

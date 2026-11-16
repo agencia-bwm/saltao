@@ -26,6 +26,11 @@ import fQuiosqueNoiteSrc from "../assets/fotos/camping/camping-noite-barracas-qu
 import fKidsSrc from "../assets/fotos/estrutura/salao-kids-brinquedos-bambu.jpg";
 import fValeSrc from "../assets/fotos/paisagem/paisagem-vale-ceu-azul.jpg";
 import fPorDoSolArvoreSrc from "../assets/fotos/paisagem/por-do-sol-dourado-arvore.jpg";
+import fRotTrilhaSrc from "../assets/fotos/cachoeira-2/cachoeira-2-trilha-bambuzal-vertical.jpg";
+import fRotPocoSrc from "../assets/fotos/cachoeira-saltao/cachoeira-saltao-poco-vertical.jpg";
+import fRotPorcaoSrc from "../assets/fotos/gastronomia/porcao-linguica-cerveja-vertical.jpg";
+import fRotPorDoSolSrc from "../assets/fotos/paisagem/por-do-sol-palmeira-vertical.jpg";
+import fRotFogueiraSrc from "../assets/fotos/camping/fogueira-noite-vertical.jpg";
 import mapaProvisorio from "../assets/placeholder/trilha.jpg";
 
 
@@ -54,6 +59,14 @@ const fQuiosqueNoite = img(fQuiosqueNoiteSrc, "Barracas montadas à noite ao lad
 const fKids = img(fKidsSrc, "Brinquedos de bambu e rede de proteção no salão coberto");
 const fVale = img(fValeSrc, "Vista panorâmica do vale com lago e céu azul limpo");
 const fPorDoSolArvore = img(fPorDoSolArvoreSrc, "Pôr do sol dourado sobre campos e árvore isolada");
+/* Roteiro "um dia no Saltão" (fotos verticais) */
+const fRot = {
+  trilha: (alt: string) => img(fRotTrilhaSrc, alt),
+  poco: (alt: string) => img(fRotPocoSrc, alt),
+  porcao: (alt: string) => img(fRotPorcaoSrc, alt),
+  porDoSol: (alt: string) => img(fRotPorDoSolSrc, alt),
+  fogueira: (alt: string) => img(fRotFogueiraSrc, alt),
+};
 const p = (...textos: string[]): RichText => textos.map((text) => ({ type: "paragraph", children: [{ type: "text", text }] }));
 const h2 = (text: string): RichText[number] => ({ type: "heading", level: 2, children: [{ type: "text", text }] });
 const ul = (...itens: string[]): RichText[number] => ({
@@ -67,7 +80,8 @@ const seo = (metaTitle: string, metaDescription: string): Seo => ({ metaTitle, m
 /* ---------------- Textos por idioma (só o que muda) ---------------- */
 const L = {
   pt: {
-    hero: "Saltão — Parque de Ecoturismo na Serra do Itaqueri",
+    sobre: "Saltão · Parque de Ecoturismo em Itirapina (SP)",
+    hero: "Uma cachoeira de *75 metros* no coração da Serra do Itaqueri",
     heroResp: "O Saltão é um parque de ecoturismo com cachoeira de 75 m, day use, hospedagem, camping e quiosques com churrasqueira. Reserve online e garanta sua data.",
     reservar: "Reservar",
     cats: {
@@ -77,7 +91,8 @@ const L = {
     },
   },
   en: {
-    hero: "Saltão — Ecotourism Park in Serra do Itaqueri, Brazil",
+    sobre: "Saltão · Ecotourism Park in Itirapina, Brazil",
+    hero: "A *75-metre* waterfall in the heart of Serra do Itaqueri",
     heroResp: "Saltão is an ecotourism park with a 75 m waterfall, day passes, lodging, camping and barbecue kiosks. Book online and secure your date.",
     reservar: "Book now",
     cats: {
@@ -87,7 +102,8 @@ const L = {
     },
   },
   es: {
-    hero: "Saltão — Parque de Ecoturismo en la Serra do Itaqueri, Brasil",
+    sobre: "Saltão · Parque de Ecoturismo en Itirapina, Brasil",
+    hero: "Una cascada de *75 metros* en el corazón de la Serra do Itaqueri",
     heroResp: "Saltão es un parque de ecoturismo con una cascada de 75 m, pase de día, hospedaje, camping y quinchos con parrilla. Reserva en línea y asegura tu fecha.",
     reservar: "Reservar",
     cats: {
@@ -449,12 +465,48 @@ const home = Object.fromEntries(
       documentId: "home",
       locale: loc,
       updatedAt: T,
-      hero: { __component: "blocks.hero" as const, titulo: L[loc].hero, respostaDireta: L[loc].heroResp, imagem: img(fHeroHomeSrc, loc === "pt" ? "Cachoeira de 75 m do Saltão caindo pelo paredão de rocha, com mata nativa no alto e visitantes no poço" : loc === "en" ? "Saltão's 75 m waterfall dropping down the rock face, with native forest above and visitors at the pool" : "Cascada de 75 m de Saltão cayendo por la pared de roca, con bosque nativo arriba y visitantes en la poza"), cta: { rotulo: L[loc].reservar, tipo: "link" as const, url: "https://reservas.saltao.com.br/reservar" } },
+      hero: { __component: "blocks.hero" as const, sobretitulo: L[loc].sobre, titulo: L[loc].hero, respostaDireta: L[loc].heroResp, imagem: img(fHeroHomeSrc, loc === "pt" ? "Cachoeira de 75 m do Saltão caindo pelo paredão de rocha, com mata nativa no alto e visitantes no poço" : loc === "en" ? "Saltão's 75 m waterfall dropping down the rock face, with native forest above and visitors at the pool" : "Cascada de 75 m de Saltão cayendo por la pared de roca, con bosque nativo arriba y visitantes en la poza"), cta: { rotulo: L[loc].reservar, tipo: "link" as const, url: "https://reservas.saltao.com.br/reservar" } },
       secoes: [
-        { __component: "blocks.destaques-produtos" as const, titulo: loc === "pt" ? "Escolha sua experiência" : loc === "en" ? "Choose your experience" : "Elige tu experiencia", produtoIds: ["prod-dayuse", "prod-apto", "prod-camping", "prod-quiosque"] },
+        { __component: "blocks.destaques-produtos" as const, titulo: loc === "pt" ? "Escolha como viver o *Saltão*" : loc === "en" ? "Choose how to live *Saltão*" : "Elige cómo vivir *Saltão*", produtoIds: ["prod-dayuse", "prod-apto", "prod-camping", "prod-quiosque"] },
+        {
+          __component: "blocks.roteiro" as const,
+          titulo: loc === "pt" ? "Um dia inteiro *no parque*" : loc === "en" ? "A whole day *in the park*" : "Un día entero *en el parque*",
+          itens:
+            loc === "pt"
+              ? [
+                  { hora: "8h", titulo: "Trilha pelo bambuzal", texto: "Caminhada leve até a segunda cachoeira.", imagem: fRot.trilha("Trilha de terra entre bambuzal alto, em foto vertical") },
+                  { hora: "11h", titulo: "Banho no poço", texto: "A queda de 75 m vista de baixo.", imagem: fRot.poco("Poço da cachoeira do Saltão com a queda ao fundo, em foto vertical") },
+                  { hora: "13h", titulo: "Almoço no quiosque", texto: "Churrasco, porção e cerveja gelada.", imagem: fRot.porcao("Porção de linguiça com cerveja gelada sobre a mesa") },
+                  { hora: "18h", titulo: "Pôr do sol na serra", texto: "O céu fica laranja atrás das palmeiras.", imagem: fRot.porDoSol("Pôr do sol laranja com palmeira em silhueta") },
+                  { hora: "21h", titulo: "Fogueira no camping", texto: "Quem dorme no parque fecha o dia assim.", imagem: fRot.fogueira("Fogueira acesa à noite na área de camping") },
+                ]
+              : loc === "en"
+                ? [
+                    { hora: "8 am", titulo: "Bamboo trail", texto: "An easy walk to the second waterfall.", imagem: fRot.trilha("Dirt trail through tall bamboo, vertical photo") },
+                    { hora: "11 am", titulo: "Swim at the pool", texto: "The 75 m drop seen from below.", imagem: fRot.poco("Saltão waterfall pool with the drop behind, vertical photo") },
+                    { hora: "1 pm", titulo: "Lunch at the kiosk", texto: "Barbecue, snacks and a cold beer.", imagem: fRot.porcao("Sausage snack plate with a cold beer on the table") },
+                    { hora: "6 pm", titulo: "Sunset over the hills", texto: "The sky turns orange behind the palms.", imagem: fRot.porDoSol("Orange sunset with a palm tree in silhouette") },
+                    { hora: "9 pm", titulo: "Campfire", texto: "Those staying overnight end the day here.", imagem: fRot.fogueira("Campfire at night in the camping area") },
+                  ]
+                : [
+                    { hora: "8 h", titulo: "Sendero del bambú", texto: "Caminata suave hasta la segunda cascada.", imagem: fRot.trilha("Sendero de tierra entre bambú alto, foto vertical") },
+                    { hora: "11 h", titulo: "Baño en la poza", texto: "La caída de 75 m vista desde abajo.", imagem: fRot.poco("Poza de la cascada de Saltão con la caída al fondo, foto vertical") },
+                    { hora: "13 h", titulo: "Almuerzo en el quincho", texto: "Asado, picada y cerveza fría.", imagem: fRot.porcao("Picada de chorizo con cerveza fría sobre la mesa") },
+                    { hora: "18 h", titulo: "Atardecer en la sierra", texto: "El cielo se pone naranja tras las palmeras.", imagem: fRot.porDoSol("Atardecer naranja con palmera en silueta") },
+                    { hora: "21 h", titulo: "Fogata en el camping", texto: "Quien duerme en el parque cierra el día así.", imagem: fRot.fogueira("Fogata encendida de noche en el camping") },
+                  ],
+        },
+        { __component: "blocks.citacao" as const, texto: loc === "pt" ? "Aqui o barulho que fica é o da *água caindo*." : loc === "en" ? "Here, the only noise left is the *falling water*." : "Aquí el único ruido que queda es el del *agua cayendo*." },
         { __component: "blocks.fatos" as const, titulo: loc === "pt" ? "O Saltão em números" : loc === "en" ? "Saltão in numbers" : "Saltão en números", itens: [{ chave: loc === "pt" ? "Cachoeira" : loc === "en" ? "Waterfall" : "Cascada", valor: "75 m" }, { chave: loc === "pt" ? "Quiosques" : loc === "en" ? "Kiosks" : "Quinchos", valor: "80" }, { chave: loc === "pt" ? "Churrasqueiras" : loc === "en" ? "Barbecue grills" : "Parrillas", valor: "102" }] },
         { __component: "blocks.avaliacoes" as const, titulo: loc === "pt" ? "Quem visitou recomenda" : loc === "en" ? "What visitors say" : "Lo que dicen los visitantes", avaliacaoIds: ["av-1", "av-2"] },
         { __component: "blocks.faq" as const, titulo: loc === "pt" ? "Perguntas frequentes" : loc === "en" ? "FAQ" : "Preguntas frecuentes", itens: [loc === "pt" ? faq("Onde fica o Saltão?", "Na Rodovia Ulisses Guimarães, km 23, em Itirapina (SP), na Serra do Itaqueri.") : loc === "en" ? faq("Where is Saltão?", "At Rodovia Ulisses Guimarães, km 23, Itirapina (São Paulo state), in Serra do Itaqueri.") : faq("¿Dónde queda Saltão?", "En la Rodovia Ulisses Guimarães, km 23, Itirapina (estado de São Paulo), en la Serra do Itaqueri.")] },
+        {
+          __component: "blocks.chamada-final" as const,
+          titulo: loc === "pt" ? "Sua próxima pausa *começa aqui*" : loc === "en" ? "Your next break *starts here*" : "Tu próxima pausa *empieza aquí*",
+          texto: loc === "pt" ? "Escolha a data, garanta sua vaga online e chegue só para aproveitar." : loc === "en" ? "Pick a date, book online and just show up to enjoy." : "Elige la fecha, reserva en línea y llega solo a disfrutar.",
+          imagem: img(fCampEntardecerSrc, loc === "pt" ? fCampEntardecer.alt : loc === "en" ? "Tents in the camping area at dusk, under a pink sky" : "Carpas en el camping al atardecer, con cielo rosado"),
+          cta: { rotulo: L[loc].reservar, tipo: "link" as const, url: "https://reservas.saltao.com.br/reservar" },
+        },
       ],
       seo: seo(loc === "pt" ? "Saltão — Parque de Ecoturismo | Cachoeira, Day Use e Hospedagem" : loc === "en" ? "Saltão Ecotourism Park | Waterfall, Day Pass and Lodging" : "Saltão Parque de Ecoturismo | Cascada, Pase de Día y Hospedaje", L[loc].heroResp.slice(0, 150)),
     },

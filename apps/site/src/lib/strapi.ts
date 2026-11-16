@@ -2,7 +2,7 @@
  * Leitura do conteúdo no Strapi 5 (API REST) e normalização para os tipos do site.
  * Roda só na build. Os nomes de campos espelham os schema.json de apps/painel/src.
  */
-import type { Block, Conteudo, Faq, Img, KV, Locale, RichText, Seo, Tabela } from "./types";
+import type { Block, Conteudo, Faq, Img, KV, Locale, MomentoRoteiro, RichText, Seo, Tabela } from "./types";
 import { LOCALES } from "./types";
 
 type Json = any; // resposta crua da API; validada campo a campo na normalização
@@ -50,6 +50,8 @@ const blocosPop: Populate = {
     "blocks.faq": { itens: true },
     "blocks.video": { poster: { imagem: true } },
     "blocks.mapa-estatico": { imagem: { imagem: true } },
+    "blocks.roteiro": { itens: { imagem: { imagem: true } } },
+    "blocks.chamada-final": { imagem: { imagem: true }, cta: { produto: true } },
   },
 };
 
@@ -144,7 +146,7 @@ function blocos(v: Json): Block[] {
     .map((b: Json): Block | null => {
       switch (b.__component) {
         case "blocks.hero":
-          return { __component: b.__component, titulo: b.titulo, respostaDireta: b.respostaDireta, imagem: imgAlt(b.imagem)!, cta: cta(b.cta) };
+          return { __component: b.__component, sobretitulo: b.sobretitulo ?? undefined, titulo: b.titulo, respostaDireta: b.respostaDireta, imagem: imgAlt(b.imagem)!, cta: cta(b.cta) };
         case "blocks.texto":
           return { __component: b.__component, conteudo: rich(b.conteudo) };
         case "blocks.imagem":
@@ -167,6 +169,21 @@ function blocos(v: Json): Block[] {
           return { __component: b.__component, url: b.url, poster: imgAlt(b.poster)!, titulo: b.titulo ?? undefined };
         case "blocks.mapa-estatico":
           return { __component: b.__component, imagem: imgAlt(b.imagem)!, linkMaps: b.linkMaps };
+        case "blocks.roteiro":
+          return {
+            __component: b.__component,
+            titulo: b.titulo ?? undefined,
+            itens: (Array.isArray(b.itens) ? b.itens : [])
+              .map((m: Json): MomentoRoteiro | null => {
+                const imagem = imgAlt(m.imagem);
+                return imagem ? { hora: m.hora, titulo: m.titulo, texto: m.texto ?? undefined, imagem } : null;
+              })
+              .filter((m: MomentoRoteiro | null): m is MomentoRoteiro => m !== null),
+          };
+        case "blocks.chamada-final": {
+          const imagem = imgAlt(b.imagem);
+          return imagem ? { __component: b.__component, titulo: b.titulo, texto: b.texto ?? undefined, imagem, cta: cta(b.cta) } : null;
+        }
         default:
           return null;
       }
@@ -219,7 +236,7 @@ export async function carregarDoStrapi(): Promise<Conteudo> {
     })),
     home: mapObj(h, (d) => ({
       ...doc(d),
-      hero: { __component: "blocks.hero" as const, titulo: d.hero?.titulo, respostaDireta: d.hero?.respostaDireta, imagem: imgAlt(d.hero?.imagem)!, cta: cta(d.hero?.cta) },
+      hero: { __component: "blocks.hero" as const, sobretitulo: d.hero?.sobretitulo ?? undefined, titulo: d.hero?.titulo, respostaDireta: d.hero?.respostaDireta, imagem: imgAlt(d.hero?.imagem)!, cta: cta(d.hero?.cta) },
       secoes: blocos(d.secoes),
       seo: seo(d.seo),
     })),

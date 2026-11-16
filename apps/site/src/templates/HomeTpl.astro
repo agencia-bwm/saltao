@@ -1,8 +1,14 @@
 ---
+/**
+ * Template Home — linha editorial: hero em tela cheia com o menu por cima, reserva rápida (formulário GET, sem JS),
+ * e as seções do painel em faixas de largura total (céu → poço → céu → azul → céu → foto → rodapé).
+ */
 import type { Rota, Indice } from "../lib/routes";
+import type { Produto } from "../lib/types";
 import { noFaq, noWebPage } from "../lib/schema";
-import { linkReserva } from "../lib/config";
+import { linkReserva, RESERVAS_URL } from "../lib/config";
 import { t } from "../lib/i18n";
+import { enfase } from "../lib/texto";
 import Base from "../layouts/Base.astro";
 import Foto from "../components/Foto.astro";
 import Blocos from "../components/Blocos.astro";
@@ -13,13 +19,20 @@ interface Props {
 }
 const { rota, indice } = Astro.props;
 const { doc, locale } = rota;
+const ui = t(locale);
 const hero = doc.hero;
 const faqs = doc.secoes.flatMap((b) => (b.__component === "blocks.faq" ? b.itens : []));
 const ctaHref = hero.cta?.tipo === "produto" && hero.cta.produtoId ? indice.link("produto", hero.cta.produtoId, locale) : (hero.cta?.url ?? linkReserva({ lang: locale }));
+
+// Reserva rápida: os produtos do primeiro bloco de destaques (ou todos os do idioma).
+const destaques = doc.secoes.find((b) => b.__component === "blocks.destaques-produtos");
+const idsReserva = destaques?.__component === "blocks.destaques-produtos" ? destaques.produtoIds : indice.conteudo.produtos.filter((p) => p.locale === locale).map((p) => p.documentId);
+const produtosReserva = idsReserva.map((id) => indice.produto(id, locale)).filter((p): p is Produto => !!p);
+const temExperiencias = !!destaques;
 ---
 
 <Base {...rota} indice={indice} imagem={hero.imagem} jsonld={[noWebPage(rota.path, doc.seo.metaTitle, hero.respostaDireta, locale), noFaq(faqs, rota.path)].filter((n) => n !== null)}>
-  <section class="hero">
+  <section class="hero no-escuro">
     <Foto img={hero.imagem} prioridade sizes="100vw" class="hero-img" larguras={[480, 760, 1080, 1440, 1600]} />
     <div class="hero-texto">
       <div class="container hero-grade">
@@ -30,23 +43,52 @@ const ctaHref = hero.cta?.tipo === "produto" && hero.cta.produtoId ? indice.link
           <path fill="#a0c9e8" d="M278.53 73.33c-4.78-2.11-9.34-3.38-13.55-3.55-48.6-1.9-53.53 26.05-53.53 90.66 0 19.02 2.38 40.31 6.97 60.88-1.25-15.82-1.66-32.09-1.66-47.5 0-62.73 16.31-98.47 61.77-100.49Z" />
         </svg>
         <div class="hero-conteudo">
-          <h1>{hero.titulo}</h1>
+          {hero.sobretitulo && <p class="sobretitulo">{hero.sobretitulo}</p>}
+          <h1 set:html={enfase(hero.titulo)} />
           <p class="resposta">{hero.respostaDireta}</p>
-          <a class="btn btn-claro" href={ctaHref}>{hero.cta?.rotulo ?? t(locale).reservar}</a>
+          <div class="acoes">
+            <a class="btn btn-claro" href={ctaHref} data-dl='{"event":"click_reservar","method":"hero"}'>{hero.cta?.rotulo ?? ui.reservar}</a>
+            {temExperiencias && <a class="btn btn-contorno" href="#experiencias">{ui.verExperiencias} <span aria-hidden="true">↓</span></a>}
+          </div>
         </div>
+
+        {
+          produtosReserva.length > 0 && (
+            <form class="reserva-rapida" method="get" action={`${RESERVAS_URL}/reservar`} aria-labelledby="rr-titulo">
+              <p class="rr-titulo" id="rr-titulo">{ui.reservaRapida}</p>
+              <input type="hidden" name="lang" value={locale} />
+              <label>
+                <span>{ui.oQueReservar}</span>
+                <select name="produto" required>
+                  {produtosReserva.map((p) => (
+                    <option value={p.motorProdutoId}>{p.titulo}</option>
+                  ))}
+                </select>
+              </label>
+              <label>
+                <span>{ui.dataVisita}</span>
+                <input type="date" name="data" required />
+              </label>
+              <button class="btn btn-reservar" type="submit" data-dl='{"event":"check_availability","method":"reserva_rapida"}'>
+                {ui.verDisponibilidade}
+              </button>
+            </form>
+          )
+        }
       </div>
     </div>
   </section>
-  <div class="container section secoes">
-    <Blocos blocos={doc.secoes} indice={indice} locale={locale} />
+  <div class="container secoes">
+    <Blocos blocos={doc.secoes} indice={indice} locale={locale} home />
   </div>
 </Base>
 
 <style>
+  /* ---------- Hero ---------- */
   .hero {
     position: relative;
     display: grid;
-    min-height: min(100svh, 56rem);
+    min-height: min(100svh, 58rem);
     color: #ffffff;
     background: var(--brand-poco);
     overflow: hidden;
@@ -58,10 +100,6 @@ const ctaHref = hero.cta?.tipo === "produto" && hero.cta.produtoId ? indice.link
     position: absolute;
     inset: 0;
   }
-  .hero-texto {
-    position: relative;
-    grid-area: 1 / 1;
-  }
   .hero :global(.hero-img) {
     width: 100%;
     height: 100%;
@@ -69,90 +107,266 @@ const ctaHref = hero.cta?.tipo === "produto" && hero.cta.produtoId ? indice.link
     /* Foto vertical: enquadra a queda e o poço com os visitantes. */
     object-position: 52% 58%;
   }
-  /* Véu no azul do poço (não preto): legibilidade sem apagar a foto. */
+  /* Véu no alto (menu por cima da foto), embaixo e à esquerda (título). */
   .hero-texto {
+    position: relative;
+    grid-area: 1 / 1;
     display: flex;
     align-items: flex-end;
-    padding-block: var(--space-9) var(--space-8);
-    /* Véu no alto (legibilidade do menu por cima da foto), embaixo e à esquerda (título). */
+    padding-block: calc(var(--altura-cabecalho) + var(--space-8)) var(--space-8);
     background:
       linear-gradient(to bottom, rgb(15 39 68 / 0.6) 0, rgb(15 39 68 / 0) 10rem),
       linear-gradient(to top, rgb(15 39 68 / 0.92) 0%, rgb(15 39 68 / 0.5) 45%, rgb(15 39 68 / 0) 75%),
-      linear-gradient(to right, rgb(36 74 117 / 0.55), rgb(15 39 68 / 0) 60%);
+      linear-gradient(to right, rgb(36 74 117 / 0.6), rgb(15 39 68 / 0) 65%);
   }
   .hero-grade {
     display: grid;
-    grid-template-columns: auto 1fr;
+    grid-template-columns: auto minmax(0, 1fr);
     column-gap: clamp(var(--space-4), 3vw, var(--space-6));
+    row-gap: var(--space-7);
+    align-items: end;
   }
   .fios {
-    width: clamp(2.25rem, 4.5vw, 4.5rem);
+    width: clamp(2rem, 4vw, 4rem);
     height: 100%;
     min-height: 12rem;
-    /* Os fios caem de cima: começam acima do título e somem no pé. */
     margin-top: calc(-1 * var(--space-8));
     -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 20%, #000 80%, transparent 100%);
     mask-image: linear-gradient(to bottom, transparent 0, #000 20%, #000 80%, transparent 100%);
   }
+  .sobretitulo {
+    display: inline-block;
+    margin: 0 0 var(--space-5);
+    padding: var(--space-1) var(--space-4);
+    font-size: var(--fs-100);
+    font-weight: var(--fw-medio);
+    color: #ffffff;
+    background: rgb(255 255 255 / 0.12);
+    border: 1px solid rgb(255 255 255 / 0.28);
+    border-radius: var(--radius-pill);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+  }
   .hero h1 {
-    max-width: 16ch;
+    max-width: 15ch;
     margin-bottom: var(--space-5);
     color: #ffffff;
-    font-size: clamp(2.5rem, 1.4rem + 4.6vw, 5.25rem);
+    font-size: clamp(2.6rem, 1.2rem + 5.2vw, 5.75rem);
     font-weight: 250;
+    line-height: 1.02;
     text-shadow: 0 2px 24px rgb(15 39 68 / 0.35);
+  }
+  .hero h1 :global(em) {
+    text-shadow: none;
+    filter: drop-shadow(0 2px 14px rgb(15 39 68 / 0.7));
+  }
+  /* No celular o texto começa no alto da foto: véu mais forte por igual. */
+  @media (max-width: 63.99rem) {
+    .hero-texto {
+      background:
+        linear-gradient(rgb(15 39 68 / 0.35), rgb(15 39 68 / 0.35)),
+        linear-gradient(to top, rgb(15 39 68 / 0.92) 0%, rgb(15 39 68 / 0.5) 50%, rgb(15 39 68 / 0.2) 100%);
+    }
   }
   .resposta {
     font-size: var(--fs-300);
-    max-width: 48ch;
+    max-width: 46ch;
     margin-bottom: var(--space-6);
     color: var(--color-on-deep);
     text-wrap: pretty;
   }
-  .hero .btn-claro {
-    min-height: 54px;
-    padding-inline: var(--space-7);
-    font-size: var(--fs-300);
+  .acoes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
   }
-  /* Seções da home em faixas de largura total, alternando o céu claro e os azuis da marca. */
+  .acoes .btn {
+    min-height: 54px;
+    padding-inline: var(--space-6);
+  }
+
+  /* Reserva rápida: painel de vidro, envia para o motor com produto e data (zero JS). */
+  .reserva-rapida {
+    grid-column: 1 / -1;
+    display: grid;
+    gap: var(--space-3);
+    padding: var(--space-5);
+    color: #ffffff;
+    background: rgb(15 39 68 / 0.55);
+    border: 1px solid var(--color-linha-clara);
+    border-radius: var(--radius-lg) var(--radius-arco) var(--radius-lg) var(--radius-lg);
+    -webkit-backdrop-filter: blur(16px) saturate(1.2);
+    backdrop-filter: blur(16px) saturate(1.2);
+  }
+  .rr-titulo {
+    margin: 0;
+    font-weight: var(--fw-medio);
+    color: var(--brand-azul-claro);
+    font-size: var(--fs-100);
+  }
+  .reserva-rapida label {
+    display: grid;
+    gap: var(--space-1);
+    font-size: var(--fs-100);
+    color: var(--color-on-deep);
+  }
+  .reserva-rapida select,
+  .reserva-rapida input {
+    min-height: 48px;
+    padding: 0 var(--space-3);
+    font: inherit;
+    font-size: var(--fs-200);
+    color: var(--brand-poco);
+    background: #ffffff;
+    border: 0;
+    border-radius: var(--radius-md);
+  }
+  .reserva-rapida .btn {
+    min-height: 52px;
+  }
+  @media (min-width: 64rem) {
+    .hero-grade {
+      grid-template-columns: auto minmax(0, 1fr) 21rem;
+    }
+    .reserva-rapida {
+      grid-column: 3;
+      margin-bottom: var(--space-2);
+    }
+  }
+
+  /* ---------- Seções em faixas de largura total ---------- */
   .secoes {
-    padding-block: 0;
+    counter-reset: secao;
   }
   .secoes > :global(section) {
     margin: 0 calc(50% - 50vw);
-    padding: var(--space-8) calc(50vw - 50%);
+    padding: clamp(var(--space-8), 9vw, var(--space-9)) calc(50vw - 50%);
   }
+  /* Títulos de seção editoriais: número da seção acima, título grande e leve. */
   .secoes > :global(section > h2) {
-    margin-top: 0;
+    max-width: 20ch;
+    margin: 0 0 var(--space-7);
+    font-size: clamp(2.1rem, 1.3rem + 3vw, 3.75rem);
+    font-weight: 250;
+  }
+  .secoes > :global(section:not(.chamada-final) > h2)::before {
+    counter-increment: secao;
+    content: counter(secao, decimal-leading-zero);
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    margin-bottom: var(--space-4);
+    font-size: var(--fs-100);
+    font-weight: var(--fw-forte);
+    letter-spacing: 0.08em;
+    color: var(--color-primary-strong);
+  }
+  .secoes > :global(section.no-escuro:not(.chamada-final) > h2)::before {
+    color: var(--brand-azul-claro);
+  }
+
+  /* Experiências: trilho de cards em foto (scroll-snap no celular, 4 colunas no computador). */
+  .secoes :global(.trilho-cards) {
+    list-style: none;
+    margin: 0;
+    padding: 0 0 var(--space-3);
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: min(78vw, 20rem);
+    gap: var(--space-4);
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: thin;
+  }
+  .secoes :global(.trilho-cards > li) {
+    scroll-snap-align: start;
+  }
+  @media (min-width: 60rem) {
+    .secoes :global(.trilho-cards) {
+      grid-auto-columns: minmax(0, 1fr);
+      overflow: visible;
+      gap: var(--space-5);
+    }
+    /* Escada: os cards descem como a água. */
+    .secoes :global(.trilho-cards > li:nth-child(even)) {
+      margin-top: var(--space-7);
+    }
+  }
+
+  /* Roteiro: faixa do poço. */
+  .secoes > :global(.roteiro) {
+    background: var(--grad-faixa-topo);
+    border-radius: 0 var(--radius-arco) 0 clamp(2.5rem, 8vw, 7rem);
+  }
+
+  /* Frase: grande, centralizada, sobre o céu. */
+  .secoes > :global(.frase) {
+    display: grid;
+    justify-items: center;
+    text-align: center;
+  }
+  .secoes :global(.frase-arcos) {
+    width: 3.5rem;
+    height: auto;
     margin-bottom: var(--space-6);
   }
-  .secoes > :global(.destaques) {
-    padding-top: var(--space-9);
+  .secoes :global(.frase blockquote) {
+    margin: 0;
   }
-  /* Números: faixa funda de ponta a ponta, com o canto do arco à direita. */
+  .secoes :global(.frase p) {
+    max-width: 22ch;
+    margin: 0 auto;
+    font-size: clamp(2rem, 1.2rem + 3.4vw, 4rem);
+    font-weight: 250;
+    line-height: 1.12;
+    letter-spacing: -0.03em;
+    color: var(--brand-poco);
+    text-wrap: balance;
+  }
+  .secoes :global(.frase cite) {
+    display: block;
+    margin-top: var(--space-5);
+    font-style: normal;
+    color: var(--color-text-muted);
+  }
+
+  /* Números: faixa azul média, de ponta a ponta. */
   .secoes > :global(.fatos) {
-    border-radius: 0 var(--radius-arco) 0 0;
-    padding-block: var(--space-9);
-  }
-  /* Duas faixas azuis seguidas ganham um respiro de céu entre elas. */
-  .secoes > :global(section.fatos + section),
-  .secoes > :global(section.avaliacoes + section.fatos) {
-    margin-top: var(--space-8);
-  }
-  /* Avaliações: faixa azul média, cards brancos. */
-  .secoes > :global(.avaliacoes) {
+    margin-block: 0;
     background: var(--grad-faixa-media);
-    color: var(--color-on-deep);
-    border-end-start-radius: clamp(2.5rem, 8vw, 7rem);
+    border-radius: var(--radius-arco) 0 0 0;
   }
-  .secoes > :global(.avaliacoes > h2) {
+  .secoes > :global(.fatos > h2) {
     color: #ffffff;
   }
+
+  /* Avaliações: cards brancos sobre o céu. */
   .secoes > :global(.avaliacoes figure) {
     background: var(--color-bg);
-    box-shadow: var(--shadow-card);
   }
-  .secoes > :global(.faq) {
-    padding-bottom: var(--space-9);
+
+  /* FAQ em duas colunas: título fixo à esquerda, perguntas à direita. */
+  @media (min-width: 60rem) {
+    .secoes > :global(.faq) {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1.6fr);
+      column-gap: var(--space-8);
+      align-items: start;
+    }
+    .secoes > :global(.faq > h2) {
+      grid-row: 1 / span 20;
+      position: sticky;
+      top: calc(var(--altura-cabecalho) + var(--space-6));
+    }
+    .secoes > :global(.faq > details) {
+      grid-column: 2;
+    }
+  }
+
+  /* Chamada final: foto de ponta a ponta, sem padding da faixa. */
+  .secoes > :global(.chamada-final) {
+    padding: 0;
+    margin-top: var(--space-6);
+    border-radius: 0 var(--radius-arco) 0 clamp(2.5rem, 8vw, 7rem);
   }
 </style>

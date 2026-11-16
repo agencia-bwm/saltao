@@ -56,10 +56,13 @@ components = {
     # Item do menu principal. Com subitens vira grupo (submenu); o link do grupo é opcional.
     "menu-item": ("Item de menu", "bulletList", {"rotulo": s(True, 40), "link": s(maxLength=300), "subitens": comp("shared.menu-subitem", True, max=8)}),
     "menu-subitem": ("Subitem de menu", "bulletList", {"rotulo": s(True, 60), "link": s(True, 300)}),
+    # Momento do bloco "Roteiro" (um dia no parque).
+    "roteiro-item": ("Momento do roteiro", "clock", {"hora": s(True, 20), "titulo": s(True, 80), "texto": s(maxLength=160), "imagem": comp("shared.image-alt", req=True)}),
     "grupo-faq": ("Grupo de perguntas", "question", {"tituloGrupo": s(True, 100), "itens": comp("shared.faq-item", True)}),
   },
   "blocks": {
-    "hero": ("Hero", "landscape", {"titulo": s(True, 90), "respostaDireta": text(True, 300), "imagem": comp("shared.image-alt", req=True), "cta": comp("shared.cta")}),
+    # No título, *palavra* vira destaque (degradê dos arcos). Ex.: "Uma cachoeira de *75 metros* na Serra do Itaqueri".
+    "hero": ("Hero", "landscape", {"sobretitulo": s(maxLength=60), "titulo": s(True, 90), "respostaDireta": text(True, 300), "imagem": comp("shared.image-alt", req=True), "cta": comp("shared.cta")}),
     "texto": ("Texto", "feather", {"conteudo": dict(BLOCKS, required=True)}),
     "imagem": ("Imagem", "picture", {"imagem": comp("shared.image-alt", req=True)}),
     "tabela": ("Tabela", "grid", {"titulo": s(maxLength=120), "cabecalho": {"type": "json", "required": True}, "linhas": {"type": "json", "required": True}}),
@@ -71,10 +74,12 @@ components = {
     "faq": ("Perguntas frequentes", "question", {"titulo": s(maxLength=90), "itens": comp("shared.faq-item", True)}),
     "video": ("Vídeo (fachada)", "play", {"url": s(True, 300, regex="^https://(www\\.)?(youtube\\.com|youtu\\.be)/"), "poster": comp("shared.image-alt", req=True), "titulo": s(maxLength=120)}),
     "mapa-estatico": ("Mapa estático", "pinMap", {"imagem": comp("shared.image-alt", req=True), "linkMaps": s(True, 500, regex="^https://")}),
+    "roteiro": ("Roteiro (um dia no parque)", "calendar", {"titulo": s(maxLength=90), "itens": comp("shared.roteiro-item", True, max=6)}),
+    "chamada-final": ("Chamada final", "message", {"titulo": s(True, 90), "texto": text(False, 300), "imagem": comp("shared.image-alt", req=True), "cta": comp("shared.cta")}),
   },
 }
 
-BLOCOS_HOME = ["blocks.destaques-produtos", "blocks.fatos", "blocks.avaliacoes", "blocks.texto", "blocks.faq", "blocks.cta-produto", "blocks.mapa-estatico"]
+BLOCOS_HOME = ["blocks.destaques-produtos", "blocks.roteiro", "blocks.citacao", "blocks.fatos", "blocks.avaliacoes", "blocks.texto", "blocks.faq", "blocks.cta-produto", "blocks.mapa-estatico", "blocks.chamada-final"]
 BLOCOS_INST = ["blocks.texto", "blocks.imagem", "blocks.tabela", "blocks.fatos", "blocks.faq", "blocks.mapa-estatico", "blocks.video", "blocks.cta-produto"]
 BLOCOS_ART = ["blocks.texto", "blocks.imagem", "blocks.tabela", "blocks.citacao", "blocks.cta-produto"]
 

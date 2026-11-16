@@ -25,7 +25,10 @@ Cores do logo oficial (`packages/ui/marca/saltao-logo-original.pdf`): azul Salt�
 ## Linguagem visual ("a queda", versão contemporânea — 16/11/2026)
 - Cabeçalho **fixo por cima da foto**: transparente no alto e vidro azul-poço (`--color-vidro` + blur) ao rolar, via scroll-driven animation em CSS (sem JS; sem suporte, já nasce em vidro). Logo e menu em branco; Reservar em `.btn-claro`.
 - Toda página começa escura: a home com a foto do hero; as internas com a `.faixa-topo` (`--grad-faixa-topo`), que o `Base.astro` monta a partir do slot `topo` (migalhas + H1 + resposta direta). `topoSobreposto` faz a 1ª foto (`.sobe`) subir sobre a faixa.
-- Fundo das páginas em céu claro (`--color-page`); cards e painéis brancos com `--shadow-card`. Home em faixas de largura total: céu (destaques) → poço (números) → azul médio (avaliações, `--grad-faixa-media`) → céu (FAQ) → rodapé no poço.
+- Fundo das páginas em céu claro (`--color-page`); cards e painéis brancos com `--shadow-card`.
+- **Home editorial** (16/11/2026): hero em tela cheia com sobretítulo em pílula de vidro, H1 grande e leve, dois botões e **reserva rápida** (formulário GET para `RESERVAS_URL/reservar?produto=&data=&lang=`, zero JS, evento `check_availability`). Seções em faixas de largura total, numeradas por CSS (01, 02…): experiências em cards-foto em escada (scroll-snap no celular) → roteiro "um dia no parque" na faixa do poço → frase grande → números na faixa média → avaliações → FAQ em 2 colunas → chamada final com foto → rodapé.
+- **Destaque no texto:** no painel, `*palavra*` vira `<em>` com o degradê dos arcos (`lib/texto.ts` → `enfase()`; use `semEnfase()` em meta/alt). Vale no título do hero, H2 da home, citação e chamada final. Sem itálico falso.
+- Blocos novos do painel: `blocks.roteiro` (até 6 momentos: hora, título, texto, foto vertical) e `blocks.chamada-final` (título, texto, foto, CTA); o hero ganhou `sobretitulo`.
 - Os três arcos do logo são o único ornamento: fios d'água no hero, marca d'água na faixa do topo e no rodapé, fio `--grad-arcos` no submenu e no preço.
 - Canto do arco: fotos e painéis usam `--radius-arco` só no canto superior direito; faixas usam a curva grande embaixo à esquerda.
 - Títulos em peso leve (300/250), como o wordmark. Nada de caixa-alta em rótulos.

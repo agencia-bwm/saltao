@@ -6,10 +6,11 @@ interface Props {
   titulo?: string;
 }
 const { itens, titulo } = Astro.props;
+import { enfase } from "../lib/texto";
 ---
 
-<section class="fatos">
-  {titulo && <h2>{titulo}</h2>}
+<section class="fatos no-escuro">
+  {titulo && <h2 set:html={enfase(titulo)} />}
   <dl>
     {
       itens.map((f) => (

@@ -1,0 +1,30 @@
+{
+  "collectionName": "components_blocks_chamada_final",
+  "info": {
+    "displayName": "Chamada final",
+    "icon": "message"
+  },
+  "options": {},
+  "attributes": {
+    "titulo": {
+      "type": "string",
+      "required": true,
+      "maxLength": 90
+    },
+    "texto": {
+      "type": "text",
+      "maxLength": 300
+    },
+    "imagem": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.image-alt",
+      "required": true
+    },
+    "cta": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.cta"
+    }
+  }
+}

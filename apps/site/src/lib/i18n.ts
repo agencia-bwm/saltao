@@ -14,6 +14,12 @@ export const SEG: Record<Locale, { guia: string; categoria: string; pagina: stri
 
 const ui = {
   pt: {
+    reservaRapida: "Reserva rápida",
+    oQueReservar: "O que você quer reservar",
+    dataVisita: "Data",
+    verDisponibilidade: "Ver disponibilidade",
+    verExperiencias: "Ver experiências",
+    rolarParaBaixo: "Role para conhecer",
     reservar: "Reservar",
     inicio: "Início",
     aPartirDe: "a partir de",
@@ -72,6 +78,12 @@ const ui = {
     } satisfies Record<UnidadePreco, string>,
   },
   en: {
+    reservaRapida: "Quick booking",
+    oQueReservar: "What would you like to book",
+    dataVisita: "Date",
+    verDisponibilidade: "Check availability",
+    verExperiencias: "See experiences",
+    rolarParaBaixo: "Scroll to explore",
     reservar: "Book now",
     inicio: "Home",
     aPartirDe: "from",
@@ -130,6 +142,12 @@ const ui = {
     } satisfies Record<UnidadePreco, string>,
   },
   es: {
+    reservaRapida: "Reserva rápida",
+    oQueReservar: "¿Qué quieres reservar?",
+    dataVisita: "Fecha",
+    verDisponibilidade: "Ver disponibilidad",
+    verExperiencias: "Ver experiencias",
+    rolarParaBaixo: "Desliza para conocer",
     reservar: "Reservar",
     inicio: "Inicio",
     aPartirDe: "desde",
