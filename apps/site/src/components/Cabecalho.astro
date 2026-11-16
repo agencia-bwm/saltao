@@ -160,22 +160,45 @@ const idiomas = (Object.keys(NOMES) as Locale[]).map((l) => ({ l, href: rota.alt
 </header>
 
 <style>
+  /* O cabeçalho é transparente: só a barra (do logo ao Reservar) é branca. Na home a foto do hero
+     sobe por trás dele e aparece dos dois lados da barra. */
   .cabecalho {
     position: sticky;
     top: 0;
     z-index: 50;
-    background: var(--color-bg);
-  }
-  /* Barra branca limpa (layout nov/2026): no lugar do fio dos arcos, uma linha fina. */
-  .cabecalho {
-    border-bottom: 1px solid rgb(211 226 240 / 0.6);
+    pointer-events: none;
   }
   .barra {
+    --r-barra: 1.5rem;
+    position: relative;
     width: min(100% - 2 * var(--space-4), 92rem);
     display: flex;
     align-items: center;
     gap: var(--space-4);
     min-height: 4.5rem;
+    padding-inline: clamp(var(--space-3), 2vw, var(--space-6));
+    background: var(--color-bg);
+    border-radius: 0 0 var(--r-barra) var(--r-barra);
+    box-shadow: 0 10px 30px -18px rgb(15 39 68 / 0.45);
+    pointer-events: auto;
+  }
+  /* Cantos côncavos no topo: a barra "escorre" da borda da tela, como água saindo da pedra. */
+  .barra::before,
+  .barra::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    width: var(--r-barra);
+    height: var(--r-barra);
+    pointer-events: none;
+  }
+  .barra::before {
+    right: 100%;
+    background: radial-gradient(circle at 0 100%, transparent calc(var(--r-barra) - 0.5px), var(--color-bg) var(--r-barra));
+  }
+  .barra::after {
+    left: 100%;
+    background: radial-gradient(circle at 100% 100%, transparent calc(var(--r-barra) - 0.5px), var(--color-bg) var(--r-barra));
   }
   .marca {
     margin-right: auto;
@@ -187,7 +210,13 @@ const idiomas = (Object.keys(NOMES) as Locale[]).map((l) => ({ l, href: rota.alt
     max-width: none;
     height: 44px;
   }
-  @media (max-width: 23rem) {
+  @media (max-width: 30rem) {
+    .barra {
+      gap: var(--space-2);
+      padding-inline: var(--space-3);
+    }
+  }
+  @media (max-width: 26rem) {
     .marca img {
       width: 124px;
       height: 36px;
