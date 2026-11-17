@@ -35,7 +35,8 @@ const LARGURAS_INTRO = [400, 640, 900, 1200];
 const NAV: Record<string, string> = { pt: "Nesta página", en: "On this page", es: "En esta página" };
 // Valores ficam só na plataforma de reservas: aqui, só o convite para ver datas e preços lá.
 const RESERVA: Record<string, string> = { pt: "Datas disponíveis e valores você confere na reserva online.", en: "Check available dates and rates when you book online.", es: "Consulta fechas disponibles y precios en la reserva online." };
-const MAIS: Record<string, [string, string]> = { pt: ["Mais fotos", "deslize"], en: ["More photos", "swipe"], es: ["Más fotos", "desliza"] };
+const MAIS: Record<string, [string]> = { pt: ["Mais fotos"], en: ["More photos"], es: ["Más fotos"] };
+const SETAS: Record<string, [string, string]> = { pt: ["Foto anterior", "Próxima foto"], en: ["Previous photo", "Next photo"], es: ["Foto anterior", "Foto siguiente"] };
 const iconeProduto = (p: Produto): NomeIcone => (p.tipoSchema === "Campground" ? "barraca" : p.tipoSchema === "LodgingBusiness" ? "cama" : "estrela");
 
 // Seções da categoria: a chamada final (se houver) vai depois do FAQ.
@@ -197,23 +198,27 @@ const dlPagina = [{ event: "view_item_list", ecommerce: { item_list_name: doc.ti
             </div>
 
             {mais.length > 0 && (
-              <div class="container lp-carrossel">
+              <div class="container lp-carrossel" data-carrossel>
                 <p class="lp-carrossel-topo">
-                  <span>
-                    {MAIS[locale][0]} · {p.titulo}
-                  </span>
-                  <span class="lp-carrossel-dica" aria-hidden="true">
-                    {MAIS[locale][1]} <Icone nome="seta" tamanho={16} />
-                  </span>
+                  {MAIS[locale][0]} · {p.titulo}
+                  <span class="lp-contador" data-contador aria-live="polite" hidden></span>
                 </p>
-                {/* Trilho com rolagem lateral (CSS scroll-snap, sem JS); tabindex para rolar pelo teclado. */}
-                <ul class="lp-trilho" tabindex="0" aria-label={`${MAIS[locale][0]}: ${p.titulo}`}>
-                  {mais.map((f) => (
-                    <li>
-                      <Foto formatos={["avif"]} img={f} sizes="(min-width: 64rem) 22rem, 72vw" larguras={[320, 480, 640, 800]} proporcao={4 / 3} />
-                    </li>
-                  ))}
-                </ul>
+                <div class="lp-palco">
+                  {/* Trilho com rolagem lateral e encaixe (funciona sem JS, no dedo); as setas são um script mínimo que só rola o trilho. */}
+                  <ul class="lp-trilho" id={`fotos-${p.slug}`} tabindex="0" aria-label={`${MAIS[locale][0]}: ${p.titulo}`}>
+                    {mais.map((f, j) => (
+                      <li aria-label={`${j + 1} / ${mais.length}`}>
+                        <Foto formatos={["avif"]} img={f} sizes="(min-width: 72rem) 72rem, calc(100vw - 2rem)" larguras={[480, 720, 960, 1280]} proporcao={16 / 9} />
+                      </li>
+                    ))}
+                  </ul>
+                  <button type="button" class="lp-seta lp-seta-ant" data-ant aria-controls={`fotos-${p.slug}`} aria-label={SETAS[locale][0]} hidden>
+                    <Icone nome="seta" tamanho={22} />
+                  </button>
+                  <button type="button" class="lp-seta lp-seta-prox" data-prox aria-controls={`fotos-${p.slug}`} aria-label={SETAS[locale][1]} hidden>
+                    <Icone nome="seta" tamanho={22} />
+                  </button>
+                </div>
               </div>
             )}
           </section>
@@ -228,6 +233,10 @@ const dlPagina = [{ event: "view_item_list", ecommerce: { item_list_name: doc.ti
     <Secoes blocos={chamadaFinal} indice={indice} locale={locale} idBase={meio.length} />
   </div>
 </Base>
+
+<script>
+  import "../scripts/carrossel";
+</script>
 
 <style>
   .lp-abertura {

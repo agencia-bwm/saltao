@@ -172,7 +172,8 @@
   color: #ffffff;
 }
 
-/* Carrossel de mais fotos no fim de cada acomodação: rolagem lateral com encaixe (sem JS). */
+/* Carrossel de mais fotos no fim de cada acomodação: uma foto grande por vez, com setas.
+   Base: trilho com rolagem lateral e encaixe (funciona sem JS). Setas: scripts/carrossel.ts. */
 .lp-carrossel {
   margin-top: clamp(var(--space-7), 6vw, var(--space-8));
 }
@@ -186,48 +187,94 @@
   font-weight: var(--fw-forte);
   color: var(--brand-poco);
 }
-.lp-carrossel-dica {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-1);
+.lp-contador {
   font-weight: var(--fw-medio);
+  font-variant-numeric: tabular-nums;
   color: var(--color-primary-strong);
+}
+.lp-palco {
+  position: relative;
 }
 .lp-trilho {
   display: grid;
   grid-auto-flow: column;
-  grid-auto-columns: min(72vw, 22rem);
-  gap: var(--space-4);
+  grid-auto-columns: 100%;
   margin: 0;
-  padding: 0 0 var(--space-4);
+  padding: 0;
   list-style: none;
   overflow-x: auto;
   overscroll-behavior-x: contain;
   scroll-snap-type: x mandatory;
-  scrollbar-width: thin;
-  scrollbar-color: var(--brand-azul-claro) transparent;
+  scrollbar-width: none;
+  border-radius: var(--radius-lg) var(--radius-arco) var(--radius-lg) var(--radius-lg);
+  box-shadow: 0 24px 50px -28px rgb(15 39 68 / 0.6);
+}
+.lp-trilho::-webkit-scrollbar {
+  display: none;
 }
 .lp-trilho:focus-visible {
   outline: 3px solid var(--color-focus);
   outline-offset: 4px;
 }
 .lp-trilho li {
-  overflow: hidden;
   scroll-snap-align: start;
-  border-radius: var(--radius-md) var(--radius-arco) var(--radius-md) var(--radius-md);
-  box-shadow: 0 14px 30px -20px rgb(15 39 68 / 0.5);
 }
 .lp-trilho img {
   display: block;
   width: 100%;
   height: auto;
-  transition: filter 0.35s ease;
 }
-.lp-trilho li:hover img {
-  filter: brightness(0.85);
+.lp-seta {
+  position: absolute;
+  top: 50%;
+  display: grid;
+  place-items: center;
+  width: 3.25rem;
+  height: 3.25rem;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: rgb(255 255 255 / 0.92);
+  color: var(--brand-poco);
+  box-shadow: var(--shadow-md);
+  cursor: pointer;
+  transform: translateY(-50%);
+  transition: background 0.2s ease, color 0.2s ease;
+}
+.lp-seta[hidden] {
+  display: none;
+}
+.lp-seta:hover {
+  background: var(--brand-poco);
+  color: #ffffff;
+}
+.lp-seta:focus-visible {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 2px;
+}
+.lp-seta-ant {
+  left: var(--space-4);
+}
+.lp-seta-ant svg {
+  transform: rotate(180deg);
+}
+.lp-seta-prox {
+  right: var(--space-4);
+}
+@media (max-width: 40rem) {
+  .lp-seta {
+    width: 2.75rem;
+    height: 2.75rem;
+  }
+  .lp-seta-ant {
+    left: var(--space-2);
+  }
+  .lp-seta-prox {
+    right: var(--space-2);
+  }
 }
 @media (prefers-reduced-motion: reduce) {
-  .lp-trilho img {
+  .lp-seta {
     transition: none;
   }
 }
