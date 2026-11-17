@@ -379,23 +379,67 @@ const idiomas = (Object.keys(NOMES) as Locale[]).map((l) => ({ l, href: rota.alt
       transform: rotate(180deg);
     }
     /* Painel do submenu: branco, com o fio dos arcos no topo. */
-    .sub {
+    /* .nav-desktop na frente para vencer o reset "nav ul { padding: 0 }". */
+    .nav-desktop .sub {
       position: absolute;
       top: calc(100% + var(--space-2));
       left: 0;
-      min-width: 15rem;
-      padding: var(--space-3) var(--space-2) var(--space-2);
+      min-width: 17rem;
+      padding: var(--space-3) var(--space-5) var(--space-3);
       background: var(--grad-arcos) top / 100% 3px no-repeat, var(--color-bg);
       border-radius: var(--radius-md) var(--radius-lg) var(--radius-lg) var(--radius-lg);
       box-shadow: var(--shadow-md);
     }
-    .sub a {
-      padding: var(--space-2) var(--space-3);
-      border-radius: var(--radius-sm);
-      font-size: var(--fs-100);
+    /* Itens com mais respiro e um fio fino entre eles (some nas pontas, como água). */
+    .sub li + li {
+      background: linear-gradient(to right, transparent, var(--color-border) 12%, var(--color-border) 88%, transparent) top / 100% 1px no-repeat;
     }
-    .sub a:hover {
-      background: var(--color-surface);
+    .sub a {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-4);
+      min-height: 3rem;
+      padding: var(--space-3) var(--space-1);
+      font-size: var(--fs-100);
+      font-weight: var(--fw-medio);
+      color: var(--brand-poco);
+      text-decoration: none;
+      transition: color 0.2s ease, transform 0.2s ease;
+    }
+    /* Seta discreta que aparece no hover/foco. */
+    .sub a::after {
+      content: "";
+      flex-shrink: 0;
+      width: 0.45rem;
+      height: 0.45rem;
+      border-top: 1.6px solid currentColor;
+      border-right: 1.6px solid currentColor;
+      transform: rotate(45deg);
+      opacity: 0;
+      transition: opacity 0.2s ease;
+    }
+    .sub a:hover,
+    .sub a:focus-visible {
+      color: var(--color-primary-strong);
+      transform: translateX(3px);
+    }
+    .sub a:hover::after,
+    .sub a:focus-visible::after,
+    .sub a[aria-current="page"]::after {
+      opacity: 1;
+    }
+    .sub a[aria-current="page"] {
+      color: var(--color-primary-strong);
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .sub a {
+        transition: none;
+      }
+      .sub a:hover,
+      .sub a:focus-visible {
+        transform: none;
+      }
     }
     .nav-desktop .idiomas {
       border-top: 0;
