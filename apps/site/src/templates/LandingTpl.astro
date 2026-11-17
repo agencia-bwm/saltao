@@ -60,7 +60,7 @@ const dlPagina = [{ event: "view_item_list", ecommerce: { item_list_name: doc.ti
   {...rota}
   indice={indice}
   imagem={fotos[0]}
-  preload={{ img: fotos[0], larguras: LARGURAS_INTRO, sizes: "(min-width: 64rem) 30rem, 70vw" }}
+  preload={{ img: fotos[0], larguras: LARGURAS_INTRO, sizes: "(min-width: 64rem) 30rem, 70vw", proporcao: 4 / 5 }}
   jsonld={[noWebPage(rota.path, doc.titulo, doc.respostaDireta, locale, "CollectionPage"), ...nosProdutos, noFaq([...doc.faq, ...faqsSecoes], rota.path)].filter((n) => n !== null)}
   dlPagina={dlPagina}
 >

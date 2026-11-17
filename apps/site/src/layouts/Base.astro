@@ -32,10 +32,10 @@ interface Props {
   /** Eventos do dataLayer disparados ao abrir a página (view_item, view_item_list). */
   dlPagina?: Record<string, unknown>[];
   /** Imagem LCP pedida já no <head> (AVIF, mesmas URLs do <Foto prioridade>): o navegador não espera o HTML chegar até ela. */
-  preload?: { img: Img; larguras: number[]; sizes: string };
+  preload?: { img: Img; larguras: number[]; sizes: string; proporcao?: number };
 }
 const { locale, path, alternates, breadcrumbs, seo, indice, imagem, ogTipo = "website", jsonld = [], dlPagina = [], preload } = Astro.props;
-const pre = preload ? await getImage({ src: preload.img.src as ImageMetadata, ...medidas(preload.img, preload.larguras), format: "avif", quality: QUALIDADE.prioridade }) : null;
+const pre = preload ? await getImage({ src: preload.img.src as ImageMetadata, ...medidas(preload.img, preload.larguras, preload.proporcao), fit: preload.proporcao ? "cover" : undefined, format: "avif", quality: QUALIDADE.prioridade }) : null;
 const ui = t(locale);
 const g = indice.conteudo.global[locale] ?? indice.conteudo.global.pt;
 
