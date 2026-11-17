@@ -110,6 +110,19 @@ export type Block =
   | { __component: "blocks.destaques-produtos"; titulo?: string; produtoIds: string[] }
   | { __component: "blocks.fatos"; sobretitulo?: string; titulo?: string; texto?: string; imagem?: Img; itens: KV[] }
   | { __component: "blocks.galeria"; sobretitulo?: string; titulo: string; fotos: Img[] }
+  | {
+      __component: "blocks.setor";
+      sobretitulo?: string;
+      titulo: string;
+      icone?: Icone;
+      texto: string;
+      fotos: Img[];
+      destaques: { icone: Icone; rotulo: string }[];
+      listaTitulo?: string;
+      lista?: string[];
+      cta?: Cta;
+      ctaSecundario?: Cta;
+    }
   | { __component: "blocks.chamada"; sobretitulo?: string; titulo: string; tituloDestaque?: string; texto?: string; imagem: Img; cta: Cta; ctaSecundario?: Cta }
   | { __component: "blocks.avaliacoes"; titulo?: string; avaliacaoIds: string[] }
   | { __component: "blocks.faq"; titulo?: string; itens: Faq[] }
@@ -217,6 +230,11 @@ export interface PaginaInstitucional extends Doc {
   titulo: string;
   slug: string;
   respostaDireta: string;
+  /** Landing: abertura no estilo do hero da home e setores com âncora (rota própria). */
+  landing?: boolean;
+  sobretitulo?: string;
+  tituloDestaque?: string;
+  fotosIntro?: Img[];
   secoes: Block[];
   seo: Seo;
 }

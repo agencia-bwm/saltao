@@ -1,0 +1,279 @@
+---
+/**
+ * Abertura das landings no estilo do hero da home, mais baixa: foto na largura toda sob a barra do menu,
+ * borda em onda, migalhas claras, H1 + destaque, resposta direta, 2ª foto como cartão inclinado (desktop)
+ * e menu âncora em cartões subindo sobre a onda. A página passa preload da 1ª foto com LARGURAS_HERO_LANDING.
+ */
+import type { Icone as NomeIcone, Img } from "../lib/types";
+import type { Migalha } from "../lib/routes";
+import { LARGURAS_HERO_LANDING } from "../lib/foto";
+import Foto from "./Foto.astro";
+import Icone from "./Icone.astro";
+import Migalhas from "./Migalhas.astro";
+
+export interface AncoraLanding {
+  href: string;
+  rotulo: string;
+  sub?: string;
+  icone: NomeIcone;
+}
+interface Props {
+  titulo: string;
+  tituloDestaque?: string;
+  sobretitulo?: string;
+  resposta: string;
+  fotos: Img[];
+  migalhas: Migalha[];
+  ancoras: AncoraLanding[];
+  rotuloAncoras: string;
+}
+const { titulo, tituloDestaque, sobretitulo, resposta, fotos, migalhas, ancoras, rotuloAncoras } = Astro.props;
+---
+
+<section class="lp-hero">
+  <Foto img={fotos[0]} prioridade sizes="100vw" class="lp-hero-img" larguras={LARGURAS_HERO_LANDING} />
+  <div class="lp-hero-veu">
+    <div class="container lp-hero-conteudo">
+      <Migalhas itens={migalhas} claro />
+      {sobretitulo && <p class="lp-hero-sobre">{sobretitulo}</p>}
+      <h1>
+        {titulo}
+        {tituloDestaque && <span class="destaque">{tituloDestaque}</span>}
+      </h1>
+      <p class="lp-hero-resposta">{resposta}</p>
+    </div>
+  </div>
+  {
+    fotos[1] && (
+      <div class="lp-hero-mini" aria-hidden="true">
+        <Foto img={fotos[1]} sizes="18rem" larguras={[320, 480]} proporcao={4 / 3} />
+      </div>
+    )
+  }
+  <!-- Borda de baixo em onda, como no hero da home. -->
+  <svg class="lp-onda" viewBox="0 0 1440 220" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+    <path class="lp-onda-agua" d="M0 220V170c260 40 560 52 860 4 260-42 430-128 580-174v390Z" />
+    <path class="lp-onda-fundo" d="M0 220V196c300 30 620 30 900-14 250-40 400-96 540-128v166Z" />
+  </svg>
+</section>
+
+{
+  ancoras.length > 1 && (
+    <nav class="container lp-ancoras" aria-label={rotuloAncoras}>
+      <ul>
+        {ancoras.map((a) => (
+          <li>
+            <a href={a.href}>
+              <span class="lp-ancora-icone">
+                <Icone nome={a.icone} tamanho={22} />
+              </span>
+              <span>
+                <strong>{a.rotulo}</strong>
+                {a.sub && <small>{a.sub}</small>}
+              </span>
+              <Icone nome="seta" tamanho={16} class="lp-ancora-seta" />
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+  )
+}
+{ancoras.length <= 1 && <div class="lp-sem-ancoras" />}
+
+<style>
+  /* Hero da landing na linha da home: foto na largura toda, sob a barra do menu, mais baixa que a da home. */
+  .lp-hero {
+    position: relative;
+    display: grid;
+    min-height: clamp(24rem, 56svh, 34rem);
+    margin-top: -4.5rem;
+    color: #ffffff;
+    background: var(--brand-poco);
+    overflow: hidden;
+  }
+  /* A foto não dita a altura: fica por trás, e a altura vem do conteúdo + min-height. */
+  .lp-hero > :global(picture) {
+    position: absolute;
+    inset: 0;
+  }
+  .lp-hero-veu {
+    position: relative;
+    grid-area: 1 / 1;
+  }
+  .lp-hero :global(.lp-hero-img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .lp-hero-veu {
+    display: flex;
+    align-items: center;
+    padding-block: calc(4.5rem + var(--space-6)) clamp(var(--space-8), 8vw, 7rem);
+    background:
+      linear-gradient(to right, rgb(15 39 68 / 0.8) 0%, rgb(15 39 68 / 0.5) 40%, rgb(15 39 68 / 0) 72%),
+      linear-gradient(to top, rgb(15 39 68 / 0.5) 0%, rgb(15 39 68 / 0) 45%);
+  }
+  .lp-hero-sobre {
+    margin-bottom: var(--space-3);
+    font-size: var(--fs-100);
+    font-weight: var(--fw-medio);
+    letter-spacing: 0.04em;
+    color: var(--color-on-deep);
+  }
+  .lp-hero h1 {
+    max-width: 21ch;
+    margin: 0 0 var(--space-4);
+    color: #ffffff;
+    font-family: var(--font-sans);
+    font-size: clamp(2.2rem, 1.4rem + 3vw, 3.9rem);
+    font-weight: var(--fw-medio);
+    line-height: 1.02;
+    letter-spacing: -0.035em;
+    text-shadow: 0 2px 24px rgb(15 39 68 / 0.35);
+  }
+  .destaque {
+    display: block;
+    color: var(--brand-azul-claro);
+  }
+  .lp-hero-resposta {
+    max-width: 44ch;
+    margin: 0;
+    color: var(--color-on-deep);
+    text-wrap: pretty;
+  }
+  /* Segunda foto: cartão inclinado à direita (só no desktop). */
+  .lp-hero-mini {
+    display: none;
+  }
+  .lp-onda {
+    position: absolute;
+    inset: auto 0 -1px;
+    width: 100%;
+    height: clamp(3rem, 11vw, 9rem);
+    pointer-events: none;
+  }
+  .lp-onda-agua {
+    fill: var(--brand-ceu);
+  }
+  .lp-onda-fundo {
+    fill: var(--color-bg);
+  }
+
+  /* Menu âncora: dois cartões subindo sobre a onda. */
+  .lp-ancoras {
+    position: relative;
+    z-index: 2;
+    margin-top: calc(-1 * var(--space-7));
+    margin-bottom: var(--space-6);
+  }
+  .lp-ancoras ul {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(13rem, 18rem));
+    gap: var(--space-3);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .lp-ancoras a {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    min-height: 4.5rem;
+    padding: var(--space-3) var(--space-4) var(--space-3) var(--space-3);
+    border-radius: var(--radius-pill);
+    background: var(--color-bg);
+    color: var(--brand-poco);
+    text-decoration: none;
+    box-shadow: 0 18px 36px -18px rgb(15 39 68 / 0.45);
+    transition: box-shadow 0.2s ease, transform 0.2s ease;
+  }
+  .lp-ancoras a:hover {
+    box-shadow: 0 22px 40px -16px rgb(15 39 68 / 0.55);
+    transform: translateY(-2px);
+  }
+  .lp-ancoras strong {
+    display: block;
+    font-weight: var(--fw-forte);
+  }
+  .lp-ancoras small {
+    font-size: 0.8125rem;
+    color: var(--color-text-muted);
+  }
+  .lp-ancora-icone {
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: 50%;
+    background: var(--brand-ceu);
+    color: var(--color-primary-strong);
+  }
+  .lp-ancoras :global(.lp-ancora-seta) {
+    margin-left: auto;
+    transform: rotate(90deg);
+    color: var(--color-primary-strong);
+  }
+  @media (min-width: 64rem) {
+    .lp-hero-mini {
+      position: absolute;
+      top: calc(4.5rem + clamp(var(--space-6), 6vw, var(--space-8)));
+      right: max(var(--space-5), calc((100% - 84rem) / 2));
+      z-index: 1;
+      display: block;
+      width: 17rem;
+      padding: var(--space-2);
+      background: var(--color-bg);
+      border-radius: var(--radius-lg);
+      box-shadow: 0 24px 48px -20px rgb(15 39 68 / 0.5);
+      transform: rotate(2.5deg);
+    }
+    .lp-hero-mini :global(img) {
+      display: block;
+      width: 100%;
+      height: auto;
+      border-radius: calc(var(--radius-lg) - 6px);
+    }
+  }
+  @media (max-width: 40rem) {
+    .lp-hero {
+      min-height: 64svh;
+    }
+    .lp-hero-veu {
+      align-items: flex-end;
+      background: linear-gradient(to top, rgb(15 39 68 / 0.9) 0%, rgb(15 39 68 / 0.55) 55%, rgb(15 39 68 / 0.15) 85%);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .lp-ancoras a {
+      transition: none;
+    }
+  }
+  /* Celular: âncoras em duas colunas, compactas. */
+  @media (max-width: 40rem) {
+    .lp-ancoras ul {
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-2);
+    }
+    .lp-ancoras a {
+      min-height: 3.5rem;
+      gap: var(--space-2);
+      padding: var(--space-2) var(--space-3) var(--space-2) var(--space-2);
+      border-radius: var(--radius-lg);
+      font-size: 0.875rem;
+      line-height: 1.2;
+    }
+    .lp-ancoras small,
+    .lp-ancoras :global(.lp-ancora-seta) {
+      display: none;
+    }
+    .lp-ancora-icone {
+      width: 2.25rem;
+      height: 2.25rem;
+    }
+  }
+  .lp-sem-ancoras {
+    height: var(--space-6);
+  }
+</style>

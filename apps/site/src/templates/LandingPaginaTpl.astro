@@ -1,0 +1,66 @@
+---
+/**
+ * Landing de página institucional (ex.: Cachoeira Saltão, Estrutura): abertura no estilo do hero da home,
+ * menu âncora automático pelos setores (blocks.setor) e as seções do painel. Rota própria (pages/[landing]/),
+ * para o CSS do hero não entrar nas outras páginas.
+ */
+import type { Rota, Indice } from "../lib/routes";
+import type { Block } from "../lib/types";
+import { noFaq, noWebPage } from "../lib/schema";
+import { ancora } from "../lib/cta";
+import { LARGURAS_HERO_LANDING } from "../lib/foto";
+import Base from "../layouts/Base.astro";
+import HeroLanding from "../components/HeroLanding.astro";
+import Secoes from "../components/Secoes.astro";
+import cssAbaixo from "../styles/home-abaixo.css?url";
+import cssLanding from "../styles/landing.css?url";
+
+interface Props {
+  rota: Extract<Rota, { kind: "institucional" }>;
+  indice: Indice;
+}
+const { rota, indice } = Astro.props;
+const { doc, locale } = rota;
+const NAV: Record<string, string> = { pt: "Nesta página", en: "On this page", es: "En esta página" };
+const primeiraImagem = doc.secoes.flatMap((b) => (b.__component === "blocks.setor" ? b.fotos : b.__component === "blocks.imagem" ? [b.imagem] : []))[0];
+const fotos = (doc.fotosIntro?.length ? doc.fotosIntro : primeiraImagem ? [primeiraImagem] : []).slice(0, 2);
+const setores = doc.secoes.filter((b): b is Extract<Block, { __component: "blocks.setor" }> => b.__component === "blocks.setor");
+const ancoras = setores.map((b) => ({ href: `#${ancora(b.titulo)}`, rotulo: b.titulo, sub: b.destaques[0]?.rotulo, icone: b.icone ?? "estrela" }));
+const faqs = doc.secoes.flatMap((b) => (b.__component === "blocks.faq" ? b.itens : []));
+const tipoPagina = doc.documentId === "inst-estrutura" ? "AboutPage" : "WebPage";
+---
+
+<Base
+  {...rota}
+  indice={indice}
+  imagem={fotos[0]}
+  preload={fotos[0] ? { img: fotos[0], larguras: LARGURAS_HERO_LANDING, sizes: "100vw" } : undefined}
+  migalhasNoTopo={false}
+  jsonld={[noWebPage(rota.path, doc.titulo, doc.respostaDireta, locale, tipoPagina), noFaq(faqs, rota.path)].filter((n) => n !== null)}
+>
+  {
+    fotos[0] && (
+      <HeroLanding
+        titulo={doc.titulo}
+        tituloDestaque={doc.tituloDestaque}
+        sobretitulo={doc.sobretitulo}
+        resposta={doc.respostaDireta}
+        fotos={fotos}
+        migalhas={rota.breadcrumbs}
+        ancoras={ancoras}
+        rotuloAncoras={NAV[locale]}
+      />
+    )
+  }
+
+  <link rel="stylesheet" href={cssAbaixo} />
+  <link rel="stylesheet" href={cssLanding} />
+
+  <div class="container secoes lp-secoes">
+    <Secoes blocos={doc.secoes} indice={indice} locale={locale} />
+  </div>
+</Base>
+
+<script>
+  import "../scripts/carrossel";
+</script>

@@ -611,7 +611,11 @@
   background: var(--brand-poco);
   color: #ffffff;
 }
-.chamada > picture,
+/* A foto fica por trás e não dita a altura (foto vertical deixaria o painel enorme). */
+.chamada > picture {
+  position: absolute;
+  inset: 0;
+}
 .chamada .ch-veu {
   grid-area: 1 / 1;
 }

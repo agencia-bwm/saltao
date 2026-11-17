@@ -46,9 +46,52 @@
         }
       }
     },
+    "landing": {
+      "type": "boolean",
+      "default": false,
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "sobretitulo": {
+      "type": "string",
+      "maxLength": 60,
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "tituloDestaque": {
+      "type": "string",
+      "maxLength": 60,
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "fotosIntro": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.image-alt",
+      "max": 2,
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
     "secoes": {
       "type": "dynamiczone",
       "components": [
+        "blocks.setor",
+        "blocks.experiencias",
+        "blocks.galeria",
+        "blocks.chamada",
+        "blocks.avaliacoes",
         "blocks.texto",
         "blocks.imagem",
         "blocks.tabela",

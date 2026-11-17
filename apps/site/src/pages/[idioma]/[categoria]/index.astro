@@ -1,9 +1,10 @@
 ---
-/** Landings de categoria em página única, em inglês e espanhol (/en/lodging/, /es/hospedaje/). */
+/** Landings (categoria em página única ou página institucional com landing), em inglês e espanhol (/en/lodging/, /es/hospedaje/). */
 import type { GetStaticPaths } from "astro";
 import { indice } from "../../../lib/cms";
 import { rotasLanding } from "../../../lib/routes";
 import LandingTpl from "../../../templates/LandingTpl.astro";
+import LandingPaginaTpl from "../../../templates/LandingPaginaTpl.astro";
 
 export const getStaticPaths = (async () => {
   const idx = await indice();
@@ -20,4 +21,5 @@ const { chave, locale } = Astro.props;
 const rota = rotasLanding(idx).find((r) => r.chave === chave && r.locale === locale)!;
 ---
 
-<LandingTpl rota={rota} indice={idx} />
+{rota.kind === "categoria-produto" && <LandingTpl rota={rota} indice={idx} />}
+{rota.kind === "institucional" && <LandingPaginaTpl rota={rota} indice={idx} />}

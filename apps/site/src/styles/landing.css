@@ -5,7 +5,7 @@
   scroll-margin-top: 5.5rem;
 }
 /* Faixas alternadas: céu claro / branco, como a descida da home. */
-.lp-produto:nth-child(odd) {
+.lp-fundo-ceu {
   background: var(--brand-ceu);
 }
 .lp-produto-grade {
@@ -35,6 +35,14 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
+}
+/* Setor com uma foto só: ocupa o mosaico inteiro. */
+.lp-1foto {
+  grid-template-columns: 1fr;
+  grid-template-rows: auto;
+}
+.lp-1foto .lp-pf1 {
+  grid-row: auto;
 }
 .lp-pf1 {
   grid-row: 1 / 3;
@@ -94,7 +102,7 @@
   color: var(--color-primary-strong);
   box-shadow: 0 8px 20px -14px rgb(15 39 68 / 0.5);
 }
-.lp-produto:nth-child(even) .lp-destaques .bolha {
+.lp-fundo-branco .lp-destaques .bolha {
   background: var(--brand-ceu);
   box-shadow: none;
 }

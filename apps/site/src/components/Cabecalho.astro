@@ -50,10 +50,13 @@ if (!menu.length) {
         }),
       ]
     : [];
+  // Menu (nov/2026): Cachoeira Saltão, Day Use, Hospedagem e Estrutura como links diretos para as landings.
+  const direto = (l: Link | null, rotulo?: string): Entrada => (l ? { rotulo: rotulo ?? l.rotulo, href: l.href, filhos: [] } : { rotulo: "", filhos: [] });
   const grupos: Entrada[] = [
-    { rotulo: ui.grupoParque, filhos: so([pagina("institucional", "inst-conheca"), pagina("institucional", "inst-cachoeira"), pagina("institucional", "inst-restaurante"), pagina("institucional", "inst-seguranca")]) },
-    { rotulo: ui.grupoExperiencias, filhos: so([cat("cat-dayuse"), cat("cat-quiosques"), cat("cat-combos")]) },
+    direto(pagina("institucional", "inst-cachoeira")),
+    direto(cat("cat-dayuse")),
     hosp ? { rotulo: hosp.titulo.split(/\s+(e|and|y)\s+/)[0], filhos: hospFilhos } : { rotulo: "", filhos: [] },
+    direto(pagina("institucional", "inst-estrutura")),
     ...(indice.porPath.has(guiaPath(locale)) ? [{ rotulo: ui.guiaCurto, href: guiaPath(locale), filhos: [] }] : []),
     { rotulo: ui.grupoAtendimento, filhos: so([pagina("atendimento", "at-faq"), pagina("institucional", "inst-como-chegar"), pagina("atendimento", "at-minha-reserva")]) },
   ];

@@ -8,12 +8,13 @@ module.exports = {
       staticDistDir: "./dist",
       url: [
         "http://localhost/", // Home
-        "http://localhost/day-use/", // Listagem de produtos
-        "http://localhost/day-use/ingresso-day-use/", // Produto / pacote
-        "http://localhost/hospedagem/", // Landing de categoria (página única)
+        "http://localhost/churrasqueiras-e-quiosques/", // Listagem de produtos
+        "http://localhost/churrasqueiras-e-quiosques/quiosque-com-churrasqueira/", // Produto / pacote
+        "http://localhost/day-use/", // Landing de categoria (página única)
+        "http://localhost/cachoeira-saltao/", // Landing institucional
         "http://localhost/guia/", // Listagem do blog
         "http://localhost/guia/cachoeiras-perto-de-brotas/", // Artigo
-        "http://localhost/cachoeira-saltao/", // Institucional por blocos
+        "http://localhost/seguranca/", // Institucional por blocos
         "http://localhost/duvidas-e-contato/", // FAQ / Contato
       ],
       numberOfRuns: 3,

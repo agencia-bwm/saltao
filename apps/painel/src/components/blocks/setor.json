@@ -1,0 +1,80 @@
+{
+  "collectionName": "components_blocks_setor",
+  "info": {
+    "displayName": "Setor (landing)",
+    "icon": "layout"
+  },
+  "options": {},
+  "attributes": {
+    "sobretitulo": {
+      "type": "string",
+      "maxLength": 60
+    },
+    "titulo": {
+      "type": "string",
+      "required": true,
+      "maxLength": 90
+    },
+    "icone": {
+      "type": "enumeration",
+      "enum": [
+        "folha",
+        "sol",
+        "cachoeira",
+        "trilha",
+        "familia",
+        "escudo",
+        "barraca",
+        "cama",
+        "talheres",
+        "fogueira",
+        "churrasqueira",
+        "mapa",
+        "coracao",
+        "estrela",
+        "chuveiro",
+        "tomada",
+        "carro",
+        "cafe"
+      ]
+    },
+    "texto": {
+      "type": "text",
+      "required": true,
+      "maxLength": 600
+    },
+    "fotos": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.image-alt",
+      "required": true,
+      "min": 1,
+      "max": 12
+    },
+    "destaques": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.icone-rotulo",
+      "max": 6
+    },
+    "listaTitulo": {
+      "type": "string",
+      "maxLength": 60
+    },
+    "lista": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.list-item"
+    },
+    "cta": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.cta"
+    },
+    "ctaSecundario": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.cta"
+    }
+  }
+}
