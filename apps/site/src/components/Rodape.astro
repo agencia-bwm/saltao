@@ -15,6 +15,12 @@ const g = indice.conteudo.global[locale] ?? indice.conteudo.global.pt;
 const paginas = [...indice.conteudo.institucionais, ...indice.conteudo.atendimento].filter((p) => p.locale === locale);
 const linkPagina = (id: string) => indice.link("institucional", id, locale) ?? indice.link("atendimento", id, locale);
 const ano = new Date().getFullYear();
+const CREDITOS: Record<Locale, { direitos: string; dev: string }> = {
+  pt: { direitos: "Todos os direitos reservados.", dev: "Desenvolvido por" },
+  en: { direitos: "All rights reserved.", dev: "Developed by" },
+  es: { direitos: "Todos los derechos reservados.", dev: "Desarrollado por" },
+};
+const cred = CREDITOS[locale];
 const DIA: Record<Locale, Record<string, string>> = {
   pt: { Mo: "seg", Tu: "ter", We: "qua", Th: "qui", Fr: "sex", Sa: "sáb", Su: "dom" },
   en: { Mo: "Mon", Tu: "Tue", We: "Wed", Th: "Thu", Fr: "Fri", Sa: "Sat", Su: "Sun" },
@@ -98,7 +104,10 @@ const dias = (s: string) => s.replace(/Mo|Tu|We|Th|Fr|Sa|Su/g, (d) => DIA[locale
     )
   }
   {g?.rodape && g.rodape.length > 0 && <div class="container extra"><RichText conteudo={g.rodape} /></div>}
-  <p class="container copy">© {ano} {g?.nomeOficial ?? "Saltão"}</p>
+  <div class="container copy">
+    <p>© {ano} Saltão. {cred.direitos}</p>
+    <p>{cred.dev} <a href="https://www.agenciabwm.com.br/" rel="noopener" target="_blank">Agência BWM</a></p>
+  </div>
 </footer>
 
 <a class="whats-flutuante" href={g ? linkWhatsApp(g.whatsapp, g.whatsappMensagemPadrao) : "#"} rel="noopener" target="_blank" aria-label={ui.whatsapp} data-dl='{"event":"generate_lead","method":"whatsapp_flutuante"}'>
@@ -185,10 +194,23 @@ const dias = (s: string) => s.replace(/Mo|Tu|We|Th|Fr|Sa|Su/g, (d) => DIA[locale
     cursor: pointer;
   }
   .copy {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: var(--space-2) var(--space-5);
     margin-top: var(--space-7);
     padding-top: var(--space-4);
     border-top: 1px solid rgb(160 201 232 / 0.25);
     color: var(--color-on-deep-muted);
+  }
+  .copy p {
+    margin: 0;
+  }
+  .copy a {
+    color: var(--color-on-deep);
+  }
+  .copy a:hover {
+    color: #ffffff;
   }
   .whats-flutuante {
     position: fixed;
