@@ -84,6 +84,15 @@ export interface CardFoto {
   icone?: Icone;
 }
 
+export interface QuedaAnimada {
+  xTopo: number;
+  xBase: number;
+  topo: number;
+  base: number;
+  larguraTopo: number;
+  larguraBase: number;
+}
+
 /* ---------- Blocos (dynamic zones) ---------- */
 export type Block =
   | {
@@ -98,6 +107,8 @@ export type Block =
       selo?: string;
       cardRotulo?: string;
       cardProdutoId?: string;
+      /** Posição da queda d'água na foto (% de 0 a 100) para a animação em CSS. */
+      queda?: QuedaAnimada;
     }
   | { __component: "blocks.essencia"; sobretitulo?: string; titulo: string; tituloDestaque?: string; texto: string; fotos: Img[]; itens: { icone: Icone; rotulo: string }[] }
   | { __component: "blocks.vitrine"; sobretitulo?: string; titulo: string; texto?: string; atalhos: LinkRotulo[]; itens: CardFoto[]; linkTodos?: LinkRotulo }

@@ -47,6 +47,11 @@
       "type": "relation",
       "relation": "oneToOne",
       "target": "api::produto.produto"
+    },
+    "queda": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.queda-animada"
     }
   }
 }

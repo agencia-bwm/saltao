@@ -3,9 +3,11 @@ import type { Rota, Indice } from "../lib/routes";
 import { noFaq, noWebPage } from "../lib/schema";
 import { linkReserva } from "../lib/config";
 import { formatPreco, t } from "../lib/i18n";
+import { medidas } from "../lib/foto";
 import Base from "../layouts/Base.astro";
 import Foto from "../components/Foto.astro";
 import Icone from "../components/Icone.astro";
+import QuedaAnimada from "../components/QuedaAnimada.astro";
 import Blocos from "../components/Blocos.astro";
 import Essencia from "../components/Essencia.astro";
 import Vitrine from "../components/Vitrine.astro";
@@ -39,6 +41,8 @@ doc.secoes.forEach((b, i) => {
   else trechos.push({ tipo: "comum", blocos: [b], inicio: i });
 });
 const LARGURAS_HERO = [480, 760, 1080, 1440, 1600];
+// Medidas da foto do hero (as mesmas do <Foto>) para a queda animada acompanhar o recorte da imagem.
+const dimHero = medidas(hero.imagem, LARGURAS_HERO);
 const cardProd = hero.cardProdutoId ? indice.produto(hero.cardProdutoId, locale) : undefined;
 const cardHref = hero.cardProdutoId ? indice.link("produto", hero.cardProdutoId, locale) : undefined;
 const cardCat = cardProd ? indice.categoriaProduto(cardProd.categoriaId, locale) : undefined;
@@ -48,6 +52,7 @@ const cardCat = cardProd ? indice.categoriaProduto(cardProd.categoriaId, locale)
   <section class="hero-wrap">
     <div class="hero">
       <Foto img={hero.imagem} prioridade sizes="100vw" class="hero-img" larguras={LARGURAS_HERO} />
+      {hero.queda && dimHero && <QuedaAnimada queda={hero.queda} largura={dimHero.width} altura={dimHero.height} />}
       <div class="hero-veu">
         <div class="container hero-conteudo">
           {hero.sobretitulo && <p class="hero-sobre">{hero.sobretitulo}</p>}

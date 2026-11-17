@@ -38,7 +38,7 @@ const seoPop = { ogImage: true } as const;
 const faqPop = true as const;
 const blocosPop: Populate = {
   on: {
-    "blocks.hero": { imagem: { imagem: true }, cta: { produto: true }, cardProduto: true },
+    "blocks.hero": { imagem: { imagem: true }, cta: { produto: true }, cardProduto: true, queda: true },
     "blocks.essencia": { fotos: { imagem: true }, itens: true },
     "blocks.vitrine": { atalhos: true, itens: { imagem: { imagem: true } }, linkTodos: true },
     "blocks.experiencias": { itens: { imagem: { imagem: true } }, linkTodos: true },
@@ -60,7 +60,7 @@ const blocosPop: Populate = {
 
 const POPULATE: Record<string, Record<string, Populate>> = {
   global: { endereco: true, geo: true, horarios: true, redesSociais: true, distancias: true, menuPrincipal: { subitens: true }, seoPadrao: seoPop },
-  home: { hero: { imagem: { imagem: true }, cta: { produto: true }, cardProduto: true }, secoes: blocosPop, seo: seoPop },
+  home: { hero: { imagem: { imagem: true }, cta: { produto: true }, cardProduto: true, queda: true }, secoes: blocosPop, seo: seoPop },
   "guia-home": { seo: seoPop },
   produtos: {
     categoria: true,
@@ -216,6 +216,7 @@ function hero(b: Json): Extract<Block, { __component: "blocks.hero" }> {
     selo: b?.selo || undefined,
     cardRotulo: b?.cardRotulo || undefined,
     cardProdutoId: b?.cardProduto?.documentId,
+    queda: b?.queda ? { xTopo: +b.queda.xTopo, xBase: +b.queda.xBase, topo: +b.queda.topo, base: +b.queda.base, larguraTopo: +b.queda.larguraTopo, larguraBase: +b.queda.larguraBase } : undefined,
   };
 }
 function cta(c: Json) {
