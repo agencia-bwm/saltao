@@ -1,0 +1,55 @@
+---
+/**
+ * Fatos na home: foto com régua dos 75 m ao lado e o 1º número em destaque, numa faixa funda.
+ * Fatos citáveis continuam em texto (dl/dt/dd) — a régua é só decoração.
+ * CSS em styles/home-abaixo.css.
+ */
+import type { Block } from "../lib/types";
+import Foto from "./Foto.astro";
+
+type Props = Extract<Block, { __component: "blocks.fatos" }>;
+const { sobretitulo, titulo, texto, imagem, itens } = Astro.props;
+const [principal, ...demais] = itens;
+// Marcas da régua, de cima para baixo (distribuídas por flex, sem style inline por causa da CSP).
+const marcas = [75, 50, 25, 0];
+---
+
+<section class="fatos-home sangria">
+  <div class="fh-grade">
+    {
+      imagem && (
+        <figure class="fh-foto">
+          <Foto formatos={["avif"]} img={imagem} sizes="(min-width: 64rem) 22rem, 70vw" larguras={[320, 480, 640, 800]} proporcao={3 / 4} />
+          <div class="fh-regua" aria-hidden="true">
+            {marcas.map((m) => (
+              <span>{m} m</span>
+            ))}
+          </div>
+        </figure>
+      )
+    }
+    <div class="fh-texto">
+      {sobretitulo && <p class="sobretitulo">{sobretitulo}</p>}
+      {titulo && <h2>{titulo}</h2>}
+      {texto && <p class="fh-lead">{texto}</p>}
+      <dl class="fh-numeros">
+        {
+          principal && (
+            <div class="fh-principal">
+              <dt>{principal.chave}</dt>
+              <dd>{principal.valor}</dd>
+            </div>
+          )
+        }
+        {
+          demais.map((f) => (
+            <div>
+              <dt>{f.chave}</dt>
+              <dd>{f.valor}</dd>
+            </div>
+          ))
+        }
+      </dl>
+    </div>
+  </div>
+</section>

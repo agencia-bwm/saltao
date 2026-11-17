@@ -76,7 +76,10 @@ components = {
     "citacao": ("Citação", "quote", {"texto": text(True, 500), "autor": s(maxLength=120)}),
     "cta-produto": ("CTA de produto", "shoppingCart", {"produto": rel("oneToOne", PROD), "textoChamada": s(maxLength=160)}),
     "destaques-produtos": ("Destaques de produtos", "apps", {"titulo": s(maxLength=90), "produtos": rel("oneToMany", PROD)}),
-    "fatos": ("Fatos (números)", "chartBubble", {"titulo": s(maxLength=90), "itens": comp("shared.key-value", True)}),
+    # Na home, com imagem: régua dos 75 m ao lado da foto e o 1º número em destaque.
+    "fatos": ("Fatos (números)", "chartBubble", {"sobretitulo": s(maxLength=60), "titulo": s(maxLength=90), "texto": text(False, 300), "imagem": comp("shared.image-alt"), "itens": comp("shared.key-value", True)}),
+    "galeria": ("Galeria (mosaico de fotos)", "picture", {"sobretitulo": s(maxLength=60), "titulo": s(True, 90), "fotos": comp("shared.image-alt", True, req=True, min=3, max=6)}),
+    "chamada": ("Chamada final (foto de fundo)", "bell", {"sobretitulo": s(maxLength=60), "titulo": s(True, 90), "tituloDestaque": s(maxLength=60), "texto": text(False, 300), "imagem": comp("shared.image-alt", req=True), "cta": comp("shared.cta", req=True), "ctaSecundario": comp("shared.cta")}),
     "avaliacoes": ("Avaliações em destaque", "star", {"titulo": s(maxLength=90), "avaliacoes": rel("oneToMany", "api::avaliacao.avaliacao")}),
     "faq": ("Perguntas frequentes", "question", {"titulo": s(maxLength=90), "itens": comp("shared.faq-item", True)}),
     "video": ("Vídeo (fachada)", "play", {"url": s(True, 300, regex="^https://(www\\.)?(youtube\\.com|youtu\\.be)/"), "poster": comp("shared.image-alt", req=True), "titulo": s(maxLength=120)}),
@@ -84,7 +87,7 @@ components = {
   },
 }
 
-BLOCOS_HOME = ["blocks.essencia", "blocks.vitrine", "blocks.experiencias", "blocks.destaques-produtos", "blocks.fatos", "blocks.avaliacoes", "blocks.texto", "blocks.faq", "blocks.cta-produto", "blocks.mapa-estatico"]
+BLOCOS_HOME = ["blocks.essencia", "blocks.vitrine", "blocks.experiencias", "blocks.destaques-produtos", "blocks.fatos", "blocks.avaliacoes", "blocks.galeria", "blocks.texto", "blocks.faq", "blocks.chamada", "blocks.cta-produto", "blocks.mapa-estatico"]
 BLOCOS_INST = ["blocks.texto", "blocks.imagem", "blocks.tabela", "blocks.fatos", "blocks.faq", "blocks.mapa-estatico", "blocks.video", "blocks.cta-produto"]
 BLOCOS_ART = ["blocks.texto", "blocks.imagem", "blocks.tabela", "blocks.citacao", "blocks.cta-produto"]
 

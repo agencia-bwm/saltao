@@ -28,6 +28,13 @@ import fPorDoSolSrc from "../assets/fotos/paisagem/por-do-sol-sol-tocando-horizo
 import fPorDoSolArvoreSrc from "../assets/fotos/paisagem/por-do-sol-dourado-arvore.jpg";
 import fQueda75Src from "../assets/fotos/cachoeira-saltao/cachoeira-saltao-queda-75m-vertical-01.jpg";
 import fPorcaoSrc from "../assets/fotos/gastronomia/porcao-linguica-pao-cerveja.jpg";
+import fEscalaSrc from "../assets/fotos/cachoeira-saltao/cachoeira-saltao-visitante-escala.jpg";
+import fC2PocoSrc from "../assets/fotos/cachoeira-2/cachoeira-2-poco-vertical.jpg";
+import fSlackSrc from "../assets/fotos/camping/camping-slackline-crianca.jpg";
+import fPorDoSolLaranjaSrc from "../assets/fotos/paisagem/por-do-sol-laranja-horizonte.jpg";
+import fPocoCeuSrc from "../assets/fotos/cachoeira-saltao/cachoeira-saltao-poco-ceu-azul.jpg";
+import fPalmeiraSrc from "../assets/fotos/paisagem/por-do-sol-palmeira-vertical.jpg";
+import fQuedaLargaSrc from "../assets/fotos/cachoeira-2/cachoeira-2-queda-larga-poco.jpg";
 import mapaProvisorio from "../assets/placeholder/trilha.jpg";
 
 
@@ -59,6 +66,13 @@ const fPorDoSol = img(fPorDoSolSrc, "Sol tocando o horizonte com palmeira e euca
 const fPorDoSolArvore = img(fPorDoSolArvoreSrc, "Pôr do sol dourado sobre campos e árvore isolada");
 const fQueda75 = img(fQueda75Src, "Cachoeira do Saltão, queda d'água de 75 metros sobre paredão de rocha avermelhada");
 const fPorcao = img(fPorcaoSrc, "Porção de linguiça com pão de alho, salada, limão e copo de cerveja");
+const fEscala = img(fEscalaSrc, "Visitante pequeno diante do paredão da cachoeira do Saltão, mostrando a escala dos 75 metros");
+const fC2Poco = img(fC2PocoSrc, "Poço de água escura ao pé da segunda cachoeira, cercado de mata");
+const fSlack = img(fSlackSrc, "Criança na slackline entre árvores na área de camping");
+const fPorDoSolLaranja = img(fPorDoSolLaranjaSrc, "Céu laranja no pôr do sol sobre o horizonte da serra");
+const fPocoCeu = img(fPocoCeuSrc, "Poço da cachoeira do Saltão sob céu azul");
+const fPalmeira = img(fPalmeiraSrc, "Palmeira em silhueta contra o céu do entardecer");
+const fQuedaLarga = img(fQuedaLargaSrc, "Queda d'água larga caindo em poço cercado de rochas e mata");
 const p = (...textos: string[]): RichText => textos.map((text) => ({ type: "paragraph", children: [{ type: "text", text }] }));
 const h2 = (text: string): RichText[number] => ({ type: "heading", level: 2, children: [{ type: "text", text }] });
 const ul = (...itens: string[]): RichText[number] => ({
@@ -555,9 +569,47 @@ const home = Object.fromEntries(
               { imagem: fPorDoSol, icone: "sol" as const, titulo: tr(loc, "Pôr do sol", "Sunset", "Atardecer"), texto: tr(loc, "O fim de tarde mais bonito da serra.", "The most beautiful evening in the hills.", "El atardecer más lindo de la sierra."), link: l.conheca },
             ],
           },
-          { __component: "blocks.fatos" as const, titulo: tr(loc, "O Saltão em números", "Saltão in numbers", "Saltão en números"), itens: [{ chave: tr(loc, "Cachoeira", "Waterfall", "Cascada"), valor: "75 m" }, { chave: tr(loc, "Quiosques", "Kiosks", "Quinchos"), valor: "80" }, { chave: tr(loc, "Churrasqueiras", "Barbecue grills", "Parrillas"), valor: "102" }] },
+          {
+            __component: "blocks.fatos" as const,
+            sobretitulo: tr(loc, "A queda", "The fall", "La caída"),
+            titulo: tr(loc, "Uma cachoeira do tamanho de um prédio de 25 andares", "A waterfall as tall as a 25-storey building", "Una cascada del tamaño de un edificio de 25 pisos"),
+            texto: tr(
+              loc,
+              "São 75 metros de queda livre sobre o paredão de rocha da Serra do Itaqueri. Do mirante, dá para ver três cachoeiras de uma vez.",
+              "75 metres of free fall over the rock wall of Serra do Itaqueri. From the viewpoint you can see three waterfalls at once.",
+              "75 metros de caída libre sobre la pared de roca de la Serra do Itaqueri. Desde el mirador se ven tres cascadas a la vez.",
+            ),
+            imagem: fEscala,
+            itens: [
+              { chave: tr(loc, "de queda livre", "of free fall", "de caída libre"), valor: "75 m" },
+              { chave: tr(loc, "cachoeiras vistas do Mirante das Águas", "waterfalls seen from the Mirante das Águas", "cascadas vistas desde el Mirante das Águas"), valor: "3" },
+              { chave: tr(loc, "quiosques", "kiosks", "quinchos"), valor: "80" },
+              { chave: tr(loc, "churrasqueiras", "barbecue grills", "parrillas"), valor: "102" },
+            ],
+          },
           { __component: "blocks.avaliacoes" as const, titulo: tr(loc, "Quem visitou recomenda", "What visitors say", "Lo que dicen los visitantes"), avaliacaoIds: ["av-1", "av-2"] },
+          {
+            __component: "blocks.galeria" as const,
+            sobretitulo: tr(loc, "Por dentro do parque", "Inside the park", "Dentro del parque"),
+            titulo: tr(loc, "Água, mata e fim de tarde", "Water, forest and golden hour", "Agua, bosque y atardecer"),
+            fotos: [fC2Poco, fSlack, fPocoCeu, fPalmeira, fPorDoSolLaranja],
+          },
           { __component: "blocks.faq" as const, titulo: tr(loc, "Perguntas frequentes", "FAQ", "Preguntas frecuentes"), itens: [tr(loc, faq("Onde fica o Saltão?", "Na Rodovia Ulisses Guimarães, km 23, em Itirapina (SP), na Serra do Itaqueri."), faq("Where is Saltão?", "At Rodovia Ulisses Guimarães, km 23, Itirapina (São Paulo state), in Serra do Itaqueri."), faq("¿Dónde queda Saltão?", "En la Rodovia Ulisses Guimarães, km 23, Itirapina (estado de São Paulo), en la Serra do Itaqueri."))] },
+          {
+            __component: "blocks.chamada" as const,
+            sobretitulo: tr(loc, "Sua próxima pausa", "Your next break", "Tu próxima pausa"),
+            titulo: tr(loc, "A cachoeira está te esperando.", "The waterfall is waiting.", "La cascada te espera."),
+            tituloDestaque: tr(loc, "Garanta sua data.", "Book your date.", "Reserva tu fecha."),
+            texto: tr(
+              loc,
+              "Day use, apartamentos, camping e quiosques com reserva online. Escolha o dia e chegue só para aproveitar.",
+              "Day pass, rooms, camping and kiosks booked online. Pick your day and just show up to enjoy it.",
+              "Pase de día, habitaciones, camping y quinchos con reserva online. Elige el día y llega solo a disfrutar.",
+            ),
+            imagem: fQuedaLarga,
+            cta: { rotulo: L[loc].reservar, tipo: "link" as const, url: "https://reservas.saltao.com.br/reservar" },
+            ctaSecundario: { rotulo: tr(loc, "Falar no WhatsApp", "Chat on WhatsApp", "Hablar por WhatsApp"), tipo: "whatsapp" as const },
+          },
         ],
         seo: seo(tr(loc, "Saltão — Parque de Ecoturismo | Cachoeira, Day Use e Hospedagem", "Saltão Ecotourism Park | Waterfall, Day Pass and Lodging", "Saltão Parque de Ecoturismo | Cascada, Pase de Día y Hospedaje"), L[loc].heroResp.slice(0, 150)),
       },

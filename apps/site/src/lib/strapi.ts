@@ -48,7 +48,9 @@ const blocosPop: Populate = {
     "blocks.citacao": true,
     "blocks.cta-produto": { produto: true },
     "blocks.destaques-produtos": { produtos: true },
-    "blocks.fatos": { itens: true },
+    "blocks.fatos": { itens: true, imagem: { imagem: true } },
+    "blocks.galeria": { fotos: { imagem: true } },
+    "blocks.chamada": { imagem: { imagem: true }, cta: { produto: true }, ctaSecundario: { produto: true } },
     "blocks.avaliacoes": { avaliacoes: true },
     "blocks.faq": { itens: true },
     "blocks.video": { poster: { imagem: true } },
@@ -175,7 +177,11 @@ function blocos(v: Json): Block[] {
         case "blocks.destaques-produtos":
           return { __component: b.__component, titulo: b.titulo ?? undefined, produtoIds: ids(b.produtos) };
         case "blocks.fatos":
-          return { __component: b.__component, titulo: b.titulo ?? undefined, itens: kvs(b.itens) };
+          return { __component: b.__component, sobretitulo: b.sobretitulo || undefined, titulo: b.titulo ?? undefined, texto: b.texto || undefined, imagem: imgAlt(b.imagem), itens: kvs(b.itens) };
+        case "blocks.galeria":
+          return { __component: b.__component, sobretitulo: b.sobretitulo || undefined, titulo: b.titulo, fotos: (b.fotos ?? []).map(imgAlt).filter(Boolean) as Img[] };
+        case "blocks.chamada":
+          return { __component: b.__component, sobretitulo: b.sobretitulo || undefined, titulo: b.titulo, tituloDestaque: b.tituloDestaque || undefined, texto: b.texto || undefined, imagem: imgAlt(b.imagem)!, cta: cta(b.cta)!, ctaSecundario: cta(b.ctaSecundario) };
         case "blocks.avaliacoes":
           return { __component: b.__component, titulo: b.titulo ?? undefined, avaliacaoIds: ids(b.avaliacoes) };
         case "blocks.faq":
