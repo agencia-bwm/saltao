@@ -33,6 +33,7 @@ const produtos = doc.produtoIds.map((id) => indice.produto(id, locale)).filter((
 const fotos = (doc.fotosIntro?.length ? doc.fotosIntro : [doc.imagemHero]).slice(0, 2);
 const LARGURAS_INTRO = [400, 640, 900, 1200];
 const NAV: Record<string, string> = { pt: "Nesta página", en: "On this page", es: "En esta página" };
+const MAIS: Record<string, [string, string]> = { pt: ["Mais fotos", "deslize"], en: ["More photos", "swipe"], es: ["Más fotos", "desliza"] };
 const iconeProduto = (p: Produto): NomeIcone => (p.tipoSchema === "Campground" ? "barraca" : p.tipoSchema === "LodgingBusiness" ? "cama" : "estrela");
 
 // Seções da categoria: a chamada final (se houver) vai depois do FAQ.
@@ -125,7 +126,7 @@ const dlPagina = [{ event: "view_item_list", ecommerce: { item_list_name: doc.ti
   <div class="lp-produtos">
     {
       produtos.map((p, i) => {
-        const [f1, f2, f3] = p.galeria;
+        const [f1, f2, f3, ...mais] = p.galeria;
         const reservar = linkReserva({ produto: p.motorProdutoId, setor: p.setorMotorId, lang: locale });
         return (
           <section id={p.slug} class={`lp-produto ${i % 2 ? "lp-invertido" : ""}`} aria-labelledby={`titulo-${p.slug}`}>
@@ -199,6 +200,27 @@ const dlPagina = [{ event: "view_item_list", ecommerce: { item_list_name: doc.ti
                 </div>
               </div>
             </div>
+
+            {mais.length > 0 && (
+              <div class="container lp-carrossel">
+                <p class="lp-carrossel-topo">
+                  <span>
+                    {MAIS[locale][0]} · {p.titulo}
+                  </span>
+                  <span class="lp-carrossel-dica" aria-hidden="true">
+                    {MAIS[locale][1]} <Icone nome="seta" tamanho={16} />
+                  </span>
+                </p>
+                {/* Trilho com rolagem lateral (CSS scroll-snap, sem JS); tabindex para rolar pelo teclado. */}
+                <ul class="lp-trilho" tabindex="0" aria-label={`${MAIS[locale][0]}: ${p.titulo}`}>
+                  {mais.map((f) => (
+                    <li>
+                      <Foto formatos={["avif"]} img={f} sizes="(min-width: 64rem) 22rem, 72vw" larguras={[320, 480, 640, 800]} proporcao={4 / 3} />
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
           </section>
         );
       })
