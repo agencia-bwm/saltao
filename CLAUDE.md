@@ -54,6 +54,7 @@ Cores do logo oficial (`packages/ui/marca/saltao-logo-original.pdf`): azul Salt�
 - Painel em subdomínio, atrás do Cloudflare Access (2FA), noindex, CORS restrito, upload só imagem/PDF.
 - Cartão nunca passa pelo servidor. Webhook do gateway: assinatura verificada no adaptador + idempotência (`webhook_evento`).
 - Segredos só em variáveis de ambiente (Hostinger e GitHub Secrets). Nunca commitar `.env`.
+- Exceções do `pnpm audit` (aprovadas pelo Fábio) ficam em `package.json` → `pnpm.auditConfig.ignoreGhsas`, uma por alerta, só para dependência de build sem correção publicada. Hoje: GHSA-fc5q-39xc-vjpf (picomatch via astro, 17/11/2026) — remover quando sair a versão corrigida.
 
 ## Plataforma (motor)
 - Estoque por recurso/dia em `estoque_dia`, travado com `SELECT … FOR UPDATE` em ordem (recurso, data). Linhas novas são criadas fora da transação (evita deadlock).
