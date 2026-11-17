@@ -3,6 +3,9 @@ de,para
 # Mantidas com a mesma URL (sem 301): /cachoeira-saltao/ e /restaurante-saltao/.
 /camping/,/hospedagem/
 /apartamentos/,/hospedagem/
-/contato/,/duvidas-e-contato/
+/contato/,/atendimento/
 /pacotes/consciencia-negra/,/monte-sua-experiencia/
 /pacotes/reveillon/,/monte-sua-experiencia/
+/duvidas-e-contato/,/atendimento/
+/como-chegar/,/atendimento/
+/minha-reserva/,/atendimento/

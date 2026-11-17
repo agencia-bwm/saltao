@@ -5,7 +5,7 @@
     "singularName": "pagina-atendimento",
     "pluralName": "paginas-atendimento",
     "displayName": "Página FAQ / Contato",
-    "description": "Dúvidas e Contato, Minha reserva."
+    "description": "Dúvidas e Contato, Minha reserva, ou a central de Atendimento (landing)."
   },
   "options": {
     "draftAndPublish": true
@@ -50,7 +50,8 @@
       "type": "enumeration",
       "enum": [
         "faq_contato",
-        "minha_reserva"
+        "minha_reserva",
+        "central"
       ],
       "required": true,
       "pluginOptions": {
@@ -80,6 +81,58 @@
     },
     "textoConsentimento": {
       "type": "blocks",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "sobretitulo": {
+      "type": "string",
+      "maxLength": 60,
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "tituloDestaque": {
+      "type": "string",
+      "maxLength": 60,
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "fotosIntro": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.image-alt",
+      "max": 2,
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "secoes": {
+      "type": "dynamiczone",
+      "components": [
+        "blocks.setor",
+        "blocks.experiencias",
+        "blocks.galeria",
+        "blocks.chamada",
+        "blocks.avaliacoes",
+        "blocks.texto",
+        "blocks.imagem",
+        "blocks.tabela",
+        "blocks.fatos",
+        "blocks.faq",
+        "blocks.mapa-estatico",
+        "blocks.video",
+        "blocks.cta-produto"
+      ],
       "pluginOptions": {
         "i18n": {
           "localized": true

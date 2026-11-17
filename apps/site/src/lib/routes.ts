@@ -226,9 +226,21 @@ export function montarIndice(c: Conteudo): Indice {
   };
 }
 
-export type RotaLanding = Extract<Rota, { kind: "categoria-produto" }> | Extract<Rota, { kind: "institucional" }>;
+export type RotaLanding = Extract<Rota, { kind: "categoria-produto" }> | Extract<Rota, { kind: "institucional" }> | Extract<Rota, { kind: "atendimento" }>;
 /** É landing (rota própria em pages/[categoria]/ e pages/[idioma]/[categoria]/)? Categoria em página única ou institucional com landing. */
-export const ehLanding = (r: Rota): r is RotaLanding => (r.kind === "categoria-produto" && !!r.doc.paginaUnica) || (r.kind === "institucional" && !!r.doc.landing);
+export const ehLanding = (r: Rota): r is RotaLanding =>
+  (r.kind === "categoria-produto" && !!r.doc.paginaUnica) || (r.kind === "institucional" && !!r.doc.landing) || (r.kind === "atendimento" && r.doc.tipo === "central");
 export function rotasLanding(idx: Indice): RotaLanding[] {
   return idx.rotas.filter(ehLanding);
+}
+
+/** Guia (listagens e artigos) tem rota própria por idioma: pages/guia/, pages/en/guide/, pages/es/guia/. */
+export const ehGuia = (r: Rota) => r.kind === "guia" || r.kind === "artigo";
+
+/** getStaticPaths das rotas do Guia de um idioma: o parâmetro é o caminho depois do prefixo do Guia. */
+export function rotasGuia(idx: Indice, locale: Locale) {
+  const base = guiaPath(locale);
+  return idx.rotas
+    .filter((r) => ehGuia(r) && r.locale === locale)
+    .map((r) => ({ params: { rota: r.path.slice(base.length).replace(/\/$/, "") || undefined }, props: { chave: r.chave } }));
 }

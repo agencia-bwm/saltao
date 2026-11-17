@@ -1,81 +1,136 @@
 ---
-/** Template "Listagem do blog" (Guia da Serra do Itaqueri) e páginas de categoria. Paginação rastreável (links reais). */
+/**
+ * Guia da Serra do Itaqueri (listagem e categorias) no padrão das landings: abertura (HeroLanding) com as
+ * categorias como cartões, artigo em destaque e grade de artigos. Paginação rastreável (links reais).
+ * Rota própria (pages/guia/, pages/en/guide/, pages/es/guia/); CSS das listas em styles/guia.css, no corpo.
+ */
 import type { Rota, Indice } from "../lib/routes";
+import type { Icone as NomeIcone, Img } from "../lib/types";
 import { guiaPath } from "../lib/routes";
 import { absoluta } from "../lib/config";
 import { noWebPage } from "../lib/schema";
+import { LARGURAS_HERO_LANDING } from "../lib/foto";
 import { formatData, SEG, t } from "../lib/i18n";
 import Base from "../layouts/Base.astro";
 import Foto from "../components/Foto.astro";
+import Icone from "../components/Icone.astro";
+import HeroLanding from "../components/HeroLanding.astro";
+import cssGuia from "../styles/guia.css?url";
 
 interface Props {
   rota: Extract<Rota, { kind: "guia" }>;
   indice: Indice;
 }
 const { rota, indice } = Astro.props;
-const { locale, artigos, pagina, totalPaginas, categoria } = rota;
+const { locale, artigos, pagina, totalPaginas, categoria, guiaHome } = rota;
 const ui = t(locale);
 const raiz = categoria ? indice.rotas.find((r) => r.kind === "guia" && r.categoria?.documentId === categoria.documentId && r.locale === locale && r.pagina === 1)!.path : guiaPath(locale);
 const urlPagina = (n: number) => (n === 1 ? raiz : `${raiz}${SEG[locale].pagina}/${n}/`);
 const categorias = indice.rotas.filter((r): r is Extract<Rota, { kind: "guia" }> => r.kind === "guia" && r.locale === locale && !!r.categoria && r.pagina === 1);
+const nomeCategoria = new Map(indice.conteudo.categoriasGuia.filter((c) => c.locale === locale).map((c) => [c.documentId, c.nome]));
+const ICONE_CAT: Record<string, NomeIcone> = { cachoeiras: "cachoeira", camping: "barraca", familia: "familia", "quando-ir": "sol", "o-que-fazer": "mapa" };
 const lista = {
   "@type": "ItemList",
   itemListElement: artigos.map((a, i) => ({ "@type": "ListItem", position: (pagina - 1) * 12 + i + 1, url: absoluta(indice.link("artigo", a.documentId, locale)!), name: a.titulo })),
 };
+const naCapa = !categoria && pagina === 1;
+const fotos: Img[] = (naCapa && guiaHome?.fotosIntro?.length ? guiaHome.fotosIntro : artigos.map((a) => a.imagemDestaque)).slice(0, 2);
+const ancoras = categorias.map((c) => ({ href: c.path, rotulo: c.categoria!.nome, icone: ICONE_CAT[c.categoria!.slug] ?? ("trilha" as NomeIcone) }));
+const [destaque, ...demais] = pagina === 1 ? artigos : [undefined, ...artigos];
+const LER: Record<string, string> = { pt: "Ler artigo", en: "Read article", es: "Leer artículo" };
 ---
 
-<Base {...rota} indice={indice} imagem={artigos[0]?.imagemDestaque} jsonld={[noWebPage(rota.path, rota.titulo, rota.respostaDireta, locale, "CollectionPage"), lista]}>
-  <div class="container section">
-    <header class="topo">
-      <h1>{rota.titulo}{pagina > 1 && ` — ${ui.pagina} ${pagina}`}</h1>
-      {rota.respostaDireta && <p class="lead">{rota.respostaDireta}</p>}
-    </header>
+<Base
+  {...rota}
+  indice={indice}
+  imagem={fotos[0]}
+  preload={fotos[0] ? { img: fotos[0], larguras: LARGURAS_HERO_LANDING, sizes: "100vw" } : undefined}
+  migalhasNoTopo={!fotos[0]}
+  jsonld={[noWebPage(rota.path, rota.titulo, rota.respostaDireta, locale, "CollectionPage"), lista]}
+>
+  {
+    fotos[0] && (
+      <HeroLanding
+        titulo={pagina > 1 ? `${rota.titulo} — ${ui.pagina} ${pagina}` : rota.titulo}
+        tituloDestaque={naCapa ? guiaHome?.tituloDestaque : undefined}
+        sobretitulo={naCapa ? guiaHome?.sobretitulo : (guiaHome?.titulo ?? ui.categorias)}
+        resposta={rota.respostaDireta}
+        fotos={fotos}
+        migalhas={rota.breadcrumbs}
+        ancoras={ancoras}
+        rotuloAncoras={ui.categorias}
+      />
+    )
+  }
 
+  <link rel="stylesheet" href={cssGuia} />
+
+  <div class="container gd">
     {
-      categorias.length > 0 && (
-        <nav aria-label={ui.categorias} class="categorias">
-          <ul>
-            <li>
-              <a href={guiaPath(locale)} aria-current={!categoria ? "page" : undefined}>
-                {ui.todos}
-              </a>
-            </li>
-            {categorias.map((c) => (
-              <li>
-                <a href={c.path} aria-current={categoria?.documentId === c.categoria!.documentId ? "page" : undefined}>
-                  {c.categoria!.nome}
-                </a>
-              </li>
-            ))}
-          </ul>
-        </nav>
+      categoria && (
+        <p class="gd-voltar">
+          <a href={guiaPath(locale)}>← {ui.todos}</a>
+        </p>
       )
     }
 
-    <ul class="grid-cards">
-      {
-        artigos.map((a, i) => (
-          <li>
-            <article class="card-artigo">
-              <Foto img={a.imagemDestaque} sizes="(min-width: 72rem) 22rem, (min-width: 40rem) 45vw, calc(100vw - 2rem)" larguras={[400, 680, 800]} proporcao={16 / 10} prioridade={i === 0 && pagina === 1} />
-              <div>
-                <h2>
-                  <a href={indice.link("artigo", a.documentId, locale)}>{a.titulo}</a>
-                </h2>
-                <p>{a.resumo}</p>
-                <p class="data">
-                  {ui.atualizadoEm} <time datetime={a.dataAtualizacao}>{formatData(a.dataAtualizacao, locale)}</time>
-                </p>
-              </div>
-            </article>
-          </li>
-        ))
-      }
-    </ul>
+    {
+      destaque && (
+        <article class="gd-destaque">
+          <div class="gd-destaque-foto">
+            <Foto formatos={["avif"]} img={destaque.imagemDestaque} sizes="(min-width: 64rem) 40rem, calc(100vw - 2rem)" larguras={[480, 720, 960]} proporcao={16 / 10} />
+          </div>
+          <div class="gd-destaque-texto">
+            {nomeCategoria.get(destaque.categoriaId) && (
+              <p class="gd-chip">
+                <Icone nome="pin" tamanho={14} /> {nomeCategoria.get(destaque.categoriaId)}
+              </p>
+            )}
+            <h2>
+              <a href={indice.link("artigo", destaque.documentId, locale)}>{destaque.titulo}</a>
+            </h2>
+            <p class="gd-resumo">{destaque.resumo}</p>
+            <p class="gd-meta">
+              {ui.atualizadoEm} <time datetime={destaque.dataAtualizacao}>{formatData(destaque.dataAtualizacao, locale)}</time>
+            </p>
+            <span class="gd-ler" aria-hidden="true">
+              {LER[locale]} <Icone nome="seta" tamanho={16} />
+            </span>
+          </div>
+        </article>
+      )
+    }
+
+    {
+      demais.length > 0 && (
+        <ul class="gd-grade">
+          {demais.map(
+            (a) =>
+              a && (
+                <li>
+                  <article class="gd-card">
+                    <div class="gd-card-foto">
+                      <Foto formatos={["avif"]} img={a.imagemDestaque} sizes="(min-width: 72rem) 22rem, (min-width: 40rem) 45vw, calc(100vw - 2rem)" larguras={[400, 600, 800]} proporcao={16 / 10} />
+                    </div>
+                    {nomeCategoria.get(a.categoriaId) && <p class="gd-chip">{nomeCategoria.get(a.categoriaId)}</p>}
+                    <h2>
+                      <a href={indice.link("artigo", a.documentId, locale)}>{a.titulo}</a>
+                    </h2>
+                    <p class="gd-resumo">{a.resumo}</p>
+                    <p class="gd-meta">
+                      {ui.atualizadoEm} <time datetime={a.dataAtualizacao}>{formatData(a.dataAtualizacao, locale)}</time>
+                    </p>
+                  </article>
+                </li>
+              ),
+          )}
+        </ul>
+      )
+    }
 
     {
       totalPaginas > 1 && (
-        <nav class="paginacao" aria-label={ui.pagina}>
+        <nav class="gd-paginacao" aria-label={ui.pagina}>
           {pagina > 1 && (
             <a href={urlPagina(pagina - 1)} rel="prev">
               ← {ui.anterior}
@@ -100,75 +155,3 @@ const lista = {
     }
   </div>
 </Base>
-
-<style>
-  .topo {
-    margin-bottom: var(--space-5);
-  }
-  .categorias ul,
-  .paginacao ol {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-2);
-    list-style: none;
-    padding: 0;
-  }
-  .categorias a,
-  .paginacao a {
-    display: inline-block;
-    padding: var(--space-2) var(--space-4);
-    border: 1px solid var(--color-border);
-    border-radius: 999px;
-    text-decoration: none;
-    min-height: 44px;
-    line-height: 28px;
-  }
-  .categorias a[aria-current],
-  .paginacao a[aria-current] {
-    background: var(--color-primary);
-    border-color: var(--color-primary);
-    color: var(--color-on-primary);
-  }
-  .card-artigo {
-    position: relative;
-    height: 100%;
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-lg);
-    overflow: hidden;
-  }
-  .card-artigo :global(img) {
-    width: 100%;
-    aspect-ratio: 16 / 10;
-    object-fit: cover;
-  }
-  .card-artigo > div {
-    padding: var(--space-5);
-  }
-  .card-artigo h2 {
-    font-size: var(--fs-400);
-    margin: 0 0 var(--space-2);
-  }
-  .card-artigo h2 a {
-    color: var(--color-text);
-    text-decoration: none;
-  }
-  .card-artigo h2 a::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-  }
-  .card-artigo p {
-    color: var(--color-text-muted);
-    font-size: var(--fs-100);
-  }
-  .data {
-    margin: 0;
-  }
-  .paginacao {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: var(--space-3);
-    margin-top: var(--space-6);
-  }
-</style>

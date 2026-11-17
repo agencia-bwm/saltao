@@ -62,7 +62,7 @@ const blocosPop: Populate = {
 const POPULATE: Record<string, Record<string, Populate>> = {
   global: { endereco: true, geo: true, horarios: true, redesSociais: true, distancias: true, menuPrincipal: { subitens: true }, seoPadrao: seoPop },
   home: { hero: { imagem: { imagem: true }, cta: { produto: true }, cardProduto: true }, secoes: blocosPop, seo: seoPop },
-  "guia-home": { seo: seoPop },
+  "guia-home": { fotosIntro: { imagem: true }, seo: seoPop },
   produtos: {
     categoria: true,
     galeria: { imagem: true },
@@ -83,7 +83,7 @@ const POPULATE: Record<string, Record<string, Populate>> = {
   autores: { foto: { imagem: true } },
   avaliacoes: { produto: true },
   "paginas-institucionais": { fotosIntro: { imagem: true }, secoes: blocosPop, seo: seoPop },
-  "paginas-atendimento": { grupos: { itens: true }, seo: seoPop },
+  "paginas-atendimento": { grupos: { itens: true }, fotosIntro: { imagem: true }, secoes: blocosPop, seo: seoPop },
 };
 
 async function get(path: string): Promise<Json> {
@@ -188,6 +188,7 @@ function blocos(v: Json): Block[] {
             icone: b.icone || undefined,
             texto: b.texto ?? "",
             fotos: (b.fotos ?? []).map(imgAlt).filter(Boolean) as Img[],
+            linkMapa: b.linkMapa || undefined,
             destaques: (b.destaques ?? []).map((x: Json) => ({ icone: x.icone, rotulo: x.rotulo })),
             listaTitulo: b.listaTitulo || undefined,
             lista: lista(b.lista),
@@ -284,7 +285,15 @@ export async function carregarDoStrapi(): Promise<Conteudo> {
       secoes: blocos(d.secoes),
       seo: seo(d.seo),
     })),
-    guiaHome: mapObj(gh, (d) => ({ ...doc(d), titulo: d.titulo, respostaDireta: d.respostaDireta, seo: seo(d.seo) })),
+    guiaHome: mapObj(gh, (d) => ({
+      ...doc(d),
+      titulo: d.titulo,
+      respostaDireta: d.respostaDireta,
+      sobretitulo: d.sobretitulo || undefined,
+      tituloDestaque: d.tituloDestaque || undefined,
+      fotosIntro: (d.fotosIntro ?? []).map(imgAlt).filter(Boolean) as Img[],
+      seo: seo(d.seo),
+    })),
     produtos: produtos.map((d) => ({
       ...doc(d),
       titulo: d.titulo,
@@ -365,6 +374,10 @@ export async function carregarDoStrapi(): Promise<Conteudo> {
       respostaDireta: d.respostaDireta,
       tipo: String(d.tipo ?? '').replace(/_/g, '-'),
       grupos: (d.grupos ?? []).map((g: Json) => ({ tituloGrupo: g.tituloGrupo, itens: faqs(g.itens) })),
+      sobretitulo: d.sobretitulo || undefined,
+      tituloDestaque: d.tituloDestaque || undefined,
+      fotosIntro: (d.fotosIntro ?? []).map(imgAlt).filter(Boolean) as Img[],
+      secoes: blocos(d.secoes),
       mostrarFormulario: Boolean(d.mostrarFormulario),
       textoConsentimento: rich(d.textoConsentimento),
       seo: seo(d.seo),

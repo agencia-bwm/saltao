@@ -15,7 +15,7 @@ module.exports = {
         "http://localhost/guia/", // Listagem do blog
         "http://localhost/guia/cachoeiras-perto-de-brotas/", // Artigo
         "http://localhost/seguranca/", // Institucional por blocos
-        "http://localhost/duvidas-e-contato/", // FAQ / Contato
+        "http://localhost/atendimento/", // FAQ / Contato
       ],
       numberOfRuns: 3,
       settings: { chromeFlags: "--no-sandbox --headless=new" }, // preset mobile (padrão)

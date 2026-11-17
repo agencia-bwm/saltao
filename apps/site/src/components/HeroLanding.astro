@@ -15,7 +15,7 @@ export interface AncoraLanding {
   href: string;
   rotulo: string;
   sub?: string;
-  icone: NomeIcone;
+  icone: NomeIcone | "calendario";
 }
 interface Props {
   titulo: string;
@@ -63,7 +63,7 @@ const { titulo, tituloDestaque, sobretitulo, resposta, fotos, migalhas, ancoras,
       <ul>
         {ancoras.map((a) => (
           <li>
-            <a href={a.href}>
+            <a href={a.href} class:list={{ "lp-ancora-pagina": !a.href.startsWith("#") }} aria-current={a.href === Astro.url.pathname ? "page" : undefined}>
               <span class="lp-ancora-icone">
                 <Icone nome={a.icone} tamanho={22} />
               </span>
@@ -214,6 +214,13 @@ const { titulo, tituloDestaque, sobretitulo, resposta, fotos, migalhas, ancoras,
     margin-left: auto;
     transform: rotate(90deg);
     color: var(--color-primary-strong);
+  }
+  /* Link para outra página (ex.: categorias do Guia): seta para a frente; a atual fica marcada. */
+  .lp-ancoras .lp-ancora-pagina :global(.lp-ancora-seta) {
+    transform: none;
+  }
+  .lp-ancoras a[aria-current="page"] {
+    box-shadow: inset 0 0 0 2px var(--color-primary-strong);
   }
   @media (min-width: 64rem) {
     .lp-hero-mini {

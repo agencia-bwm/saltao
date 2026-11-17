@@ -1,12 +1,13 @@
 ---
 /** Template "FAQ / Contato": Dúvidas e Contato, Minha reserva. Formulários enviam para a plataforma (reservas.saltao.com.br). */
 import type { Rota, Indice } from "../lib/routes";
-import { linkWhatsApp, RESERVAS_URL } from "../lib/config";
+import { linkWhatsApp } from "../lib/config";
 import { noFaq, noWebPage } from "../lib/schema";
 import { t } from "../lib/i18n";
 import Base from "../layouts/Base.astro";
 import FaqLista from "../components/FaqLista.astro";
-import RichText from "../components/RichText.astro";
+import FormContato from "../components/FormContato.astro";
+import FormReserva from "../components/FormReserva.astro";
 
 interface Props {
   rota: Extract<Rota, { kind: "atendimento" }>;
@@ -30,22 +31,7 @@ const tituloPrivacidade = rotaPriv && rotaPriv.kind === "institucional" ? rotaPr
     <div class="colunas">
       <div>
         {
-          doc.tipo === "minha-reserva" && (
-            <form class="form" method="get" action={`${RESERVAS_URL}/minha-reserva`}>
-              <input type="hidden" name="lang" value={locale} />
-              <label>
-                {ui.codigoReserva}
-                <input name="codigo" required autocomplete="off" inputmode="text" pattern="[A-Za-z0-9-]{4,20}" />
-              </label>
-              <label>
-                {ui.email}
-                <input name="email" type="email" required autocomplete="email" />
-              </label>
-              <button class="btn btn-reservar" type="submit">
-                {ui.consultarReserva}
-              </button>
-            </form>
-          )
+          doc.tipo === "minha-reserva" && <FormReserva locale={locale} />
         }
 
         {doc.grupos.map((gr, i) => <FaqLista itens={gr.itens} titulo={gr.tituloGrupo} id={`grupo-${i}`} />)}
@@ -68,44 +54,7 @@ const tituloPrivacidade = rotaPriv && rotaPriv.kind === "institucional" ? rotaPr
               <a href={`mailto:${g.email}`}>{g.email}</a>
             </p>
 
-            {doc.mostrarFormulario && (
-              <form class="form" method="post" action={`${RESERVAS_URL}/api/contato`}>
-                <input type="hidden" name="lang" value={locale} />
-                <input type="hidden" name="origem" value={rota.path} />
-                {/* honeypot anti-spam: escondido de pessoas, bots preenchem */}
-                <div class="hp" aria-hidden="true">
-                  <label>
-                    Website <input name="website" tabindex="-1" autocomplete="off" />
-                  </label>
-                </div>
-                <label>
-                  {ui.nome}
-                  <input name="nome" required autocomplete="name" maxlength="120" />
-                </label>
-                <label>
-                  {ui.email}
-                  <input name="email" type="email" required autocomplete="email" maxlength="160" />
-                </label>
-                <label>
-                  {ui.telefone}
-                  <input name="telefone" type="tel" autocomplete="tel" maxlength="30" />
-                </label>
-                <label>
-                  {ui.mensagem}
-                  <textarea name="mensagem" required rows="5" maxlength="2000" />
-                </label>
-                <label class="consentimento">
-                  <input type="checkbox" name="consentimento" value="sim" required />
-                  <span>
-                    <RichText conteudo={doc.textoConsentimento} />
-                    {privacidade && <a href={privacidade}>{tituloPrivacidade}</a>}
-                  </span>
-                </label>
-                <button class="btn btn-reservar" type="submit" data-dl='{"event":"generate_lead","method":"formulario"}'>
-                  {ui.enviar}
-                </button>
-              </form>
-            )}
+            {doc.mostrarFormulario && <FormContato locale={locale} origem={rota.path} consentimento={doc.textoConsentimento} privacidade={privacidade} tituloPrivacidade={tituloPrivacidade} />}
           </aside>
         )
       }
@@ -125,42 +74,5 @@ const tituloPrivacidade = rotaPriv && rotaPriv.kind === "institucional" ? rotaPr
   }
   .contato h2 {
     margin-top: 0;
-  }
-  .form {
-    display: grid;
-    gap: var(--space-4);
-    margin-block: var(--space-5);
-  }
-  .form label {
-    display: grid;
-    gap: var(--space-1);
-    font-weight: 600;
-  }
-  input,
-  textarea {
-    font: inherit;
-    padding: var(--space-3);
-    border: 1px solid var(--color-text-muted);
-    border-radius: var(--radius-sm);
-    min-height: 44px;
-  }
-  .consentimento {
-    grid-template-columns: auto 1fr;
-    align-items: start;
-    font-weight: 400 !important;
-    font-size: var(--fs-100);
-  }
-  .consentimento input {
-    min-height: 0;
-    width: 1.25rem;
-    height: 1.25rem;
-    margin-top: 0.2rem;
-  }
-  .consentimento :global(p) {
-    margin: 0 0 var(--space-1);
-  }
-  .hp {
-    position: absolute;
-    left: -9999px;
   }
 </style>

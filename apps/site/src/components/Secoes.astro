@@ -28,6 +28,7 @@ const { blocos, indice, locale, idBase = 0 } = Astro.props;
 type Trecho = { tipo: "visual"; bloco: Block } | { tipo: "comum"; blocos: Block[]; inicio: number };
 const VISUAIS = new Set(["blocks.setor", "blocks.essencia", "blocks.vitrine", "blocks.experiencias", "blocks.fatos", "blocks.galeria", "blocks.chamada"]);
 const trechos: Trecho[] = [];
+const g = (indice.conteudo.global[locale] ?? indice.conteudo.global.pt)!;
 // Setores alternam lado das fotos e fundo (céu/branco), contando só os setores.
 let nSetor = 0;
 const ordemSetor = new Map<Block, number>();
@@ -60,6 +61,7 @@ blocos.forEach((b, i) => {
           titulo={b.titulo}
           texto={b.texto}
           fotos={b.fotos}
+          mapa={b.linkMapa ? { href: b.linkMapa, nome: g.nomeOficial.split(/\s+[—–-]\s+/)[0], local: `${g.endereco.cidade} · ${g.endereco.uf}` } : undefined}
           destaques={b.destaques}
           listaTitulo={b.listaTitulo}
           lista={b.lista}
