@@ -1,0 +1,159 @@
+---
+/**
+ * Seção de setor das landings (acomodação, restaurante, quiosques, a queda de 75 m…): faixa na largura toda,
+ * mosaico com até 3 fotos, texto, ícones de destaque, lista em pílulas, botões e carrossel "Mais fotos"
+ * (a partir da 4ª foto; setas em scripts/carrossel.ts — a página que usa esta seção importa o script).
+ * CSS em styles/landing.css (carregado no corpo pela página).
+ */
+import type { Icone as NomeIcone, Img, Locale } from "../lib/types";
+import Foto from "./Foto.astro";
+import Icone from "./Icone.astro";
+
+export interface Acao {
+  rotulo: string;
+  href: string;
+  dl?: string;
+  externo?: boolean;
+  /** primario = pílula azul-poço com calendário e seta; secundario = contorno. */
+  estilo: "primario" | "secundario";
+}
+interface Props {
+  id: string;
+  rotuloTopo?: string;
+  iconeTopo?: NomeIcone;
+  titulo: string;
+  texto: string;
+  fotos: Img[];
+  destaques?: { icone: NomeIcone; rotulo: string }[];
+  listaTitulo?: string;
+  lista?: string[];
+  acoes: Acao[];
+  nota?: string;
+  invertido?: boolean;
+  fundo: "ceu" | "branco";
+  /** Dentro de um .container (ex.: Secoes): estica a faixa até a largura da tela. */
+  sangria?: boolean;
+  locale: Locale;
+}
+const { id, rotuloTopo, iconeTopo, titulo, texto, fotos, destaques = [], listaTitulo, lista = [], acoes, nota, invertido = false, fundo, sangria = false, locale } = Astro.props;
+const [f1, f2, f3, ...mais] = fotos;
+const MAIS: Record<string, string> = { pt: "Mais fotos", en: "More photos", es: "Más fotos" };
+const SETAS: Record<string, [string, string]> = { pt: ["Foto anterior", "Próxima foto"], en: ["Previous photo", "Next photo"], es: ["Foto anterior", "Foto siguiente"] };
+---
+
+<section id={id} class:list={["lp-produto", `lp-fundo-${fundo}`, { "lp-invertido": invertido, sangria }]} aria-labelledby={`titulo-${id}`}>
+  <div class="container lp-produto-grade">
+    <div class:list={["lp-produto-fotos", { "lp-1foto": !f2 }]}>
+      {
+        f1 && (
+          <div class="lp-pf lp-pf1">
+            <Foto formatos={["avif"]} img={f1} sizes="(min-width: 64rem) 30rem, 88vw" larguras={[360, 480, 640, 960]} proporcao={f2 ? 4 / 5 : 4 / 3} />
+          </div>
+        )
+      }
+      {
+        f2 && (
+          <div class="lp-pf lp-pf2">
+            <Foto formatos={["avif"]} img={f2} sizes="(min-width: 64rem) 16rem, 44vw" larguras={[240, 360, 480]} proporcao={1} />
+          </div>
+        )
+      }
+      {
+        f3 && (
+          <div class="lp-pf lp-pf3">
+            <Foto formatos={["avif"]} img={f3} sizes="(min-width: 64rem) 16rem, 44vw" larguras={[240, 360, 480]} proporcao={1} />
+          </div>
+        )
+      }
+    </div>
+
+    <div class="lp-produto-info">
+      {
+        rotuloTopo && (
+          <p class="sobretitulo">
+            {iconeTopo && <Icone nome={iconeTopo} tamanho={18} />} {rotuloTopo}
+          </p>
+        )
+      }
+      <h2 id={`titulo-${id}`}>{titulo}</h2>
+      <p class="lp-produto-texto">{texto}</p>
+
+      {
+        destaques.length > 0 && (
+          <ul class="lp-destaques">
+            {destaques.map((d) => (
+              <li>
+                <span class="bolha">
+                  <Icone nome={d.icone} tamanho={24} />
+                </span>
+                {d.rotulo}
+              </li>
+            ))}
+          </ul>
+        )
+      }
+
+      {
+        lista.length > 0 && (
+          <div class="lp-inclui">
+            {listaTitulo && <h3>{listaTitulo}</h3>}
+            <ul>
+              {lista.map((x) => (
+                <li>{x}</li>
+              ))}
+            </ul>
+          </div>
+        )
+      }
+
+      {
+        acoes.length > 0 && (
+          <div class="lp-reserva">
+            {nota && <p class="lp-reserva-texto">{nota}</p>}
+            <div class="lp-acoes">
+              {acoes.map((a) => (
+                <a
+                  class:list={["btn", a.estilo === "primario" ? "lp-btn-reservar" : "lp-btn-whats"]}
+                  href={a.href}
+                  data-dl={a.dl || undefined}
+                  rel={a.externo ? "noopener" : undefined}
+                  target={a.externo ? "_blank" : undefined}
+                >
+                  {a.estilo === "primario" && <Icone nome="calendario" tamanho={20} />}
+                  {a.rotulo}
+                  {a.estilo === "primario" && <Icone nome="seta" tamanho={18} class="seta" />}
+                </a>
+              ))}
+            </div>
+          </div>
+        )
+      }
+    </div>
+  </div>
+
+  {
+    mais.length > 0 && (
+      <div class="container lp-carrossel" data-carrossel>
+        <p class="lp-carrossel-topo">
+          {MAIS[locale]} · {titulo}
+          <span class="lp-contador" data-contador aria-live="polite" hidden />
+        </p>
+        <div class="lp-palco">
+          <ul class="lp-trilho" id={`fotos-${id}`} tabindex="0" aria-label={`${MAIS[locale]}: ${titulo}`}>
+            {mais.map((f, j) => (
+              <li aria-label={`${j + 1} / ${mais.length}`}>
+                <Foto formatos={["avif"]} img={f} sizes="(min-width: 72rem) 72rem, calc(100vw - 2rem)" larguras={[480, 720, 960, 1280]} proporcao={16 / 9} />
+              </li>
+            ))}
+          </ul>
+          <button type="button" class="lp-seta lp-seta-ant" data-ant aria-controls={`fotos-${id}`} aria-label={SETAS[locale][0]} hidden>
+            <Icone nome="seta" tamanho={22} />
+          </button>
+          <button type="button" class="lp-seta lp-seta-prox" data-prox aria-controls={`fotos-${id}`} aria-label={SETAS[locale][1]} hidden>
+            <Icone nome="seta" tamanho={22} />
+          </button>
+        </div>
+      </div>
+    )
+  }
+</section>

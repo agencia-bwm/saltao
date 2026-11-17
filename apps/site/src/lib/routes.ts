@@ -226,7 +226,9 @@ export function montarIndice(c: Conteudo): Indice {
   };
 }
 
-/** Rotas de categorias em página única (landing) — geradas por pages/[categoria]/ e pages/[idioma]/[categoria]/. */
-export function rotasLanding(idx: Indice) {
-  return idx.rotas.filter((r): r is Extract<Rota, { kind: "categoria-produto" }> => r.kind === "categoria-produto" && !!r.doc.paginaUnica);
+export type RotaLanding = Extract<Rota, { kind: "categoria-produto" }> | Extract<Rota, { kind: "institucional" }>;
+/** É landing (rota própria em pages/[categoria]/ e pages/[idioma]/[categoria]/)? Categoria em página única ou institucional com landing. */
+export const ehLanding = (r: Rota): r is RotaLanding => (r.kind === "categoria-produto" && !!r.doc.paginaUnica) || (r.kind === "institucional" && !!r.doc.landing);
+export function rotasLanding(idx: Indice): RotaLanding[] {
+  return idx.rotas.filter(ehLanding);
 }

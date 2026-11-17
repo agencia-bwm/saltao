@@ -78,6 +78,8 @@ components = {
     "destaques-produtos": ("Destaques de produtos", "apps", {"titulo": s(maxLength=90), "produtos": rel("oneToMany", PROD)}),
     # Na home, com imagem: régua dos 75 m ao lado da foto e o 1º número em destaque.
     "fatos": ("Fatos (números)", "chartBubble", {"sobretitulo": s(maxLength=60), "titulo": s(maxLength=90), "texto": text(False, 300), "imagem": comp("shared.image-alt"), "itens": comp("shared.key-value", True)}),
+    # Setor de landing (ex.: Restaurante, Quiosques, A queda de 75 m): fotos (3 no mosaico + carrossel), texto, ícones, lista e botões.
+    "setor": ("Setor (landing)", "layout", {"sobretitulo": s(maxLength=60), "titulo": s(True, 90), "icone": enum(ICONES), "texto": text(True, 600), "fotos": comp("shared.image-alt", True, req=True, min=1, max=12), "destaques": comp("shared.icone-rotulo", True, max=6), "listaTitulo": s(maxLength=60), "lista": comp("shared.list-item", True), "cta": comp("shared.cta"), "ctaSecundario": comp("shared.cta")}),
     "galeria": ("Galeria (mosaico de fotos)", "picture", {"sobretitulo": s(maxLength=60), "titulo": s(True, 90), "fotos": comp("shared.image-alt", True, req=True, min=3, max=6)}),
     "chamada": ("Chamada final (foto de fundo)", "bell", {"sobretitulo": s(maxLength=60), "titulo": s(True, 90), "tituloDestaque": s(maxLength=60), "texto": text(False, 300), "imagem": comp("shared.image-alt", req=True), "cta": comp("shared.cta", req=True), "ctaSecundario": comp("shared.cta")}),
     "avaliacoes": ("Avaliações em destaque", "star", {"titulo": s(maxLength=90), "avaliacoes": rel("oneToMany", "api::avaliacao.avaliacao")}),
@@ -87,8 +89,8 @@ components = {
   },
 }
 
-BLOCOS_HOME = ["blocks.essencia", "blocks.vitrine", "blocks.experiencias", "blocks.destaques-produtos", "blocks.fatos", "blocks.avaliacoes", "blocks.galeria", "blocks.texto", "blocks.faq", "blocks.chamada", "blocks.cta-produto", "blocks.mapa-estatico"]
-BLOCOS_INST = ["blocks.texto", "blocks.imagem", "blocks.tabela", "blocks.fatos", "blocks.faq", "blocks.mapa-estatico", "blocks.video", "blocks.cta-produto"]
+BLOCOS_HOME = ["blocks.setor", "blocks.essencia", "blocks.vitrine", "blocks.experiencias", "blocks.destaques-produtos", "blocks.fatos", "blocks.avaliacoes", "blocks.galeria", "blocks.texto", "blocks.faq", "blocks.chamada", "blocks.cta-produto", "blocks.mapa-estatico"]
+BLOCOS_INST = ["blocks.setor", "blocks.experiencias", "blocks.galeria", "blocks.chamada", "blocks.avaliacoes", "blocks.texto", "blocks.imagem", "blocks.tabela", "blocks.fatos", "blocks.faq", "blocks.mapa-estatico", "blocks.video", "blocks.cta-produto"]
 BLOCOS_ART = ["blocks.texto", "blocks.imagem", "blocks.tabela", "blocks.citacao", "blocks.cta-produto"]
 
 def ct(kind, singular, plural, display, attrs, i18n=True, draft=True, desc=""):
@@ -145,7 +147,10 @@ types = [
     "fonte": enum(["Google", "TripAdvisor", "Booking", "Pos_visita"], True), "urlFonte": s(maxLength=500), "produto": rel("manyToOne", PROD)}, i18n=False,
     desc="Só avaliações reais, com fonte. Exibidas no HTML; sem aggregateRating no schema global."),
   ct("collectionType", "pagina-institucional", "paginas-institucionais", "Página institucional", {
-    "titulo": s(True, 90), "slug": uid("titulo"), "respostaDireta": text(True, 300), "secoes": {"type": "dynamiczone", "components": BLOCOS_INST, "required": True}, "seo": comp("shared.seo", req=True)},
+    "titulo": s(True, 90), "slug": uid("titulo"), "respostaDireta": text(True, 300),
+    # Landing: abertura no estilo do hero da home (foto larga + 2ª foto), menu âncora automático pelos setores.
+    "landing": nloc({"type": "boolean", "default": False}), "sobretitulo": s(maxLength=60), "tituloDestaque": s(maxLength=60), "fotosIntro": comp("shared.image-alt", True, max=2),
+    "secoes": {"type": "dynamiczone", "components": BLOCOS_INST, "required": True}, "seo": comp("shared.seo", req=True)},
     desc="Conheça o Saltão, Segurança, Como chegar, Políticas."),
   ct("collectionType", "pagina-atendimento", "paginas-atendimento", "Página FAQ / Contato", {
     "titulo": s(True, 90), "slug": uid("titulo"), "respostaDireta": text(True, 300), "tipo": nloc(enum(["faq_contato", "minha_reserva"], True)),

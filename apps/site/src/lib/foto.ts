@@ -14,3 +14,6 @@ export function medidas(img: Img, larguras: number[], proporcao?: number) {
 
 /** Qualidade: a imagem LCP (hero) sai mais leve; o resto é lazy. */
 export const QUALIDADE = { prioridade: 35, normal: 50 } as const;
+
+/** Larguras da foto do hero das landings (mesmas no <Foto> e no preload). */
+export const LARGURAS_HERO_LANDING = [480, 760, 1080, 1440, 1600];

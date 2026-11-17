@@ -45,6 +45,18 @@ import fCampAzulSrc from "../assets/fotos/camping/camping-barraca-azul-quiosques
 import fCampGrandeSrc from "../assets/fotos/camping/camping-entardecer-barraca-grande.jpg";
 import fCampNoiteBarracasSrc from "../assets/fotos/camping/camping-noite-barracas-quiosque.jpg";
 import fFogueiraVSrc from "../assets/fotos/camping/fogueira-noite-vertical.jpg";
+import fCachMataSrc from "../assets/fotos/cachoeira-saltao/cachoeira-saltao-mata-visitantes.jpg";
+import fQueda75bSrc from "../assets/fotos/cachoeira-saltao/cachoeira-saltao-queda-75m-vertical-02.jpg";
+import fCachPocoVSrc from "../assets/fotos/cachoeira-saltao/cachoeira-saltao-poco-vertical.jpg";
+import fTrilhaVSrc from "../assets/fotos/cachoeira-2/cachoeira-2-trilha-bambuzal-vertical.jpg";
+import fC2Poco2Src from "../assets/fotos/cachoeira-2/cachoeira-2-poco-vertical-02.jpg";
+import fBifeCloseSrc from "../assets/fotos/gastronomia/prato-feito-bife-close.jpg";
+import fPorcaoVSrc from "../assets/fotos/gastronomia/porcao-linguica-cerveja-vertical.jpg";
+import fFrangoSrc from "../assets/fotos/gastronomia/prato-feito-frango-arroz-fritas.jpg";
+import fCafeBoloSrc from "../assets/fotos/gastronomia/cafe-da-manha-bandeja-bolo-01.jpg";
+import fSolarSrc from "../assets/fotos/estrutura/energia-solar-paineis.jpg";
+import fKidsEscorregadorSrc from "../assets/fotos/estrutura/salao-kids-escorregador-vertical.jpg";
+import fKidsPlaySrc from "../assets/fotos/estrutura/salao-kids-playground-coberto.jpg";
 import mapaProvisorio from "../assets/placeholder/trilha.jpg";
 
 
@@ -93,6 +105,18 @@ const fCampAzul = img(fCampAzulSrc, "Barraca azul em primeiro plano com quiosque
 const fCampGrande = img(fCampGrandeSrc, "Barraca grande montada no gramado ao entardecer, com palmeiras ao fundo");
 const fCampNoiteBarracas = img(fCampNoiteBarracasSrc, "Barracas montadas à noite ao lado de quiosque com churrasqueira");
 const fFogueiraV = img(fFogueiraVSrc, "Fogueira acesa à noite no parque");
+const fCachMata = img(fCachMataSrc, "Cachoeira do Saltão vista de longe, cercada de mata nativa, com visitantes na base");
+const fQueda75b = img(fQueda75bSrc, "Queda de 75 metros da Cachoeira do Saltão vista de baixo, com o paredão de rocha");
+const fCachPocoV = img(fCachPocoVSrc, "Poço ao pé da Cachoeira do Saltão, com a queda ao fundo");
+const fTrilhaV = img(fTrilhaVSrc, "Trilha entre bambus altos a caminho da segunda cachoeira");
+const fC2Poco2 = img(fC2Poco2Src, "Poço da segunda cachoeira cercado de rochas e mata");
+const fBifeClose = img(fBifeCloseSrc, "Prato feito com bife, arroz, feijão e batata frita visto de perto");
+const fPorcaoV = img(fPorcaoVSrc, "Porção de linguiça com copo de cerveja gelada");
+const fFrango = img(fFrangoSrc, "Prato feito com frango, arroz, batata frita e salada");
+const fCafeBolo = img(fCafeBoloSrc, "Bandeja de café da manhã com bolo, pães e frutas");
+const fSolar = img(fSolarSrc, "Painéis de energia solar instalados no parque");
+const fKidsEscorregador = img(fKidsEscorregadorSrc, "Escorregador no salão kids coberto");
+const fKidsPlay = img(fKidsPlaySrc, "Playground coberto do salão kids");
 const p = (...textos: string[]): RichText => textos.map((text) => ({ type: "paragraph", children: [{ type: "text", text }] }));
 const h2 = (text: string): RichText[number] => ({ type: "heading", level: 2, children: [{ type: "text", text }] });
 const ul = (...itens: string[]): RichText[number] => ({
@@ -110,7 +134,7 @@ const L = {
     heroResp: "O Saltão é um parque de ecoturismo com cachoeira de 75 m, day use, hospedagem, camping e quiosques com churrasqueira. Reserve online e garanta sua data.",
     reservar: "Reservar",
     cats: {
-      dayuse: ["Day Use", "day-use", "Passe o dia no Saltão com acesso à cachoeira, trilhas e áreas de lazer. Ingressos por pessoa, a partir de R$ 60 (valor de exemplo)."],
+      dayuse: ["Day Use", "day-use", "Passe o dia no Saltão com acesso à cachoeira, trilhas e áreas de lazer. Ingresso por pessoa, com reserva online."],
       hosp: ["Hospedagem e Camping", "hospedagem", "Durma no parque: apartamentos com café da manhã e áreas de camping com estrutura."],
       quiosques: ["Churrasqueiras e Quiosques", "churrasqueiras-e-quiosques", "Reserve um quiosque ou churrasqueira para o seu grupo, com mesas e ponto de apoio. A partir de R$ 120 por dia (valor de exemplo)."],
       combos: ["Monte sua Experiência", "monte-sua-experiencia", "Combos prontos que juntam day use, hospedagem e quiosque com preço especial."],
@@ -121,7 +145,7 @@ const L = {
     heroResp: "Saltão is an ecotourism park with a 75 m waterfall, day passes, lodging, camping and barbecue kiosks. Book online and secure your date.",
     reservar: "Book now",
     cats: {
-      dayuse: ["Day Pass", "day-pass", "Spend the day at Saltão with access to the waterfall, trails and leisure areas. Tickets per person from R$ 60 (sample price)."],
+      dayuse: ["Day Pass", "day-pass", "Spend the day at Saltão with access to the waterfall, trails and leisure areas. Tickets per person, booked online."],
       hosp: ["Lodging and Camping", "lodging", "Stay in the park: rooms with breakfast and equipped camping areas."],
       quiosques: ["Barbecue Kiosks", "barbecue-kiosks", "Book a kiosk or barbecue area for your group, with tables and support point. From R$ 120 per day (sample price)."],
       combos: ["Build Your Experience", "build-your-experience", "Ready-made packages combining day pass, lodging and kiosk at a special price."],
@@ -132,7 +156,7 @@ const L = {
     heroResp: "Saltão es un parque de ecoturismo con una cascada de 75 m, pase de día, hospedaje, camping y quinchos con parrilla. Reserva en línea y asegura tu fecha.",
     reservar: "Reservar",
     cats: {
-      dayuse: ["Pase de Día", "pase-de-dia", "Pasa el día en Saltão con acceso a la cascada, senderos y áreas de ocio. Entradas por persona desde R$ 60 (precio de ejemplo)."],
+      dayuse: ["Pase de Día", "pase-de-dia", "Pasa el día en Saltão con acceso a la cascada, senderos y áreas de ocio. Entradas por persona, con reserva online."],
       hosp: ["Hospedaje y Camping", "hospedaje", "Duerme en el parque: habitaciones con desayuno y áreas de camping equipadas."],
       quiosques: ["Quinchos y Parrillas", "quinchos-y-parrillas", "Reserva un quincho o parrilla para tu grupo, con mesas y punto de apoyo. Desde R$ 120 por día (precio de ejemplo)."],
       combos: ["Arma tu Experiencia", "arma-tu-experiencia", "Combos listos que reúnen pase de día, hospedaje y quincho con precio especial."],
@@ -151,11 +175,11 @@ const produtosBase = [
     preco: 60,
     unidade: "por-pessoa" as const,
     schema: "Product" as const,
-    imgs: [fTrilha, fHero, fCach2, fPrato],
+    imgs: [fEscala, fTrilha, fCach2, fPocoCeu, fCach2Pan, fPorcao, fQuiosque, fPorDoSolArvore],
     t: {
-      pt: ["Ingresso Day Use", "ingresso-day-use", "Ingresso para passar o dia no Saltão, com acesso à cachoeira de 75 m, trilhas e áreas de lazer. Ideal para famílias e grupos. A partir de R$ 60 por pessoa (valor de exemplo)."],
-      en: ["Day Pass Ticket", "day-pass-ticket", "Ticket to spend the day at Saltão, with access to the 75 m waterfall, trails and leisure areas. Great for families and groups. From R$ 60 per person (sample price)."],
-      es: ["Entrada Pase de Día", "entrada-pase-de-dia", "Entrada para pasar el día en Saltão, con acceso a la cascada de 75 m, senderos y áreas de ocio. Ideal para familias y grupos. Desde R$ 60 por persona (precio de ejemplo)."],
+      pt: ["Ingresso Day Use", "ingresso-day-use", "Ingresso para passar o dia no Saltão, com acesso à cachoeira de 75 m, trilhas e áreas de lazer. Ideal para famílias e grupos."],
+      en: ["Day Pass Ticket", "day-pass-ticket", "Ticket to spend the day at Saltão, with access to the 75 m waterfall, trails and leisure areas. Great for families and groups."],
+      es: ["Entrada Pase de Día", "entrada-pase-de-dia", "Entrada para pasar el día en Saltão, con acceso a la cascada de 75 m, senderos y áreas de ocio. Ideal para familias y grupos."],
     },
   },
   {
@@ -221,6 +245,12 @@ type Destaque = { icone: Icone; rotulo: string };
 const d3 = (icone: Icone, pt: string, en: string, es: string) => ({ pt: { icone, rotulo: pt }, en: { icone, rotulo: en }, es: { icone, rotulo: es } });
 const juntar = (...xs: Record<Locale, Destaque>[]) => ({ pt: xs.map((x) => x.pt), en: xs.map((x) => x.en), es: xs.map((x) => x.es) });
 const DESTAQUES: Record<string, Record<Locale, Destaque[]>> = {
+  "prod-dayuse": juntar(
+    d3("cachoeira", "Cachoeira de 75 m", "75 m waterfall", "Cascada de 75 m"),
+    d3("trilha", "Trilhas na mata", "Forest trails", "Senderos en el bosque"),
+    d3("talheres", "Restaurante no parque", "Restaurant in the park", "Restaurante en el parque"),
+    d3("carro", "Estacionamento", "Parking", "Estacionamiento"),
+  ),
   "prod-apto": juntar(
     d3("familia", "Até 4 pessoas", "Up to 4 guests", "Hasta 4 personas"),
     d3("cama", "Suíte com banheiro", "En-suite room", "Suite con baño"),
@@ -384,33 +414,178 @@ const avaliacoes: Conteudo["avaliacoes"] = [
 /* ---------------- Páginas institucionais ---------------- */
 const institucionais: Conteudo["institucionais"] = [
   {
-    documentId: "inst-conheca",
-    locale: "pt",
-    updatedAt: T,
-    titulo: "Conheça o Saltão",
-    slug: "conheca-o-saltao",
-    respostaDireta: "O Saltão é um parque de ecoturismo na Serra do Itaqueri, com cachoeira de 75 m, trilhas, day use, hospedagem e camping.",
-    secoes: [
-      { __component: "blocks.fatos", titulo: "O parque em números", itens: [{ chave: "Altura da cachoeira", valor: "75 m" }, { chave: "Quiosques", valor: "80" }, { chave: "Churrasqueiras", valor: "102" }] },
-      { __component: "blocks.texto", conteudo: [h2("Nossa história"), ...p("Texto provisório sobre a história do parque.")] },
-      { __component: "blocks.imagem", imagem: fVale },
-    ],
-    seo: seo("Conheça o Saltão | Parque de Ecoturismo", "Cachoeira de 75 m, trilhas, day use, hospedagem e camping na Serra do Itaqueri."),
-  },
-  {
     documentId: "inst-cachoeira",
     locale: "pt",
     updatedAt: T,
-    titulo: "Cachoeira do Saltão",
+    titulo: "Cachoeira Saltão",
     slug: "cachoeira-saltao", // mesma URL do site atual (preserva ranqueamento)
-    respostaDireta: "A Cachoeira do Saltão tem 75 m de altura e fica em Itirapina (SP), na Serra do Itaqueri. Do Mirante das Águas é possível ver três cachoeiras.",
+    respostaDireta: "A Cachoeira Saltão tem 75 m de queda livre e fica em Itirapina (SP), na Serra do Itaqueri. Do Mirante das Águas é possível ver três cachoeiras.",
+    landing: true,
+    sobretitulo: "Itirapina (SP) · Serra do Itaqueri",
+    tituloDestaque: "75 metros de queda livre.",
+    fotosIntro: [fCachMata, fC2Poco],
     secoes: [
-      { __component: "blocks.fatos", titulo: "A cachoeira em números", itens: [{ chave: "Altura", valor: "75 m" }, { chave: "Cachoeiras vistas do Mirante das Águas", valor: "3" }] },
-      { __component: "blocks.imagem", imagem: fHero },
-      { __component: "blocks.texto", conteudo: [h2("Como visitar"), ...p("A cachoeira faz parte do Day Use do parque. Texto provisório — será reescrito a partir do conteúdo atual do site, sem encurtar.")] },
-      { __component: "blocks.cta-produto", produtoId: "prod-dayuse", textoChamada: "Garanta seu ingresso para conhecer a cachoeira." },
+      {
+        __component: "blocks.setor",
+        sobretitulo: "A cachoeira",
+        icone: "cachoeira",
+        titulo: "A queda de 75 metros",
+        texto: "A água desce em queda livre por um paredão de rocha alaranjada até o poço, cercada de mata nativa dos dois lados. É o cartão-postal do parque e o ponto alto do day use.",
+        fotos: [fQueda75, fCachPocoV, fPocoCeu, fQueda75b, fHero, fCachMoldura],
+        destaques: [
+          { icone: "cachoeira", rotulo: "75 m de queda livre" },
+          { icone: "trilha", rotulo: "Trilha até o poço" },
+          { icone: "folha", rotulo: "Mata nativa" },
+          { icone: "mapa", rotulo: "Mirante das Águas" },
+        ],
+        listaTitulo: "Para aproveitar melhor",
+        lista: ["Calçado com boa aderência", "Protetor solar e água", "Siga as orientações da equipe"],
+        cta: { rotulo: "Reservar Day Use", tipo: "link", url: "https://reservas.saltao.com.br/reservar?produto=day-use" },
+        ctaSecundario: { rotulo: "Como chegar", tipo: "link", url: "/como-chegar/" },
+      },
+      {
+        __component: "blocks.fatos",
+        sobretitulo: "A queda",
+        titulo: "Uma cachoeira do tamanho de um prédio de 25 andares",
+        texto: "São 75 metros de queda livre sobre o paredão de rocha da Serra do Itaqueri. Do mirante, dá para ver três cachoeiras de uma vez.",
+        imagem: fEscala,
+        itens: [
+          { chave: "de queda livre", valor: "75 m" },
+          { chave: "cachoeiras vistas do Mirante das Águas", valor: "3" },
+        ],
+      },
+      {
+        __component: "blocks.setor",
+        sobretitulo: "Mais cachoeiras",
+        icone: "trilha",
+        titulo: "Segunda cachoeira e trilha do bambuzal",
+        texto: "Uma trilha entre bambus altos leva até a segunda cachoeira do parque, com queda larga e um poço amplo cercado de rochas. Um passeio tranquilo para fazer no mesmo dia.",
+        fotos: [fTrilha, fC2Poco2, fCach2, fCach2Pan, fTrilhaV, fQuedaLarga],
+        destaques: [
+          { icone: "trilha", rotulo: "Trilha do bambuzal" },
+          { icone: "cachoeira", rotulo: "Queda larga" },
+          { icone: "familia", rotulo: "Para toda a família" },
+        ],
+        cta: { rotulo: "Reservar Day Use", tipo: "link", url: "https://reservas.saltao.com.br/reservar?produto=day-use" },
+      },
+      {
+        __component: "blocks.experiencias",
+        sobretitulo: "Combine com",
+        titulo: "Para completar o passeio",
+        itens: [
+          { imagem: fPrato, icone: "talheres", titulo: "Restaurante", texto: "Almoço caseiro depois da cachoeira.", link: "/restaurante-saltao/" },
+          { imagem: fQuiosque, icone: "churrasqueira", titulo: "Quiosques", texto: "Churrasco com a turma.", link: "/estrutura/#quiosques-e-churrasqueiras" },
+          { imagem: fCampEntardecer, icone: "barraca", titulo: "Fique para dormir", texto: "Apartamentos e camping no parque.", link: "/hospedagem/" },
+          { imagem: fPorDoSol, icone: "sol", titulo: "Pôr do sol", texto: "O fim de tarde mais bonito da serra.", link: "/day-use/" },
+        ],
+      },
+      {
+        __component: "blocks.faq",
+        titulo: "Perguntas sobre a cachoeira",
+        itens: [
+          faq("Onde fica a Cachoeira Saltão?", "Na Rodovia Ulisses Guimarães, km 23, em Itirapina (SP), na Serra do Itaqueri."),
+          faq("Como visitar a cachoeira?", "O acesso à cachoeira faz parte do Day Use do parque, com reserva online."),
+          faq("Pode entrar no poço?", "Regras de banho a confirmar com o parque (texto de exemplo)."),
+        ],
+      },
+      {
+        __component: "blocks.chamada",
+        sobretitulo: "Venha ver de perto",
+        titulo: "75 metros de água",
+        tituloDestaque: "te esperando.",
+        texto: "Garanta seu Day Use e passe o dia na cachoeira.",
+        imagem: fPocoCeu,
+        cta: { rotulo: "Reservar", tipo: "link", url: "https://reservas.saltao.com.br/reservar?produto=day-use" },
+        ctaSecundario: { rotulo: "Falar no WhatsApp", tipo: "whatsapp" },
+      },
     ],
-    seo: seo("Cachoeira do Saltão (75 m) em Itirapina-SP | Saltão", "Cachoeira de 75 m em Itirapina, na Serra do Itaqueri, com Mirante das Águas e vista para três cachoeiras."),
+    seo: seo("Cachoeira Saltão (75 m) em Itirapina-SP | Saltão", "Cachoeira de 75 m em Itirapina, na Serra do Itaqueri, com Mirante das Águas e vista para três cachoeiras."),
+  },
+  {
+    documentId: "inst-estrutura",
+    locale: "pt",
+    updatedAt: T,
+    titulo: "Estrutura",
+    slug: "estrutura",
+    respostaDireta: "O Saltão tem restaurante, 80 quiosques e 102 churrasqueiras, salão kids, energia solar, hospedagem e camping, tudo dentro do parque, na Serra do Itaqueri.",
+    landing: true,
+    sobretitulo: "Tudo dentro do parque",
+    tituloDestaque: "para o dia inteiro.",
+    fotosIntro: [fVale, fKidsPlay],
+    secoes: [
+      {
+        __component: "blocks.setor",
+        sobretitulo: "Gastronomia",
+        icone: "talheres",
+        titulo: "Restaurante",
+        texto: "Comida caseira, porções e bebida gelada para quem passa o dia, se hospeda ou acampa no parque. Cardápio e horários a confirmar.",
+        fotos: [fPrato, fPorcaoV, fFrango, fBifeClose, fPorcao, fCafeBolo],
+        destaques: [
+          { icone: "talheres", rotulo: "Comida caseira" },
+          { icone: "cafe", rotulo: "Café da manhã para hóspedes" },
+          { icone: "familia", rotulo: "Para toda a família" },
+        ],
+        cta: { rotulo: "Conhecer o restaurante", tipo: "link", url: "/restaurante-saltao/" },
+      },
+      {
+        __component: "blocks.setor",
+        sobretitulo: "Para grupos",
+        icone: "churrasqueira",
+        titulo: "Quiosques e churrasqueiras",
+        texto: "São 80 quiosques e 102 churrasqueiras espalhados pelo parque, para o churrasco da família ou da turma. Reserve o seu espaço online.",
+        fotos: [fQuiosque, fQuiosqueNoite, fCampQuiosqueVista, fCampNoiteBarracas, fCampAmigos],
+        destaques: [
+          { icone: "churrasqueira", rotulo: "102 churrasqueiras" },
+          { icone: "estrela", rotulo: "80 quiosques" },
+          { icone: "familia", rotulo: "Para grupos" },
+        ],
+        cta: { rotulo: "Reservar quiosque", tipo: "link", url: "https://reservas.saltao.com.br/reservar?produto=quiosque" },
+        ctaSecundario: { rotulo: "Falar no WhatsApp", tipo: "whatsapp" },
+      },
+      {
+        __component: "blocks.setor",
+        sobretitulo: "Para as crianças",
+        icone: "familia",
+        titulo: "Salão kids",
+        texto: "Um espaço coberto com brinquedos de bambu, escorregador e playground para as crianças brincarem com segurança.",
+        fotos: [fKids, fKidsEscorregador, fKidsPlay],
+        destaques: [
+          { icone: "familia", rotulo: "Brinquedos de bambu" },
+          { icone: "escudo", rotulo: "Área coberta" },
+        ],
+      },
+      {
+        __component: "blocks.setor",
+        sobretitulo: "Sustentabilidade",
+        icone: "sol",
+        titulo: "Energia solar",
+        texto: "Parte da energia usada no parque vem de painéis solares instalados no próprio Saltão. Texto de exemplo, a confirmar com o parque.",
+        fotos: [fSolar],
+        destaques: [{ icone: "sol", rotulo: "Painéis solares" }, { icone: "folha", rotulo: "Natureza preservada" }],
+      },
+      {
+        __component: "blocks.experiencias",
+        sobretitulo: "Antes de vir",
+        titulo: "Planeje sua visita",
+        itens: [
+          { imagem: fEscala, icone: "cachoeira", titulo: "Cachoeira Saltão", texto: "A queda de 75 m e as trilhas.", link: "/cachoeira-saltao/" },
+          { imagem: fCampEntardecer, icone: "cama", titulo: "Hospedagem", texto: "Apartamentos e camping.", link: "/hospedagem/" },
+          { imagem: fTrilha, icone: "escudo", titulo: "Segurança", texto: "Regras e cuidados no parque.", link: "/seguranca/" },
+          { imagem: fVale, icone: "mapa", titulo: "Como chegar", texto: "Rotas e distâncias.", link: "/como-chegar/" },
+        ],
+      },
+      {
+        __component: "blocks.chamada",
+        sobretitulo: "Seu dia no parque",
+        titulo: "Tudo pronto para",
+        tituloDestaque: "você só aproveitar.",
+        texto: "Day use, quiosques e hospedagem com reserva online.",
+        imagem: fQuedaLarga,
+        cta: { rotulo: "Reservar", tipo: "link", url: "https://reservas.saltao.com.br/reservar" },
+        ctaSecundario: { rotulo: "Falar no WhatsApp", tipo: "whatsapp" },
+      },
+    ],
+    seo: seo("Estrutura do Saltão: restaurante, quiosques e salão kids", "Restaurante, 80 quiosques, 102 churrasqueiras, salão kids, energia solar, hospedagem e camping no Parque Saltão."),
   },
   {
     documentId: "inst-restaurante",
@@ -528,9 +703,9 @@ const HERO = {
   es: { sobre: "Itirapina (Brasil) · Serra do Itaqueri", titulo: "Saltão: 75 metros de cascada y", destaque: "naturaleza para bajar el ritmo.", selo: "Cascada de 75 m · 3 cascadas vistas desde el Mirante das Águas", card: "Quédate a dormir" },
 };
 const LINKS = {
-  pt: { dayuse: "/day-use/", hosp: "/hospedagem/", aptos: "/hospedagem/#apartamentos", camping: "/hospedagem/#camping", quiosques: "/churrasqueiras-e-quiosques/", cachoeira: "/cachoeira-saltao/", restaurante: "/restaurante-saltao/", conheca: "/conheca-o-saltao/", guia: "/guia/" },
-  en: { dayuse: "/en/day-pass/", hosp: "/en/lodging/", aptos: "/en/lodging/#rooms", camping: "/en/lodging/#camping", quiosques: "/en/barbecue-kiosks/", cachoeira: "/en/day-pass/", restaurante: "/en/day-pass/", conheca: "/en/day-pass/", guia: "/en/lodging/" },
-  es: { dayuse: "/es/pase-de-dia/", hosp: "/es/hospedaje/", aptos: "/es/hospedaje/#habitaciones", camping: "/es/hospedaje/#camping", quiosques: "/es/quinchos-y-parrillas/", cachoeira: "/es/pase-de-dia/", restaurante: "/es/pase-de-dia/", conheca: "/es/pase-de-dia/", guia: "/es/hospedaje/" },
+  pt: { dayuse: "/day-use/", hosp: "/hospedagem/", aptos: "/hospedagem/#apartamentos", camping: "/hospedagem/#camping", quiosques: "/churrasqueiras-e-quiosques/", cachoeira: "/cachoeira-saltao/", restaurante: "/restaurante-saltao/", conheca: "/estrutura/", estrutura: "/estrutura/", guia: "/guia/" },
+  en: { dayuse: "/en/day-pass/", hosp: "/en/lodging/", aptos: "/en/lodging/#rooms", camping: "/en/lodging/#camping", quiosques: "/en/barbecue-kiosks/", cachoeira: "/en/day-pass/", restaurante: "/en/day-pass/", conheca: "/en/day-pass/", estrutura: "/en/day-pass/", guia: "/en/lodging/" },
+  es: { dayuse: "/es/pase-de-dia/", hosp: "/es/hospedaje/", aptos: "/es/hospedaje/#habitaciones", camping: "/es/hospedaje/#camping", quiosques: "/es/quinchos-y-parrillas/", cachoeira: "/es/pase-de-dia/", restaurante: "/es/pase-de-dia/", conheca: "/es/pase-de-dia/", estrutura: "/es/pase-de-dia/", guia: "/es/hospedaje/" },
 };
 
 const home = Object.fromEntries(
@@ -596,7 +771,7 @@ const home = Object.fromEntries(
               { imagem: fAptos, local: tr(loc, "Apartamentos", "Rooms", "Habitaciones"), titulo: tr(loc, "Acorde no meio da mata", "Wake up in the forest", "Despierta en el bosque"), texto: tr(loc, "Café da manhã incluso.", "Breakfast included.", "Desayuno incluido."), link: l.aptos },
               { imagem: fQuiosque, local: tr(loc, "Quiosques", "Kiosks", "Quinchos"), titulo: tr(loc, "Churrasco com a turma", "Barbecue with friends", "Asado con amigos"), texto: tr(loc, "Quiosques com churrasqueira para grupos.", "Kiosks with barbecue grills for groups.", "Quinchos con parrilla para grupos."), link: l.quiosques },
             ],
-            linkTodos: { rotulo: tr(loc, "Conheça o parque", "Plan your day", "Planea tu día"), link: l.conheca },
+            linkTodos: { rotulo: tr(loc, "Conheça a estrutura", "Plan your day", "Planea tu día"), link: l.conheca },
           },
           {
             __component: "blocks.experiencias" as const,
@@ -704,6 +879,54 @@ for (const c of categoriasProduto) {
         texto: tr(loc, "Apartamentos e camping com reserva online.", "Rooms and camping booked online.", "Habitaciones y camping con reserva online."),
         imagem: fQuedaLarga,
         cta: { rotulo: L[loc].reservar, tipo: "link" as const, url: "https://reservas.saltao.com.br/reservar" },
+        ctaSecundario: { rotulo: tr(loc, "Falar no WhatsApp", "Chat on WhatsApp", "Hablar por WhatsApp"), tipo: "whatsapp" as const },
+      },
+    ],
+  });
+}
+
+/* ---------------- Day Use em página única (landing) ---------------- */
+for (const c of categoriasProduto) {
+  if (c.documentId !== "cat-dayuse") continue;
+  const loc = c.locale;
+  Object.assign(c, {
+    paginaUnica: true,
+    sobretitulo: tr(loc, "Um dia inteiro no parque", "A whole day in the park", "Un día entero en el parque"),
+    tituloDestaque: tr(loc, "da cachoeira ao pôr do sol.", "from waterfall to sunset.", "de la cascada al atardecer."),
+    fotosIntro: [fCach2Pan, fPorcao],
+    faq: tr(
+      loc,
+      [faq("O que está incluso no day use?", "Acesso à cachoeira, às trilhas sinalizadas e às áreas de lazer do parque (texto de exemplo)."), faq("Preciso reservar com antecedência?", "Recomendamos reservar online, principalmente em feriados e fins de semana."), faq("Posso levar comida?", "Regras sobre alimentos e bebidas a confirmar (texto de exemplo).")],
+      [faq("What is included in the day pass?", "Access to the waterfall, marked trails and the park's leisure areas (sample text).")],
+      [faq("¿Qué incluye el pase de día?", "Acceso a la cascada, senderos señalizados y áreas de ocio del parque (texto de ejemplo).")],
+    ),
+    secoes: [
+      {
+        __component: "blocks.experiencias" as const,
+        sobretitulo: tr(loc, "No seu dia", "During your day", "En tu día"),
+        titulo: tr(loc, "O que fazer no day use", "What to do on your day pass", "Qué hacer en el pase de día"),
+        itens: [
+          { imagem: fEscala, icone: "cachoeira" as const, titulo: tr(loc, "Cachoeira Saltão", "Saltão Waterfall", "Cascada Saltão"), texto: tr(loc, "75 metros de queda livre sobre o paredão.", "75 metres of free fall down the rock wall.", "75 metros de caída libre sobre la pared."), link: LINKS[loc].cachoeira },
+          { imagem: fTrilhaV, icone: "trilha" as const, titulo: tr(loc, "Trilha do bambuzal", "Bamboo trail", "Sendero del bambú"), texto: tr(loc, "Caminho na mata até a segunda cachoeira.", "A forest path to the second waterfall.", "Un camino en el bosque hasta la segunda cascada."), link: LINKS[loc].cachoeira },
+          { imagem: fPrato, icone: "talheres" as const, titulo: tr(loc, "Almoço no restaurante", "Lunch at the restaurant", "Almuerzo en el restaurante"), texto: tr(loc, "Comida caseira sem sair do parque.", "Home-style food without leaving the park.", "Comida casera sin salir del parque."), link: LINKS[loc].restaurante },
+          { imagem: fQuiosqueNoite, icone: "churrasqueira" as const, titulo: tr(loc, "Churrasco no quiosque", "Barbecue at a kiosk", "Asado en el quincho"), texto: tr(loc, "Reserve um quiosque para a turma.", "Book a kiosk for your group.", "Reserva un quincho para tu grupo."), link: LINKS[loc].estrutura },
+        ],
+      },
+      { __component: "blocks.avaliacoes" as const, titulo: tr(loc, "Quem passou o dia recomenda", "What visitors say", "Lo que dicen los visitantes"), avaliacaoIds: ["av-1", "av-2", "av-3", "av-4"] },
+      {
+        __component: "blocks.galeria" as const,
+        sobretitulo: tr(loc, "Seu dia no Saltão", "Your day at Saltão", "Tu día en Saltão"),
+        titulo: tr(loc, "Água, mata e boa comida", "Water, forest and good food", "Agua, bosque y buena comida"),
+        fotos: [fC2Poco, fQueda75, fBifeClose, fSlack, fPorDoSolLaranja],
+      },
+      {
+        __component: "blocks.chamada" as const,
+        sobretitulo: tr(loc, "Seu dia no parque", "Your day in the park", "Tu día en el parque"),
+        titulo: tr(loc, "Escolha a data e garanta", "Pick your date and book", "Elige la fecha y reserva"),
+        tituloDestaque: tr(loc, "seu ingresso online.", "your ticket online.", "tu entrada online."),
+        texto: tr(loc, "Datas disponíveis e valores na reserva online.", "Available dates and rates when you book online.", "Fechas disponibles y precios en la reserva online."),
+        imagem: fHero,
+        cta: { rotulo: L[loc].reservar, tipo: "link" as const, url: "https://reservas.saltao.com.br/reservar?produto=day-use" },
         ctaSecundario: { rotulo: tr(loc, "Falar no WhatsApp", "Chat on WhatsApp", "Hablar por WhatsApp"), tipo: "whatsapp" as const },
       },
     ],

@@ -8,6 +8,7 @@
  */
 import type { GetStaticPaths } from "astro";
 import { indice } from "../lib/cms";
+import { ehLanding } from "../lib/routes";
 import type { Rota } from "../lib/routes";
 import ListagemTpl from "../templates/ListagemTpl.astro";
 import ProdutoTpl from "../templates/ProdutoTpl.astro";
@@ -18,7 +19,7 @@ import AtendimentoTpl from "../templates/AtendimentoTpl.astro";
 
 export const getStaticPaths = (async () => {
   const idx = await indice();
-  return idx.rotas.filter((rota) => rota.kind !== "home" && !(rota.kind === "categoria-produto" && rota.doc.paginaUnica)).map((rota) => ({
+  return idx.rotas.filter((rota) => rota.kind !== "home" && !ehLanding(rota)).map((rota) => ({
     params: { path: rota.path.replace(/^\/|\/$/g, "") || undefined },
     props: { chave: rota.chave, locale: rota.locale },
   }));

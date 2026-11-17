@@ -15,7 +15,7 @@ const faqs = doc.secoes.flatMap((b) => (b.__component === "blocks.faq" ? b.itens
 const imagem = doc.secoes.find((b) => b.__component === "blocks.imagem")?.imagem;
 ---
 
-<Base {...rota} indice={indice} imagem={imagem} jsonld={[noWebPage(rota.path, doc.titulo, doc.respostaDireta, locale, doc.documentId === "inst-conheca" ? "AboutPage" : "WebPage"), noFaq(faqs, rota.path)].filter((n) => n !== null)}>
+<Base {...rota} indice={indice} imagem={imagem} jsonld={[noWebPage(rota.path, doc.titulo, doc.respostaDireta, locale, doc.documentId === "inst-estrutura" ? "AboutPage" : "WebPage"), noFaq(faqs, rota.path)].filter((n) => n !== null)}>
   <article class="container-narrow section">
     <h1>{doc.titulo}</h1>
     <p class="lead">{doc.respostaDireta}</p>

@@ -50,6 +50,7 @@ const blocosPop: Populate = {
     "blocks.destaques-produtos": { produtos: true },
     "blocks.fatos": { itens: true, imagem: { imagem: true } },
     "blocks.galeria": { fotos: { imagem: true } },
+    "blocks.setor": { fotos: { imagem: true }, destaques: true, lista: true, cta: { produto: true }, ctaSecundario: { produto: true } },
     "blocks.chamada": { imagem: { imagem: true }, cta: { produto: true }, ctaSecundario: { produto: true } },
     "blocks.avaliacoes": { avaliacoes: true },
     "blocks.faq": { itens: true },
@@ -81,7 +82,7 @@ const POPULATE: Record<string, Record<string, Populate>> = {
   "categorias-guia": { seo: seoPop },
   autores: { foto: { imagem: true } },
   avaliacoes: { produto: true },
-  "paginas-institucionais": { secoes: blocosPop, seo: seoPop },
+  "paginas-institucionais": { fotosIntro: { imagem: true }, secoes: blocosPop, seo: seoPop },
   "paginas-atendimento": { grupos: { itens: true }, seo: seoPop },
 };
 
@@ -179,6 +180,20 @@ function blocos(v: Json): Block[] {
           return { __component: b.__component, titulo: b.titulo ?? undefined, produtoIds: ids(b.produtos) };
         case "blocks.fatos":
           return { __component: b.__component, sobretitulo: b.sobretitulo || undefined, titulo: b.titulo ?? undefined, texto: b.texto || undefined, imagem: imgAlt(b.imagem), itens: kvs(b.itens) };
+        case "blocks.setor":
+          return {
+            __component: b.__component,
+            sobretitulo: b.sobretitulo || undefined,
+            titulo: b.titulo,
+            icone: b.icone || undefined,
+            texto: b.texto ?? "",
+            fotos: (b.fotos ?? []).map(imgAlt).filter(Boolean) as Img[],
+            destaques: (b.destaques ?? []).map((x: Json) => ({ icone: x.icone, rotulo: x.rotulo })),
+            listaTitulo: b.listaTitulo || undefined,
+            lista: lista(b.lista),
+            cta: cta(b.cta),
+            ctaSecundario: cta(b.ctaSecundario),
+          };
         case "blocks.galeria":
           return { __component: b.__component, sobretitulo: b.sobretitulo || undefined, titulo: b.titulo, fotos: (b.fotos ?? []).map(imgAlt).filter(Boolean) as Img[] };
         case "blocks.chamada":
@@ -331,7 +346,18 @@ export async function carregarDoStrapi(): Promise<Conteudo> {
     categoriasGuia: catsGuia.map((d) => ({ ...doc(d), nome: d.nome, slug: d.slug, descricao: d.descricao ?? undefined, seo: seo(d.seo) })),
     autores: autores.map((d) => ({ ...doc(d), locale: "pt" as Locale, nome: d.nome, slug: d.slug, foto: imgAlt(d.foto)!, minibio: d.minibio, link: d.link ?? undefined, sameAs: (d.sameAs ?? []).map((s: Json) => s.url ?? s) })),
     avaliacoes: avaliacoes.map((d) => ({ documentId: d.documentId, nomeAutor: d.nomeAutor, nota: d.nota, texto: d.texto, data: d.data, fonte: d.fonte === 'Pos_visita' ? 'Pós-visita Saltão' : d.fonte, urlFonte: d.urlFonte ?? undefined, produtoId: d.produto?.documentId })),
-    institucionais: inst.map((d) => ({ ...doc(d), titulo: d.titulo, slug: d.slug, respostaDireta: d.respostaDireta, secoes: blocos(d.secoes), seo: seo(d.seo) })),
+    institucionais: inst.map((d) => ({
+      ...doc(d),
+      titulo: d.titulo,
+      slug: d.slug,
+      respostaDireta: d.respostaDireta,
+      landing: !!d.landing,
+      sobretitulo: d.sobretitulo || undefined,
+      tituloDestaque: d.tituloDestaque || undefined,
+      fotosIntro: (d.fotosIntro ?? []).map(imgAlt).filter(Boolean) as Img[],
+      secoes: blocos(d.secoes),
+      seo: seo(d.seo),
+    })),
     atendimento: atend.map((d) => ({
       ...doc(d),
       titulo: d.titulo,

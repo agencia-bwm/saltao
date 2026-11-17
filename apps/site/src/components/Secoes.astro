@@ -13,6 +13,8 @@ import Experiencias from "./Experiencias.astro";
 import FatosHome from "./FatosHome.astro";
 import Galeria from "./Galeria.astro";
 import Chamada from "./Chamada.astro";
+import SecaoSetor, { type Acao } from "./SecaoSetor.astro";
+import { ancora, destinoCta } from "../lib/cta";
 
 interface Props {
   blocos: Block[];
@@ -24,8 +26,18 @@ interface Props {
 const { blocos, indice, locale, idBase = 0 } = Astro.props;
 
 type Trecho = { tipo: "visual"; bloco: Block } | { tipo: "comum"; blocos: Block[]; inicio: number };
-const VISUAIS = new Set(["blocks.essencia", "blocks.vitrine", "blocks.experiencias", "blocks.fatos", "blocks.galeria", "blocks.chamada"]);
+const VISUAIS = new Set(["blocks.setor", "blocks.essencia", "blocks.vitrine", "blocks.experiencias", "blocks.fatos", "blocks.galeria", "blocks.chamada"]);
 const trechos: Trecho[] = [];
+// Setores alternam lado das fotos e fundo (céu/branco), contando só os setores.
+let nSetor = 0;
+const ordemSetor = new Map<Block, number>();
+for (const b of blocos) if (b.__component === "blocks.setor") ordemSetor.set(b, nSetor++);
+const acoes = (b: Extract<Block, { __component: "blocks.setor" }>): Acao[] =>
+  [b.cta, b.ctaSecundario].flatMap((c, i) => {
+    if (!c) return [];
+    const d = destinoCta(c, indice, locale, "setor");
+    return [{ rotulo: c.rotulo, href: d.href, dl: d.dl, externo: d.externo, estilo: i === 0 ? ("primario" as const) : ("secundario" as const) }];
+  });
 blocos.forEach((b, i) => {
   const ultimo = trechos.at(-1);
   if (VISUAIS.has(b.__component)) trechos.push({ tipo: "visual", bloco: b });
@@ -38,6 +50,27 @@ blocos.forEach((b, i) => {
   trechos.map((tr) => {
     if (tr.tipo === "comum") return <Blocos blocos={tr.blocos} indice={indice} locale={locale} idBase={tr.inicio} />;
     const b = tr.bloco;
+    if (b.__component === "blocks.setor") {
+      const n = ordemSetor.get(b) ?? 0;
+      return (
+        <SecaoSetor
+          id={ancora(b.titulo)}
+          rotuloTopo={b.sobretitulo}
+          iconeTopo={b.icone}
+          titulo={b.titulo}
+          texto={b.texto}
+          fotos={b.fotos}
+          destaques={b.destaques}
+          listaTitulo={b.listaTitulo}
+          lista={b.lista}
+          acoes={acoes(b)}
+          invertido={n % 2 === 1}
+          fundo={n % 2 === 0 ? "ceu" : "branco"}
+          sangria
+          locale={locale}
+        />
+      );
+    }
     if (b.__component === "blocks.essencia") return <Essencia {...b} />;
     if (b.__component === "blocks.vitrine") return <Vitrine {...b} />;
     if (b.__component === "blocks.experiencias") return <Experiencias {...b} />;
