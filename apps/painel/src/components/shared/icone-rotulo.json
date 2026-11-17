@@ -22,7 +22,11 @@
         "churrasqueira",
         "mapa",
         "coracao",
-        "estrela"
+        "estrela",
+        "chuveiro",
+        "tomada",
+        "carro",
+        "cafe"
       ],
       "required": true
     },

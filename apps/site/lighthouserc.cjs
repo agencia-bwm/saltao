@@ -9,7 +9,8 @@ module.exports = {
       url: [
         "http://localhost/", // Home
         "http://localhost/day-use/", // Listagem de produtos
-        "http://localhost/hospedagem/apartamentos/", // Produto / pacote
+        "http://localhost/day-use/ingresso-day-use/", // Produto / pacote
+        "http://localhost/hospedagem/", // Landing de categoria (página única)
         "http://localhost/guia/", // Listagem do blog
         "http://localhost/guia/cachoeiras-perto-de-brotas/", // Artigo
         "http://localhost/cachoeira-saltao/", // Institucional por blocos

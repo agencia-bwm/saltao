@@ -1,0 +1,19 @@
+---
+/** Landings de categoria em página única, em português (/hospedagem/). Rota própria: o CSS da landing fica só nela. */
+import type { GetStaticPaths } from "astro";
+import { indice } from "../../lib/cms";
+import { rotasLanding } from "../../lib/routes";
+import LandingTpl from "../../templates/LandingTpl.astro";
+
+export const getStaticPaths = (async () => {
+  const idx = await indice();
+  return rotasLanding(idx)
+    .filter((r) => r.locale === "pt")
+    .map((r) => ({ params: { categoria: r.path.replace(/^\/|\/$/g, "") }, props: { chave: r.chave } }));
+}) satisfies GetStaticPaths;
+
+const idx = await indice();
+const rota = rotasLanding(idx).find((r) => r.chave === Astro.props.chave && r.locale === "pt")!;
+---
+
+<LandingTpl rota={rota} indice={idx} />

@@ -1,0 +1,49 @@
+---
+/**
+ * Seções visuais (home e landings): os blocos do layout novo (essência, vitrine, experiências, fatos,
+ * galeria, chamada) viram seus componentes; os demais vão em grupos para o Blocos.
+ * O CSS desses componentes fica em styles/home-abaixo.css — a página que usa Secoes carrega esse arquivo.
+ */
+import type { Block, Locale } from "../lib/types";
+import type { Indice } from "../lib/routes";
+import Blocos from "./Blocos.astro";
+import Essencia from "./Essencia.astro";
+import Vitrine from "./Vitrine.astro";
+import Experiencias from "./Experiencias.astro";
+import FatosHome from "./FatosHome.astro";
+import Galeria from "./Galeria.astro";
+import Chamada from "./Chamada.astro";
+
+interface Props {
+  blocos: Block[];
+  indice: Indice;
+  locale: Locale;
+  /** Soma ao índice dos ids gerados (FAQ), quando a página tem outros blocos antes. */
+  idBase?: number;
+}
+const { blocos, indice, locale, idBase = 0 } = Astro.props;
+
+type Trecho = { tipo: "visual"; bloco: Block } | { tipo: "comum"; blocos: Block[]; inicio: number };
+const VISUAIS = new Set(["blocks.essencia", "blocks.vitrine", "blocks.experiencias", "blocks.fatos", "blocks.galeria", "blocks.chamada"]);
+const trechos: Trecho[] = [];
+blocos.forEach((b, i) => {
+  const ultimo = trechos.at(-1);
+  if (VISUAIS.has(b.__component)) trechos.push({ tipo: "visual", bloco: b });
+  else if (ultimo?.tipo === "comum") ultimo.blocos.push(b);
+  else trechos.push({ tipo: "comum", blocos: [b], inicio: idBase + i });
+});
+---
+
+{
+  trechos.map((tr) => {
+    if (tr.tipo === "comum") return <Blocos blocos={tr.blocos} indice={indice} locale={locale} idBase={tr.inicio} />;
+    const b = tr.bloco;
+    if (b.__component === "blocks.essencia") return <Essencia {...b} />;
+    if (b.__component === "blocks.vitrine") return <Vitrine {...b} />;
+    if (b.__component === "blocks.experiencias") return <Experiencias {...b} />;
+    if (b.__component === "blocks.fatos") return <FatosHome {...b} />;
+    if (b.__component === "blocks.galeria") return <Galeria {...b} />;
+    if (b.__component === "blocks.chamada") return <Chamada {...b} indice={indice} locale={locale} />;
+    return null;
+  })
+}

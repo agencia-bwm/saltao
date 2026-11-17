@@ -1,0 +1,352 @@
+---
+/**
+ * Landing de categoria em página única (ex.: Hospedagem): abertura com mosaico de até 2 fotos, título,
+ * resposta direta e menu âncora; uma seção visual por produto (fotos, ícones, o que inclui, preço "a partir de"
+ * e Reservar direto na plataforma); depois as seções visuais da categoria (mesmas da home) e o FAQ.
+ * Informação técnica (datas, regras detalhadas, valores finais) fica na plataforma de reservas.
+ * CSS: abertura aqui (acima da dobra); o resto em styles/landing.css e styles/home-abaixo.css, carregados no corpo.
+ */
+import { getImage } from "astro:assets";
+import type { Rota, Indice } from "../lib/routes";
+import type { Block, Faq, Icone as NomeIcone, Produto } from "../lib/types";
+import { absoluta, linkReserva, linkWhatsApp } from "../lib/config";
+import { noFaq, noProduto, noWebPage } from "../lib/schema";
+import { dl, itemGa4 } from "../lib/tracking";
+import { formatPreco, t } from "../lib/i18n";
+import Base from "../layouts/Base.astro";
+import Foto from "../components/Foto.astro";
+import Icone from "../components/Icone.astro";
+import Secoes from "../components/Secoes.astro";
+import FaqLista from "../components/FaqLista.astro";
+import cssAbaixo from "../styles/home-abaixo.css?url";
+import cssLanding from "../styles/landing.css?url";
+
+interface Props {
+  rota: Extract<Rota, { kind: "categoria-produto" }>;
+  indice: Indice;
+}
+const { rota, indice } = Astro.props;
+const { doc, locale } = rota;
+const ui = t(locale);
+const g = indice.conteudo.global[locale] ?? indice.conteudo.global.pt!;
+const produtos = doc.produtoIds.map((id) => indice.produto(id, locale)).filter((p): p is Produto => !!p);
+const fotos = (doc.fotosIntro?.length ? doc.fotosIntro : [doc.imagemHero]).slice(0, 2);
+const LARGURAS_INTRO = [400, 640, 900, 1200];
+const NAV: Record<string, string> = { pt: "Nesta página", en: "On this page", es: "En esta página" };
+const iconeProduto = (p: Produto): NomeIcone => (p.tipoSchema === "Campground" ? "barraca" : p.tipoSchema === "LodgingBusiness" ? "cama" : "estrela");
+
+// Seções da categoria: a chamada final (se houver) vai depois do FAQ.
+const secoes: Block[] = doc.secoes ?? [];
+const ultima = secoes.at(-1);
+const chamadaFinal = ultima?.__component === "blocks.chamada" ? [ultima] : [];
+const meio = chamadaFinal.length ? secoes.slice(0, -1) : secoes;
+const faqsSecoes: Faq[] = secoes.flatMap((b) => (b.__component === "blocks.faq" ? b.itens : []));
+
+const nosProdutos = await Promise.all(
+  produtos.map(async (p) => {
+    const imgs = await Promise.all(
+      p.galeria.slice(0, 3).map(async (i) => {
+        const r = await getImage({ src: i.src, width: 1200, height: 900, fit: "cover", format: "jpg", quality: 75 });
+        return r.src.startsWith("http") ? r.src : absoluta(r.src);
+      }),
+    );
+    return noProduto(p, rota.path, imgs, g, locale, p.slug);
+  }),
+);
+const dlPagina = [{ event: "view_item_list", ecommerce: { item_list_name: doc.titulo, items: produtos.map((p, i) => itemGa4(p, doc, i)) } }];
+---
+
+<Base
+  {...rota}
+  indice={indice}
+  imagem={fotos[0]}
+  preload={{ img: fotos[0], larguras: LARGURAS_INTRO, sizes: "(min-width: 64rem) 30rem, 70vw", proporcao: 4 / 5 }}
+  jsonld={[noWebPage(rota.path, doc.titulo, doc.respostaDireta, locale, "CollectionPage"), ...nosProdutos, noFaq([...doc.faq, ...faqsSecoes], rota.path)].filter((n) => n !== null)}
+  dlPagina={dlPagina}
+>
+  <section class="container lp-abertura">
+    <div class="lp-mosaico">
+      <span class="lp-mancha" aria-hidden="true"></span>
+      <div class="lp-f lp-f1">
+        <Foto img={fotos[0]} prioridade sizes="(min-width: 64rem) 30rem, 70vw" larguras={LARGURAS_INTRO} proporcao={4 / 5} />
+      </div>
+      {
+        fotos[1] && (
+          <div class="lp-f lp-f2">
+            <Foto img={fotos[1]} sizes="(min-width: 64rem) 20rem, 46vw" larguras={[320, 480, 640]} proporcao={4 / 3} />
+          </div>
+        )
+      }
+      <svg class="lp-arcos" viewBox="166 62 118 166" aria-hidden="true" focusable="false">
+        <path fill="#489ed2" d="M239.58 73.19c-4.78-2.11-9.34-3.38-13.55-3.55-48.59-1.9-53.53 26.05-53.53 90.66 0 19.02 2.39 40.3 6.97 60.88-1.26-15.83-1.66-32.09-1.66-47.49 0-62.75 16.3-98.48 61.77-100.5Z" />
+        <path fill="#4076b6" d="M258.58 73.19c-4.79-2.11-9.34-3.38-13.55-3.55-48.61-1.9-53.54 26.05-53.54 90.66 0 19.02 2.4 40.3 6.98 60.88-1.26-15.83-1.67-32.09-1.67-47.49 0-62.75 16.31-98.48 61.78-100.5Z" />
+        <path fill="#a0c9e8" d="M278.53 73.33c-4.78-2.11-9.34-3.38-13.55-3.55-48.6-1.9-53.53 26.05-53.53 90.66 0 19.02 2.38 40.31 6.97 60.88-1.25-15.82-1.66-32.09-1.66-47.5 0-62.73 16.31-98.47 61.77-100.49Z" />
+      </svg>
+    </div>
+
+    <div class="lp-texto">
+      {doc.sobretitulo && <p class="sobretitulo">{doc.sobretitulo}</p>}
+      <h1>
+        {doc.titulo}
+        {doc.tituloDestaque && <span class="destaque">{doc.tituloDestaque}</span>}
+      </h1>
+      <p class="lead">{doc.respostaDireta}</p>
+      {
+        produtos.length > 1 && (
+          <nav class="lp-ancoras" aria-label={NAV[locale]}>
+            <ul>
+              {produtos.map((p) => (
+                <li>
+                  <a href={`#${p.slug}`}>
+                    <span class="lp-ancora-icone">
+                      <Icone nome={iconeProduto(p)} tamanho={22} />
+                    </span>
+                    <span>
+                      <strong>{p.titulo}</strong>
+                      <small>
+                        {ui.aPartirDe} {formatPreco(p.precoAPartirDe, locale)}
+                      </small>
+                    </span>
+                    <Icone nome="seta" tamanho={16} class="lp-ancora-seta" />
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        )
+      }
+    </div>
+  </section>
+
+  <!-- CSS das seções abaixo da abertura: no corpo, não bloqueia o desenho da primeira dobra. -->
+  <link rel="stylesheet" href={cssAbaixo} />
+  <link rel="stylesheet" href={cssLanding} />
+
+  <div class="lp-produtos">
+    {
+      produtos.map((p, i) => {
+        const [f1, f2, f3] = p.galeria;
+        const reservar = linkReserva({ produto: p.motorProdutoId, setor: p.setorMotorId, lang: locale });
+        return (
+          <section id={p.slug} class={`lp-produto ${i % 2 ? "lp-invertido" : ""}`} aria-labelledby={`titulo-${p.slug}`}>
+            <div class="container lp-produto-grade">
+              <div class="lp-produto-fotos">
+                {f1 && (
+                  <div class="lp-pf lp-pf1">
+                    <Foto formatos={["avif"]} img={f1} sizes="(min-width: 64rem) 30rem, 88vw" larguras={[360, 480, 640, 960]} proporcao={4 / 5} />
+                  </div>
+                )}
+                {f2 && (
+                  <div class="lp-pf lp-pf2">
+                    <Foto formatos={["avif"]} img={f2} sizes="(min-width: 64rem) 16rem, 44vw" larguras={[240, 360, 480]} proporcao={1} />
+                  </div>
+                )}
+                {f3 && (
+                  <div class="lp-pf lp-pf3">
+                    <Foto formatos={["avif"]} img={f3} sizes="(min-width: 64rem) 16rem, 44vw" larguras={[240, 360, 480]} proporcao={1} />
+                  </div>
+                )}
+              </div>
+
+              <div class="lp-produto-info">
+                <p class="sobretitulo">
+                  <Icone nome={iconeProduto(p)} tamanho={18} /> {doc.titulo}
+                </p>
+                <h2 id={`titulo-${p.slug}`}>{p.titulo}</h2>
+                <p class="lp-produto-texto">{p.respostaRapida}</p>
+
+                {p.destaques && p.destaques.length > 0 && (
+                  <ul class="lp-destaques">
+                    {p.destaques.map((d) => (
+                      <li>
+                        <span class="bolha">
+                          <Icone nome={d.icone} tamanho={24} />
+                        </span>
+                        {d.rotulo}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+
+                {p.inclui.length > 0 && (
+                  <div class="lp-inclui">
+                    <h3>{ui.inclui}</h3>
+                    <ul>
+                      {p.inclui.map((x) => (
+                        <li>{x}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
+                <div class="lp-reserva">
+                  <p class="lp-preco">
+                    <span>{ui.aPartirDe}</span>
+                    <strong>{formatPreco(p.precoAPartirDe, locale)}</strong>
+                    <span>{ui.unidade[p.unidadePreco]}</span>
+                  </p>
+                  <div class="lp-acoes">
+                    <a class="btn lp-btn-reservar" href={reservar} data-dl={dl({ event: "click_reservar", ecommerce: { items: [itemGa4(p, doc, i)] } })}>
+                      <Icone nome="calendario" tamanho={20} />
+                      {ui.reservar}
+                      <Icone nome="seta" tamanho={18} class="seta" />
+                    </a>
+                    <a class="btn lp-btn-whats" href={linkWhatsApp(g.whatsapp, g.whatsappMensagemPadrao)} rel="noopener" target="_blank" data-dl='{"event":"generate_lead","method":"whatsapp_landing"}'>
+                      {ui.whatsapp}
+                    </a>
+                  </div>
+                  <p class="lp-aviso">{ui.precoIndicativo}</p>
+                </div>
+              </div>
+            </div>
+          </section>
+        );
+      })
+    }
+  </div>
+
+  <div class="container secoes lp-secoes">
+    <Secoes blocos={meio} indice={indice} locale={locale} />
+    {doc.faq.length > 0 && <FaqLista itens={doc.faq} titulo={ui.faq} id="faq" />}
+    <Secoes blocos={chamadaFinal} indice={indice} locale={locale} idBase={meio.length} />
+  </div>
+</Base>
+
+<style>
+  .lp-abertura {
+    display: grid;
+    gap: var(--space-7);
+    align-items: center;
+    padding-block: var(--space-6) var(--space-8);
+  }
+  .lp-mosaico {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr 0.55fr;
+    align-items: end;
+    padding: var(--space-4) 0 var(--space-6) var(--space-4);
+  }
+  .lp-f {
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 22px 46px -24px rgb(15 39 68 / 0.55);
+  }
+  .lp-f :global(img) {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+  /* Recortes de seixo, como no mosaico da home. */
+  .lp-f1 {
+    grid-column: 1 / -1;
+    width: 78%;
+    border-radius: 30% 14% 22% 16% / 18% 14% 24% 18%;
+    transform: rotate(-2deg);
+  }
+  .lp-f2 {
+    position: absolute;
+    right: 0;
+    bottom: var(--space-3);
+    width: 46%;
+    border: 6px solid var(--color-bg);
+    border-radius: 16% 28% 18% 24% / 22% 18% 28% 16%;
+    transform: rotate(3deg);
+  }
+  .lp-mancha {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 52%;
+    height: 46%;
+    background: var(--brand-ceu);
+    border-radius: 58% 42% 46% 54% / 52% 48% 52% 48%;
+    transform: rotate(-12deg);
+  }
+  .lp-arcos {
+    position: absolute;
+    left: -0.25rem;
+    top: 50%;
+    z-index: 1;
+    width: clamp(2rem, 4vw, 3rem);
+    height: auto;
+    transform: rotate(-10deg);
+  }
+  .lp-texto h1 {
+    margin: 0 0 var(--space-5);
+    font-family: var(--font-sans);
+    font-size: clamp(2.4rem, 1.5rem + 3.4vw, 4.25rem);
+    font-weight: var(--fw-medio);
+    line-height: 1.04;
+    letter-spacing: -0.035em;
+  }
+  .destaque {
+    display: block;
+    font-weight: var(--fw-leve);
+    color: var(--brand-azul);
+  }
+  .lp-texto .lead {
+    max-width: 48ch;
+    color: var(--color-text-muted);
+  }
+  /* Menu âncora: um cartão por acomodação, com ícone e preço "a partir de". */
+  .lp-ancoras ul {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+    gap: var(--space-3);
+    margin: var(--space-6) 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  .lp-ancoras a {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    min-height: 4.25rem;
+    padding: var(--space-3) var(--space-4) var(--space-3) var(--space-3);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-pill);
+    background: var(--color-bg);
+    color: var(--brand-poco);
+    text-decoration: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+  .lp-ancoras a:hover {
+    border-color: var(--brand-azul-claro);
+    box-shadow: var(--shadow-md);
+  }
+  .lp-ancoras strong {
+    display: block;
+    font-weight: var(--fw-forte);
+  }
+  .lp-ancoras small {
+    font-size: 0.8125rem;
+    color: var(--color-text-muted);
+  }
+  .lp-ancora-icone {
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: 50%;
+    background: var(--brand-ceu);
+    color: var(--color-primary-strong);
+  }
+  .lp-ancoras :global(.lp-ancora-seta) {
+    margin-left: auto;
+    transform: rotate(90deg);
+    color: var(--color-primary-strong);
+  }
+  @media (min-width: 64rem) {
+    .lp-abertura {
+      grid-template-columns: 1fr 1fr;
+      gap: clamp(var(--space-7), 6vw, var(--space-9));
+      padding-block: var(--space-7) var(--space-9);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .lp-ancoras a {
+      transition: none;
+    }
+  }
+</style>

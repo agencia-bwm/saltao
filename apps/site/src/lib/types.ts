@@ -69,7 +69,7 @@ export interface Tabela {
 
 /* ---------- Home (layout nov/2026) ---------- */
 /** Ícones desenhados em components/Icone.astro — mesma lista do gerador de schemas do painel. */
-export const ICONES = ["folha", "sol", "cachoeira", "trilha", "familia", "escudo", "barraca", "cama", "talheres", "fogueira", "churrasqueira", "mapa", "coracao", "estrela"] as const;
+export const ICONES = ["folha", "sol", "cachoeira", "trilha", "familia", "escudo", "barraca", "cama", "talheres", "fogueira", "churrasqueira", "mapa", "coracao", "estrela", "chuveiro", "tomada", "carro", "cafe"] as const;
 export type Icone = (typeof ICONES)[number];
 export interface LinkRotulo {
   rotulo: string;
@@ -146,6 +146,8 @@ export interface Produto extends Doc {
   relacionadosIds: string[];
   avaliacaoIds: string[];
   tipoSchema: TipoSchema;
+  /** Ícones com rótulo curto (ex.: "Até 4 pessoas") — usados na seção do produto na landing. */
+  destaques?: { icone: Icone; rotulo: string }[];
   seo: Seo;
 }
 
@@ -158,6 +160,12 @@ export interface CategoriaProduto extends Doc {
   produtoIds: string[];
   faq: Faq[];
   ordemMenu: number;
+  /** Landing: produtos viram seções desta página (âncora = slug do produto), sem página própria. */
+  paginaUnica?: boolean;
+  sobretitulo?: string;
+  tituloDestaque?: string;
+  fotosIntro?: Img[];
+  secoes?: Block[];
   seo: Seo;
 }
 

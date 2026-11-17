@@ -89,7 +89,7 @@ export function noFaq(faqs: Faq[], path: string): Node | null {
   };
 }
 
-function oferta(p: Produto, path: string, locale: Locale): Node {
+function oferta(p: Produto, path: string, locale: Locale, ancora?: string): Node {
   return {
     "@type": "Offer",
     price: p.precoAPartirDe.toFixed(2),
@@ -99,13 +99,17 @@ function oferta(p: Produto, path: string, locale: Locale): Node {
     seller: { "@id": ID_ORG },
     // "a partir de": o preço exibido é o mínimo
     priceSpecification: { "@type": "UnitPriceSpecification", price: p.precoAPartirDe.toFixed(2), priceCurrency: "BRL", valueAddedTaxIncluded: true },
-    "@id": `${absoluta(path)}#oferta`,
+    "@id": `${absoluta(path)}#oferta${ancora ? `-${ancora}` : ""}`,
   };
 }
 
-/** Produto conforme tipoSchema: Product, TouristTrip, LodgingBusiness ou Campground. */
-export function noProduto(p: Produto, path: string, imagens: string[], g: Global, locale: Locale): Node {
-  const base = { "@id": `${absoluta(path)}#produto`, name: p.titulo, description: p.respostaRapida, image: imagens, url: absoluta(path) };
+/**
+ * Produto conforme tipoSchema: Product, TouristTrip, LodgingBusiness ou Campground.
+ * `ancora`: produto exibido como seção de uma landing (url = página#ancora, ids sem colisão).
+ */
+export function noProduto(p: Produto, path: string, imagens: string[], g: Global, locale: Locale, ancora?: string): Node {
+  const sufixo = ancora ? `-${ancora}` : "";
+  const base = { "@id": `${absoluta(path)}#produto${sufixo}`, name: p.titulo, description: p.respostaRapida, image: imagens, url: absoluta(path) + (ancora ? `#${ancora}` : "") };
   switch (p.tipoSchema) {
     case "LodgingBusiness":
     case "Campground":
@@ -118,12 +122,12 @@ export function noProduto(p: Produto, path: string, imagens: string[], g: Global
         parentOrganization: { "@id": ID_ORG },
         priceRange: `a partir de R$ ${p.precoAPartirDe}`,
         containsPlace: { "@type": "Accommodation", name: p.titulo, occupancy: undefined },
-        makesOffer: oferta(p, path, locale),
+        makesOffer: oferta(p, path, locale, ancora),
       };
     case "TouristTrip":
-      return { ...base, "@type": "TouristTrip", provider: { "@id": ID_ORG }, offers: oferta(p, path, locale) };
+      return { ...base, "@type": "TouristTrip", provider: { "@id": ID_ORG }, offers: oferta(p, path, locale, ancora) };
     default:
-      return { ...base, "@type": "Product", brand: { "@type": "Brand", name: g.nomeOficial }, offers: oferta(p, path, locale) };
+      return { ...base, "@type": "Product", brand: { "@type": "Brand", name: g.nomeOficial }, offers: oferta(p, path, locale, ancora) };
   }
 }
 
