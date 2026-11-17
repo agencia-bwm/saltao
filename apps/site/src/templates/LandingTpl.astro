@@ -12,7 +12,7 @@ import type { Block, Faq, Icone as NomeIcone, Produto } from "../lib/types";
 import { absoluta, linkReserva, linkWhatsApp } from "../lib/config";
 import { noFaq, noProduto, noWebPage } from "../lib/schema";
 import { dl, itemGa4 } from "../lib/tracking";
-import { formatPreco, t } from "../lib/i18n";
+import { t } from "../lib/i18n";
 import Base from "../layouts/Base.astro";
 import Foto from "../components/Foto.astro";
 import Icone from "../components/Icone.astro";
@@ -33,6 +33,8 @@ const produtos = doc.produtoIds.map((id) => indice.produto(id, locale)).filter((
 const fotos = (doc.fotosIntro?.length ? doc.fotosIntro : [doc.imagemHero]).slice(0, 2);
 const LARGURAS_INTRO = [400, 640, 900, 1200];
 const NAV: Record<string, string> = { pt: "Nesta página", en: "On this page", es: "En esta página" };
+// Valores ficam só na plataforma de reservas: aqui, só o convite para ver datas e preços lá.
+const RESERVA: Record<string, string> = { pt: "Datas disponíveis e valores você confere na reserva online.", en: "Check available dates and rates when you book online.", es: "Consulta fechas disponibles y precios en la reserva online." };
 const MAIS: Record<string, [string, string]> = { pt: ["Mais fotos", "deslize"], en: ["More photos", "swipe"], es: ["Más fotos", "desliza"] };
 const iconeProduto = (p: Produto): NomeIcone => (p.tipoSchema === "Campground" ? "barraca" : p.tipoSchema === "LodgingBusiness" ? "cama" : "estrela");
 
@@ -51,7 +53,7 @@ const nosProdutos = await Promise.all(
         return r.src.startsWith("http") ? r.src : absoluta(r.src);
       }),
     );
-    return noProduto(p, rota.path, imgs, g, locale, p.slug);
+    return noProduto(p, rota.path, imgs, g, locale, p.slug, { semPreco: true });
   }),
 );
 const dlPagina = [{ event: "view_item_list", ecommerce: { item_list_name: doc.titulo, items: produtos.map((p, i) => itemGa4(p, doc, i)) } }];
@@ -104,9 +106,7 @@ const dlPagina = [{ event: "view_item_list", ecommerce: { item_list_name: doc.ti
                     </span>
                     <span>
                       <strong>{p.titulo}</strong>
-                      <small>
-                        {ui.aPartirDe} {formatPreco(p.precoAPartirDe, locale)}
-                      </small>
+                      {p.destaques?.[0] && <small>{p.destaques[0].rotulo}</small>}
                     </span>
                     <Icone nome="seta" tamanho={16} class="lp-ancora-seta" />
                   </a>
@@ -181,11 +181,7 @@ const dlPagina = [{ event: "view_item_list", ecommerce: { item_list_name: doc.ti
                 )}
 
                 <div class="lp-reserva">
-                  <p class="lp-preco">
-                    <span>{ui.aPartirDe}</span>
-                    <strong>{formatPreco(p.precoAPartirDe, locale)}</strong>
-                    <span>{ui.unidade[p.unidadePreco]}</span>
-                  </p>
+                  <p class="lp-reserva-texto">{RESERVA[locale]}</p>
                   <div class="lp-acoes">
                     <a class="btn lp-btn-reservar" href={reservar} data-dl={dl({ event: "click_reservar", ecommerce: { items: [itemGa4(p, doc, i)] } })}>
                       <Icone nome="calendario" tamanho={20} />
@@ -196,7 +192,6 @@ const dlPagina = [{ event: "view_item_list", ecommerce: { item_list_name: doc.ti
                       {ui.whatsapp}
                     </a>
                   </div>
-                  <p class="lp-aviso">{ui.precoIndicativo}</p>
                 </div>
               </div>
             </div>

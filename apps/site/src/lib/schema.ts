@@ -89,6 +89,17 @@ export function noFaq(faqs: Faq[], path: string): Node | null {
   };
 }
 
+/** Oferta só com o link de reserva (o valor fica na plataforma). */
+function ofertaSemPreco(p: Produto, path: string, locale: Locale, ancora?: string): Node {
+  return {
+    "@type": "Offer",
+    "@id": `${absoluta(path)}#oferta${ancora ? `-${ancora}` : ""}`,
+    url: linkReserva({ produto: p.motorProdutoId, setor: p.setorMotorId, lang: locale }),
+    availability: "https://schema.org/InStock",
+    seller: { "@id": ID_ORG },
+  };
+}
+
 function oferta(p: Produto, path: string, locale: Locale, ancora?: string): Node {
   return {
     "@type": "Offer",
@@ -107,7 +118,7 @@ function oferta(p: Produto, path: string, locale: Locale, ancora?: string): Node
  * Produto conforme tipoSchema: Product, TouristTrip, LodgingBusiness ou Campground.
  * `ancora`: produto exibido como seção de uma landing (url = página#ancora, ids sem colisão).
  */
-export function noProduto(p: Produto, path: string, imagens: string[], g: Global, locale: Locale, ancora?: string): Node {
+export function noProduto(p: Produto, path: string, imagens: string[], g: Global, locale: Locale, ancora?: string, opcoes: { semPreco?: boolean } = {}): Node {
   const sufixo = ancora ? `-${ancora}` : "";
   const base = { "@id": `${absoluta(path)}#produto${sufixo}`, name: p.titulo, description: p.respostaRapida, image: imagens, url: absoluta(path) + (ancora ? `#${ancora}` : "") };
   switch (p.tipoSchema) {
@@ -120,9 +131,10 @@ export function noProduto(p: Produto, path: string, imagens: string[], g: Global
         geo: { "@type": "GeoCoordinates", latitude: g.geo.latitude, longitude: g.geo.longitude },
         telephone: g.telefone,
         parentOrganization: { "@id": ID_ORG },
-        priceRange: `a partir de R$ ${p.precoAPartirDe}`,
+        // Página sem valores visíveis (landing): sem preço no schema também — dado estruturado só do que está na página.
+        priceRange: opcoes.semPreco ? undefined : `a partir de R$ ${p.precoAPartirDe}`,
         containsPlace: { "@type": "Accommodation", name: p.titulo, occupancy: undefined },
-        makesOffer: oferta(p, path, locale, ancora),
+        makesOffer: opcoes.semPreco ? ofertaSemPreco(p, path, locale, ancora) : oferta(p, path, locale, ancora),
       };
     case "TouristTrip":
       return { ...base, "@type": "TouristTrip", provider: { "@id": ID_ORG }, offers: oferta(p, path, locale, ancora) };

@@ -140,20 +140,10 @@
   padding-top: var(--space-6);
   border-top: 1px solid var(--color-border);
 }
-.lp-preco {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: 0 var(--space-2);
+.lp-reserva-texto {
   margin: 0 0 var(--space-4);
+  font-size: var(--fs-100);
   color: var(--color-text-muted);
-}
-.lp-preco strong {
-  font-family: var(--font-display);
-  font-size: clamp(2rem, 1.6rem + 1.5vw, 2.75rem);
-  font-weight: var(--fw-leve);
-  letter-spacing: -0.03em;
-  color: var(--brand-poco);
 }
 .lp-acoes {
   display: flex;
@@ -180,11 +170,6 @@
 .lp-btn-whats:hover {
   background: var(--brand-poco);
   color: #ffffff;
-}
-.lp-aviso {
-  margin: var(--space-3) 0 0;
-  font-size: 0.8125rem;
-  color: var(--color-text-muted);
 }
 
 /* Carrossel de mais fotos no fim de cada acomodação: rolagem lateral com encaixe (sem JS). */
