@@ -838,7 +838,7 @@ const home = Object.fromEntries(
 ) as Conteudo["home"];
 
 const guiaHome: Conteudo["guiaHome"] = {
-  pt: { documentId: "guia-home", locale: "pt", updatedAt: T, titulo: "Guia da Serra do Itaqueri", sobretitulo: "Dicas da equipe", tituloDestaque: "para aproveitar a serra.", fotosIntro: [fTrilha, fCach2], respostaDireta: "Dicas, roteiros e respostas sobre cachoeiras, trilhas, camping e passeios na Serra do Itaqueri, escritos pela equipe do Saltão.", seo: seo("Guia da Serra do Itaqueri | Saltão", "Dicas e roteiros sobre cachoeiras, trilhas e camping na Serra do Itaqueri.") },
+  pt: { documentId: "guia-home", locale: "pt", updatedAt: T, titulo: "Guia da Serra do Itaqueri", sobretitulo: "Dicas da equipe", tituloDestaque: "para aproveitar a serra.", fotosIntro: [fPorDoSolLaranja, fTrilha], respostaDireta: "Dicas, roteiros e respostas sobre cachoeiras, trilhas, camping e passeios na Serra do Itaqueri, escritos pela equipe do Saltão.", seo: seo("Guia da Serra do Itaqueri | Saltão", "Dicas e roteiros sobre cachoeiras, trilhas e camping na Serra do Itaqueri.") },
 };
 
 /* ---------------- Hospedagem em página única (landing) ---------------- */
