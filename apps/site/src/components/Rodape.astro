@@ -141,6 +141,8 @@ const dias = (s: string) => s.replace(/Mo|Tu|We|Th|Fr|Sa|Su/g, (d) => DIA[locale
 
 <style>
   .rodape {
+    /* Divisórias finas e translúcidas: um fio de azul mais escuro que o fundo, sem pesar. */
+    --rp-barra: color-mix(in srgb, var(--brand-abismo) 60%, transparent);
     position: relative;
     overflow: hidden;
     margin-top: var(--space-9);
@@ -220,7 +222,7 @@ const dias = (s: string) => s.replace(/Mo|Tu|We|Th|Fr|Sa|Su/g, (d) => DIA[locale
   @media (max-width: 47.99rem) {
     .colunas > section + section {
       padding-top: var(--space-6);
-      border-top: 3px solid var(--brand-abismo);
+      border-top: 1px solid var(--rp-barra);
     }
   }
   .rp-redes li {
@@ -248,7 +250,7 @@ const dias = (s: string) => s.replace(/Mo|Tu|We|Th|Fr|Sa|Su/g, (d) => DIA[locale
   }
   .rp-topo,
   .colunas {
-    border-bottom: 3px solid var(--brand-abismo);
+    border-bottom: 1px solid var(--rp-barra);
   }
   .colunas {
     display: grid;
@@ -275,7 +277,7 @@ const dias = (s: string) => s.replace(/Mo|Tu|We|Th|Fr|Sa|Su/g, (d) => DIA[locale
       padding-left: 0;
     }
     .colunas > section + section {
-      border-left: 3px solid var(--brand-abismo);
+      border-left: 1px solid var(--rp-barra);
     }
   }
   @media (prefers-reduced-motion: reduce) {
