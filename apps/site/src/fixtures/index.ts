@@ -35,6 +35,16 @@ import fPorDoSolLaranjaSrc from "../assets/fotos/paisagem/por-do-sol-laranja-hor
 import fPocoCeuSrc from "../assets/fotos/cachoeira-saltao/cachoeira-saltao-poco-ceu-azul.jpg";
 import fPalmeiraSrc from "../assets/fotos/paisagem/por-do-sol-palmeira-vertical.jpg";
 import fQuedaLargaSrc from "../assets/fotos/cachoeira-2/cachoeira-2-queda-larga-poco.jpg";
+import fAptoAzulSrc from "../assets/fotos/hospedagem/apartamento-azul-fachada-buganvilia.jpg";
+import fAptoVerdeSrc from "../assets/fotos/hospedagem/apartamento-verde-fachada.jpg";
+import fQuartoDuasSrc from "../assets/fotos/hospedagem/apartamento-quarto-duas-camas.jpg";
+import fQuartoArSrc from "../assets/fotos/hospedagem/apartamento-quarto-ar-condicionado.jpg";
+import fCampAmigosSrc from "../assets/fotos/camping/camping-barracas-quiosque-amigos.jpg";
+import fCampQuiosqueVistaSrc from "../assets/fotos/camping/camping-barraca-quiosque-vista.jpg";
+import fCampAzulSrc from "../assets/fotos/camping/camping-barraca-azul-quiosques.jpg";
+import fCampGrandeSrc from "../assets/fotos/camping/camping-entardecer-barraca-grande.jpg";
+import fCampNoiteBarracasSrc from "../assets/fotos/camping/camping-noite-barracas-quiosque.jpg";
+import fFogueiraVSrc from "../assets/fotos/camping/fogueira-noite-vertical.jpg";
 import mapaProvisorio from "../assets/placeholder/trilha.jpg";
 
 
@@ -73,6 +83,16 @@ const fPorDoSolLaranja = img(fPorDoSolLaranjaSrc, "Céu laranja no pôr do sol s
 const fPocoCeu = img(fPocoCeuSrc, "Poço da cachoeira do Saltão sob céu azul");
 const fPalmeira = img(fPalmeiraSrc, "Palmeira em silhueta contra o céu do entardecer");
 const fQuedaLarga = img(fQuedaLargaSrc, "Queda d'água larga caindo em poço cercado de rochas e mata");
+const fAptoAzul = img(fAptoAzulSrc, "Fachada de apartamento azul com buganvília florida em primeiro plano");
+const fAptoVerde = img(fAptoVerdeSrc, "Fachada de apartamento verde com varanda, ao lado de apartamento amarelo");
+const fQuartoDuas = img(fQuartoDuasSrc, "Quarto de apartamento com cama de casal e cama de solteiro");
+const fQuartoAr = img(fQuartoArSrc, "Quarto do apartamento com cama de casal, ar-condicionado e janela");
+const fCampAmigos = img(fCampAmigosSrc, "Grupo de amigos junto a barracas e quiosque com churrasqueira na área de camping");
+const fCampQuiosqueVista = img(fCampQuiosqueVistaSrc, "Barraca sob quiosque de madeira com vista para a mata");
+const fCampAzul = img(fCampAzulSrc, "Barraca azul em primeiro plano com quiosques de telhado de barro ao fundo");
+const fCampGrande = img(fCampGrandeSrc, "Barraca grande montada no gramado ao entardecer, com palmeiras ao fundo");
+const fCampNoiteBarracas = img(fCampNoiteBarracasSrc, "Barracas montadas à noite ao lado de quiosque com churrasqueira");
+const fFogueiraV = img(fFogueiraVSrc, "Fogueira acesa à noite no parque");
 const p = (...textos: string[]): RichText => textos.map((text) => ({ type: "paragraph", children: [{ type: "text", text }] }));
 const h2 = (text: string): RichText[number] => ({ type: "heading", level: 2, children: [{ type: "text", text }] });
 const ul = (...itens: string[]): RichText[number] => ({
@@ -145,7 +165,7 @@ const produtosBase = [
     preco: 280,
     unidade: "por-noite" as const,
     schema: "LodgingBusiness" as const,
-    imgs: [fAptos, fQuarto, fBanheiro, fCafe],
+    imgs: [fAptos, fQuarto, fBanheiro, fCafe, fAptoAzul, fQuartoDuas, fAptoVerde, fQuartoAr],
     t: {
       pt: ["Apartamentos", "apartamentos", "Suítes dentro do parque para até 4 pessoas, com TV, frigobar e ventilador de teto, e acesso às áreas do day use durante a estadia. A partir de R$ 280 por noite (valor de exemplo)."],
       en: ["Rooms", "rooms", "Rooms inside the park, with breakfast and free access to the day-pass areas during your stay. From R$ 280 per night (sample price)."],
@@ -159,7 +179,7 @@ const produtosBase = [
     preco: 70,
     unidade: "por-pessoa-noite" as const,
     schema: "Campground" as const,
-    imgs: [fCampFamilia, fCampNoite, fFogueira, fCampVale],
+    imgs: [fCampFamilia, fCampNoite, fFogueira, fCampVale, fCampAmigos, fCampGrande, fCampQuiosqueVista, fCampNoiteBarracas, fCampAzul, fFogueiraV],
     t: {
       pt: ["Camping", "camping", "Área de camping com banheiros, pontos de energia e acesso à cachoeira. Cobrança por pessoa, por noite, a partir de R$ 70 (valor de exemplo)."],
       en: ["Camping", "camping", "Camping area with restrooms, power points and waterfall access. Priced per person, per night, from R$ 70 (sample price)."],
