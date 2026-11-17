@@ -10,6 +10,9 @@ import Blocos from "../components/Blocos.astro";
 import Essencia from "../components/Essencia.astro";
 import Vitrine from "../components/Vitrine.astro";
 import Experiencias from "../components/Experiencias.astro";
+import FatosHome from "../components/FatosHome.astro";
+import Galeria from "../components/Galeria.astro";
+import Chamada from "../components/Chamada.astro";
 import type { Block } from "../lib/types";
 import cssAbaixo from "../styles/home-abaixo.css?url";
 
@@ -27,7 +30,7 @@ const ctaHref = hero.cta?.tipo === "produto" && hero.cta.produtoId ? indice.link
 // Card flutuante: um produto do painel, com foto, categoria e preço "a partir de".
 // Blocos da home em sequência: os exclusivos viram componentes; os comuns vão em grupos para o Blocos.
 type Trecho = { tipo: "home"; bloco: Block } | { tipo: "comum"; blocos: Block[]; inicio: number };
-const EXCLUSIVOS = new Set(["blocks.essencia", "blocks.vitrine", "blocks.experiencias"]);
+const EXCLUSIVOS = new Set(["blocks.essencia", "blocks.vitrine", "blocks.experiencias", "blocks.fatos", "blocks.galeria", "blocks.chamada"]);
 const trechos: Trecho[] = [];
 doc.secoes.forEach((b, i) => {
   const ultimo = trechos.at(-1);
@@ -130,6 +133,9 @@ const cardCat = cardProd ? indice.categoriaProduto(cardProd.categoriaId, locale)
         if (b.__component === "blocks.essencia") return <Essencia {...b} />;
         if (b.__component === "blocks.vitrine") return <Vitrine {...b} />;
         if (b.__component === "blocks.experiencias") return <Experiencias {...b} />;
+        if (b.__component === "blocks.fatos") return <FatosHome {...b} />;
+        if (b.__component === "blocks.galeria") return <Galeria {...b} />;
+        if (b.__component === "blocks.chamada") return <Chamada {...b} indice={indice} locale={locale} />;
         return null;
       })
     }

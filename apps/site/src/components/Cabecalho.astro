@@ -171,7 +171,8 @@ const idiomas = (Object.keys(NOMES) as Locale[]).map((l) => ({ l, href: rota.alt
   .barra {
     --r-barra: 1.5rem;
     position: relative;
-    width: min(100% - 2 * var(--space-4), 92rem);
+    /* Margem lateral = raio dos cantos côncavos, senão eles passam da tela (rolagem horizontal). */
+    width: min(100% - 2 * var(--r-barra), 92rem);
     display: flex;
     align-items: center;
     gap: var(--space-4);

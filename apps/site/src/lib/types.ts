@@ -108,7 +108,9 @@ export type Block =
   | { __component: "blocks.citacao"; texto: string; autor?: string }
   | { __component: "blocks.cta-produto"; produtoId: string; textoChamada?: string }
   | { __component: "blocks.destaques-produtos"; titulo?: string; produtoIds: string[] }
-  | { __component: "blocks.fatos"; titulo?: string; itens: KV[] }
+  | { __component: "blocks.fatos"; sobretitulo?: string; titulo?: string; texto?: string; imagem?: Img; itens: KV[] }
+  | { __component: "blocks.galeria"; sobretitulo?: string; titulo: string; fotos: Img[] }
+  | { __component: "blocks.chamada"; sobretitulo?: string; titulo: string; tituloDestaque?: string; texto?: string; imagem: Img; cta: Cta; ctaSecundario?: Cta }
   | { __component: "blocks.avaliacoes"; titulo?: string; avaliacaoIds: string[] }
   | { __component: "blocks.faq"; titulo?: string; itens: Faq[] }
   | { __component: "blocks.video"; url: string; poster: Img; titulo?: string }

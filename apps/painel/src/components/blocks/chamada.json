@@ -1,0 +1,44 @@
+{
+  "collectionName": "components_blocks_chamada",
+  "info": {
+    "displayName": "Chamada final (foto de fundo)",
+    "icon": "bell"
+  },
+  "options": {},
+  "attributes": {
+    "sobretitulo": {
+      "type": "string",
+      "maxLength": 60
+    },
+    "titulo": {
+      "type": "string",
+      "required": true,
+      "maxLength": 90
+    },
+    "tituloDestaque": {
+      "type": "string",
+      "maxLength": 60
+    },
+    "texto": {
+      "type": "text",
+      "maxLength": 300
+    },
+    "imagem": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.image-alt",
+      "required": true
+    },
+    "cta": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.cta",
+      "required": true
+    },
+    "ctaSecundario": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.cta"
+    }
+  }
+}

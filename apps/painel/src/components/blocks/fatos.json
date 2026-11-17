@@ -6,9 +6,22 @@
   },
   "options": {},
   "attributes": {
+    "sobretitulo": {
+      "type": "string",
+      "maxLength": 60
+    },
     "titulo": {
       "type": "string",
       "maxLength": 90
+    },
+    "texto": {
+      "type": "text",
+      "maxLength": 300
+    },
+    "imagem": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.image-alt"
     },
     "itens": {
       "type": "component",

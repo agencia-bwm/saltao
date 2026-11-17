@@ -1,0 +1,26 @@
+---
+/** Galeria da home: fotos em recortes de seixo (mesma linguagem do mosaico da essência). CSS em styles/home-abaixo.css. */
+import type { Block } from "../lib/types";
+import Foto from "./Foto.astro";
+
+type Props = Extract<Block, { __component: "blocks.galeria" }>;
+const { sobretitulo, titulo, fotos } = Astro.props;
+// Alterna fotos altas e quadradas para o ritmo do mosaico.
+const formato = (i: number) => (i % 2 === 0 ? { proporcao: 3 / 4, cls: "alta" } : { proporcao: 1, cls: "quadrada" });
+---
+
+<section class="galeria">
+  <header class="gl-topo">
+    {sobretitulo && <p class="sobretitulo">{sobretitulo}</p>}
+    <h2>{titulo}</h2>
+  </header>
+  <ul class="gl-lista">
+    {
+      fotos.slice(0, 6).map((f, i) => (
+        <li class={`gl-foto gl-${i + 1} ${formato(i).cls}`}>
+          <Foto formatos={["avif"]} img={f} sizes="(min-width: 64rem) 16rem, 62vw" larguras={[240, 360, 480, 640]} proporcao={formato(i).proporcao} />
+        </li>
+      ))
+    }
+  </ul>
+</section>

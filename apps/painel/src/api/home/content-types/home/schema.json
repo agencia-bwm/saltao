@@ -36,8 +36,10 @@
         "blocks.destaques-produtos",
         "blocks.fatos",
         "blocks.avaliacoes",
+        "blocks.galeria",
         "blocks.texto",
         "blocks.faq",
+        "blocks.chamada",
         "blocks.cta-produto",
         "blocks.mapa-estatico"
       ],
