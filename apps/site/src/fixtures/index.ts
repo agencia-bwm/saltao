@@ -111,7 +111,7 @@ const L = {
     reservar: "Reservar",
     cats: {
       dayuse: ["Day Use", "day-use", "Passe o dia no Saltão com acesso à cachoeira, trilhas e áreas de lazer. Ingressos por pessoa, a partir de R$ 60 (valor de exemplo)."],
-      hosp: ["Hospedagem e Camping", "hospedagem", "Durma no parque: apartamentos com café da manhã e áreas de camping com estrutura. Diárias a partir de R$ 280 (valor de exemplo)."],
+      hosp: ["Hospedagem e Camping", "hospedagem", "Durma no parque: apartamentos com café da manhã e áreas de camping com estrutura."],
       quiosques: ["Churrasqueiras e Quiosques", "churrasqueiras-e-quiosques", "Reserve um quiosque ou churrasqueira para o seu grupo, com mesas e ponto de apoio. A partir de R$ 120 por dia (valor de exemplo)."],
       combos: ["Monte sua Experiência", "monte-sua-experiencia", "Combos prontos que juntam day use, hospedagem e quiosque com preço especial."],
     },
@@ -122,7 +122,7 @@ const L = {
     reservar: "Book now",
     cats: {
       dayuse: ["Day Pass", "day-pass", "Spend the day at Saltão with access to the waterfall, trails and leisure areas. Tickets per person from R$ 60 (sample price)."],
-      hosp: ["Lodging and Camping", "lodging", "Stay in the park: rooms with breakfast and equipped camping areas. Nightly rates from R$ 280 (sample price)."],
+      hosp: ["Lodging and Camping", "lodging", "Stay in the park: rooms with breakfast and equipped camping areas."],
       quiosques: ["Barbecue Kiosks", "barbecue-kiosks", "Book a kiosk or barbecue area for your group, with tables and support point. From R$ 120 per day (sample price)."],
       combos: ["Build Your Experience", "build-your-experience", "Ready-made packages combining day pass, lodging and kiosk at a special price."],
     },
@@ -133,7 +133,7 @@ const L = {
     reservar: "Reservar",
     cats: {
       dayuse: ["Pase de Día", "pase-de-dia", "Pasa el día en Saltão con acceso a la cascada, senderos y áreas de ocio. Entradas por persona desde R$ 60 (precio de ejemplo)."],
-      hosp: ["Hospedaje y Camping", "hospedaje", "Duerme en el parque: habitaciones con desayuno y áreas de camping equipadas. Noches desde R$ 280 (precio de ejemplo)."],
+      hosp: ["Hospedaje y Camping", "hospedaje", "Duerme en el parque: habitaciones con desayuno y áreas de camping equipadas."],
       quiosques: ["Quinchos y Parrillas", "quinchos-y-parrillas", "Reserva un quincho o parrilla para tu grupo, con mesas y punto de apoyo. Desde R$ 120 por día (precio de ejemplo)."],
       combos: ["Arma tu Experiencia", "arma-tu-experiencia", "Combos listos que reúnen pase de día, hospedaje y quincho con precio especial."],
     },
@@ -167,9 +167,9 @@ const produtosBase = [
     schema: "LodgingBusiness" as const,
     imgs: [fAptos, fQuarto, fBanheiro, fCafe, fAptoAzul, fQuartoDuas, fAptoVerde, fQuartoAr],
     t: {
-      pt: ["Apartamentos", "apartamentos", "Suítes dentro do parque para até 4 pessoas, com TV, frigobar e ventilador de teto, e acesso às áreas do day use durante a estadia. A partir de R$ 280 por noite (valor de exemplo)."],
-      en: ["Rooms", "rooms", "Rooms inside the park, with breakfast and free access to the day-pass areas during your stay. From R$ 280 per night (sample price)."],
-      es: ["Habitaciones", "habitaciones", "Habitaciones dentro del parque, con desayuno y acceso libre a las áreas del pase de día durante la estadía. Desde R$ 280 por noche (precio de ejemplo)."],
+      pt: ["Apartamentos", "apartamentos", "Suítes dentro do parque para até 4 pessoas, com TV, frigobar e ventilador de teto, e acesso às áreas do day use durante a estadia."],
+      en: ["Rooms", "rooms", "Rooms inside the park, with breakfast and free access to the day-pass areas during your stay."],
+      es: ["Habitaciones", "habitaciones", "Habitaciones dentro del parque, con desayuno y acceso libre a las áreas del pase de día durante la estadía."],
     },
   },
   {
@@ -181,9 +181,9 @@ const produtosBase = [
     schema: "Campground" as const,
     imgs: [fCampFamilia, fCampNoite, fFogueira, fCampVale, fCampAmigos, fCampGrande, fCampQuiosqueVista, fCampNoiteBarracas, fCampAzul, fFogueiraV],
     t: {
-      pt: ["Camping", "camping", "Área de camping com banheiros, pontos de energia e acesso à cachoeira. Cobrança por pessoa, por noite, a partir de R$ 70 (valor de exemplo)."],
-      en: ["Camping", "camping", "Camping area with restrooms, power points and waterfall access. Priced per person, per night, from R$ 70 (sample price)."],
-      es: ["Camping", "camping", "Área de camping con baños, puntos de energía y acceso a la cascada. Precio por persona, por noche, desde R$ 70 (precio de ejemplo)."],
+      pt: ["Camping", "camping", "Área de camping com banheiros, pontos de energia e acesso à cachoeira."],
+      en: ["Camping", "camping", "Camping area with restrooms, power points and waterfall access."],
+      es: ["Camping", "camping", "Área de camping con baños, puntos de energía y acceso a la cascada."],
     },
   },
   {

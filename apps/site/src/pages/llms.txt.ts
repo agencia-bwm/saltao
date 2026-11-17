@@ -13,7 +13,12 @@ export const GET: APIRoute = async () => {
 
   const prods = c.produtos
     .filter((p) => p.locale === "pt")
-    .map((p) => linha(p.titulo, idx.link("produto", p.documentId, "pt")!, `${p.respostaRapida} (${ui.aPartirDe} ${formatPreco(p.precoAPartirDe, "pt")} ${ui.unidade[p.unidadePreco]})`));
+    .map((p) => {
+      // Categorias em página única não mostram valores (ficam na plataforma de reservas): aqui também não.
+      const semPreco = idx.categoriaProduto(p.categoriaId, "pt")?.paginaUnica;
+      const preco = semPreco ? "" : ` (${ui.aPartirDe} ${formatPreco(p.precoAPartirDe, "pt")} ${ui.unidade[p.unidadePreco]})`;
+      return linha(p.titulo, idx.link("produto", p.documentId, "pt")!, `${p.respostaRapida}${preco}`);
+    });
   const cats = c.categoriasProduto.filter((x) => x.locale === "pt").map((x) => linha(x.titulo, idx.link("categoria-produto", x.documentId, "pt")!, x.respostaDireta));
   const inst = [...c.institucionais, ...c.atendimento].filter((x) => x.locale === "pt").map((x) => linha(x.titulo, idx.link("tipo" in x ? "atendimento" : "institucional", x.documentId, "pt") ?? "/", x.respostaDireta));
   const arts = c.artigos.filter((a) => a.locale === "pt").map((a) => linha(a.titulo, idx.link("artigo", a.documentId, "pt")!, a.resumo));

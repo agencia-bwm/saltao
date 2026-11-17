@@ -63,7 +63,8 @@ for (const { path, html } of paginas) {
         assert.ok(Array.isArray(n.image) && n.image.length > 0, "imagem do produto");
       }
       if (t.includes("LodgingBusiness") || t.includes("Campground")) {
-        assert.ok(n.address && n.makesOffer?.price, "hospedagem com endereço e oferta");
+        // Na landing (sem valores visíveis) a oferta traz só o link de reserva; nas demais, o preço.
+        assert.ok(n.address && (n.makesOffer?.price || n.makesOffer?.url), "hospedagem com endereço e oferta");
       }
       if (t.includes("BlogPosting") || t.includes("Article")) {
         for (const k of ["headline", "datePublished", "dateModified", "image", "author"]) assert.ok(n[k], `Article.${k}`);

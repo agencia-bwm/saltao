@@ -2,7 +2,7 @@
 import type { Rota, Indice } from "../lib/routes";
 import { noFaq, noWebPage } from "../lib/schema";
 import { linkReserva } from "../lib/config";
-import { formatPreco, t } from "../lib/i18n";
+import { t } from "../lib/i18n";
 import Base from "../layouts/Base.astro";
 import Foto from "../components/Foto.astro";
 import Icone from "../components/Icone.astro";
@@ -21,6 +21,8 @@ const faqs = doc.secoes.flatMap((b) => (b.__component === "blocks.faq" ? b.itens
 const ctaHref = hero.cta?.tipo === "produto" && hero.cta.produtoId ? indice.link("produto", hero.cta.produtoId, locale) : (hero.cta?.url ?? linkReserva({ lang: locale }));
 
 // Card flutuante: um produto do painel, com foto, categoria e preço "a partir de".
+// Sem valores no site: o preço aparece só na plataforma de reservas.
+const VER_DATAS: Record<string, string> = { pt: "Ver datas e reservar", en: "See dates and book", es: "Ver fechas y reservar" };
 const LARGURAS_HERO = [480, 760, 1080, 1440, 1600];
 const cardProd = hero.cardProdutoId ? indice.produto(hero.cardProdutoId, locale) : undefined;
 const cardHref = hero.cardProdutoId ? indice.link("produto", hero.cardProdutoId, locale) : undefined;
@@ -97,7 +99,7 @@ const cardCat = cardProd ? indice.categoriaProduto(cardProd.categoriaId, locale)
               <p class="card-texto">{cardProd.respostaRapida}</p>
               <p class="card-preco">
                 <Icone nome="calendario" tamanho={15} />
-                {ui.aPartirDe} {formatPreco(cardProd.precoAPartirDe, locale)} {ui.unidade[cardProd.unidadePreco]}
+                {VER_DATAS[locale]}
               </p>
             </div>
           </div>
