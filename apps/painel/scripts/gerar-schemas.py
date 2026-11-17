@@ -37,7 +37,7 @@ def uid(target): return {"type": "uid", "targetField": target, "required": True}
 
 PROD = "api::produto.produto"
 # Ícones desenhados no site (components/Icone.astro). Adicionar aqui e lá juntos.
-ICONES = ["folha", "sol", "cachoeira", "trilha", "familia", "escudo", "barraca", "cama", "talheres", "fogueira", "churrasqueira", "mapa", "coracao", "estrela"]
+ICONES = ["folha", "sol", "cachoeira", "trilha", "familia", "escudo", "barraca", "cama", "talheres", "fogueira", "churrasqueira", "mapa", "coracao", "estrela", "chuveiro", "tomada", "carro", "cafe"]
 
 components = {
   "shared": {
@@ -119,12 +119,17 @@ types = [
     "inclui": comp("shared.list-item", True), "naoInclui": comp("shared.list-item", True), "regras": BLOCKS,
     "capacidade": comp("shared.key-value", True), "tabelaComparativa": comp("blocks.tabela"), "faq": comp("shared.faq-item", True),
     "relacionados": rel("manyToMany", PROD), "avaliacoes": rel("manyToMany", "api::avaliacao.avaliacao"),
-    "tipoSchema": nloc(enum(["Product", "TouristTrip", "LodgingBusiness", "Campground"], True, "Product")), "seo": comp("shared.seo", req=True)},
+    "tipoSchema": nloc(enum(["Product", "TouristTrip", "LodgingBusiness", "Campground"], True, "Product")),
+    "destaques": comp("shared.icone-rotulo", True, max=6), "seo": comp("shared.seo", req=True)},
     desc="Template Produto/pacote: ingresso, acomodação, espaço, combo ou campanha."),
   ct("collectionType", "categoria-produto", "categorias-produto", "Listagem de produtos", {
     "titulo": s(True, 90), "slug": uid("titulo"), "respostaDireta": text(True, 300), "introducao": BLOCKS, "imagemHero": comp("shared.image-alt", req=True),
     "ordemProdutos": rel("manyToMany", PROD),
-    "faq": comp("shared.faq-item", True), "ordemMenu": nloc({"type": "integer", "default": 10, "min": 0}), "seo": comp("shared.seo", req=True)},
+    "faq": comp("shared.faq-item", True), "ordemMenu": nloc({"type": "integer", "default": 10, "min": 0}),
+    # Página única (landing): os produtos viram seções da própria página (sem página própria) e o menu vira link direto.
+    "paginaUnica": nloc({"type": "boolean", "default": False}), "sobretitulo": s(maxLength=60), "tituloDestaque": s(maxLength=60),
+    "fotosIntro": comp("shared.image-alt", True, max=2), "secoes": {"type": "dynamiczone", "components": BLOCOS_HOME},
+    "seo": comp("shared.seo", req=True)},
     desc="Day Use, Hospedagem e Camping, Churrasqueiras e Quiosques, Monte sua Experiência."),
   ct("collectionType", "artigo", "artigos", "Artigo do Guia", {
     "titulo": s(True, 110), "slug": uid("titulo"), "categoria": rel("manyToOne", "api::categoria-guia.categoria-guia"), "autor": rel("manyToOne", "api::autor.autor"),

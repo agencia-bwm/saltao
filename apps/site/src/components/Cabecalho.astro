@@ -37,7 +37,10 @@ if (!menu.length) {
   const so = (xs: (Link | null)[]) => xs.filter((x): x is Link => x !== null);
   // Hospedagem: a categoria (visão geral) + cada acomodação.
   const hosp = cats.find((k) => k.documentId === "cat-hosp");
-  const hospFilhos: Link[] = hosp
+  // Em página única (landing), Hospedagem vira link direto para a própria landing.
+  const hospFilhos: Link[] = hosp?.paginaUnica
+    ? [{ rotulo: hosp.titulo, href: indice.link("categoria-produto", hosp.documentId, locale)! }]
+    : hosp
     ? [
         { rotulo: ui.visaoGeral, href: indice.link("categoria-produto", hosp.documentId, locale)! },
         ...hosp.produtoIds.flatMap((id) => {

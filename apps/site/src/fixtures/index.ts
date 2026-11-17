@@ -3,7 +3,7 @@
  * Textos, preços, endereço e avaliações são PROVISÓRIOS e não devem ser publicados.
  * Em produção o conteúdo vem sempre do painel (Strapi).
  */
-import type { Conteudo, Faq, Img, Locale, RichText, Seo } from "../lib/types";
+import type { Conteudo, Faq, Icone, Img, Locale, RichText, Seo } from "../lib/types";
 import fHeroSrc from "../assets/fotos/cachoeira-saltao/cachoeira-saltao-paredao-visitantes-poco.jpg";
 import fCachMolduraSrc from "../assets/fotos/cachoeira-saltao/cachoeira-saltao-moldura-arvores.jpg";
 import fCach2Src from "../assets/fotos/cachoeira-2/cachoeira-2-queda-larga-poco.jpg";
@@ -197,6 +197,24 @@ const produtosBase = [
   },
 ];
 
+type Destaque = { icone: Icone; rotulo: string };
+const d3 = (icone: Icone, pt: string, en: string, es: string) => ({ pt: { icone, rotulo: pt }, en: { icone, rotulo: en }, es: { icone, rotulo: es } });
+const juntar = (...xs: Record<Locale, Destaque>[]) => ({ pt: xs.map((x) => x.pt), en: xs.map((x) => x.en), es: xs.map((x) => x.es) });
+const DESTAQUES: Record<string, Record<Locale, Destaque[]>> = {
+  "prod-apto": juntar(
+    d3("familia", "Até 4 pessoas", "Up to 4 guests", "Hasta 4 personas"),
+    d3("cama", "Suíte com banheiro", "En-suite room", "Suite con baño"),
+    d3("cafe", "Café da manhã", "Breakfast", "Desayuno"),
+    d3("cachoeira", "Day use incluso", "Day pass included", "Pase de día incluido"),
+  ),
+  "prod-camping": juntar(
+    d3("barraca", "Traga sua barraca", "Bring your tent", "Trae tu carpa"),
+    d3("chuveiro", "Banheiros", "Restrooms", "Baños"),
+    d3("tomada", "Pontos de energia", "Power points", "Puntos de energía"),
+    d3("cachoeira", "Acesso à cachoeira", "Waterfall access", "Acceso a la cascada"),
+  ),
+};
+
 const incluiPt = ["Acesso à cachoeira e às trilhas sinalizadas", "Estacionamento", "Banheiros e vestiários"];
 const incluiEn = ["Access to the waterfall and marked trails", "Parking", "Restrooms and changing rooms"];
 const incluiEs = ["Acceso a la cascada y senderos señalizados", "Estacionamiento", "Baños y vestuarios"];
@@ -240,6 +258,7 @@ const produtos: Conteudo["produtos"] = produtosBase.flatMap((b) =>
       relacionadosIds: produtosBase.filter((o) => o.id !== b.id).slice(0, 3).map((o) => o.id),
       avaliacaoIds: ["av-1", "av-2"],
       tipoSchema: b.schema,
+      destaques: DESTAQUES[b.id]?.[loc],
       seo: seo(`${titulo} | Saltão`, resp.slice(0, 150)),
     };
   }),
@@ -489,9 +508,9 @@ const HERO = {
   es: { sobre: "Itirapina (Brasil) · Serra do Itaqueri", titulo: "Saltão: 75 metros de cascada y", destaque: "naturaleza para bajar el ritmo.", selo: "Cascada de 75 m · 3 cascadas vistas desde el Mirante das Águas", card: "Quédate a dormir" },
 };
 const LINKS = {
-  pt: { dayuse: "/day-use/", hosp: "/hospedagem/", aptos: "/hospedagem/apartamentos/", camping: "/hospedagem/camping/", quiosques: "/churrasqueiras-e-quiosques/", cachoeira: "/cachoeira-saltao/", restaurante: "/restaurante-saltao/", conheca: "/conheca-o-saltao/", guia: "/guia/" },
-  en: { dayuse: "/en/day-pass/", hosp: "/en/lodging/", aptos: "/en/lodging/rooms/", camping: "/en/lodging/camping/", quiosques: "/en/barbecue-kiosks/", cachoeira: "/en/day-pass/", restaurante: "/en/day-pass/", conheca: "/en/day-pass/", guia: "/en/lodging/" },
-  es: { dayuse: "/es/pase-de-dia/", hosp: "/es/hospedaje/", aptos: "/es/hospedaje/habitaciones/", camping: "/es/hospedaje/camping/", quiosques: "/es/quinchos-y-parrillas/", cachoeira: "/es/pase-de-dia/", restaurante: "/es/pase-de-dia/", conheca: "/es/pase-de-dia/", guia: "/es/hospedaje/" },
+  pt: { dayuse: "/day-use/", hosp: "/hospedagem/", aptos: "/hospedagem/#apartamentos", camping: "/hospedagem/#camping", quiosques: "/churrasqueiras-e-quiosques/", cachoeira: "/cachoeira-saltao/", restaurante: "/restaurante-saltao/", conheca: "/conheca-o-saltao/", guia: "/guia/" },
+  en: { dayuse: "/en/day-pass/", hosp: "/en/lodging/", aptos: "/en/lodging/#rooms", camping: "/en/lodging/#camping", quiosques: "/en/barbecue-kiosks/", cachoeira: "/en/day-pass/", restaurante: "/en/day-pass/", conheca: "/en/day-pass/", guia: "/en/lodging/" },
+  es: { dayuse: "/es/pase-de-dia/", hosp: "/es/hospedaje/", aptos: "/es/hospedaje/#habitaciones", camping: "/es/hospedaje/#camping", quiosques: "/es/quinchos-y-parrillas/", cachoeira: "/es/pase-de-dia/", restaurante: "/es/pase-de-dia/", conheca: "/es/pase-de-dia/", guia: "/es/hospedaje/" },
 };
 
 const home = Object.fromEntries(
@@ -622,5 +641,53 @@ const home = Object.fromEntries(
 const guiaHome: Conteudo["guiaHome"] = {
   pt: { documentId: "guia-home", locale: "pt", updatedAt: T, titulo: "Guia da Serra do Itaqueri", respostaDireta: "Dicas, roteiros e respostas sobre cachoeiras, trilhas, camping e passeios na Serra do Itaqueri, escritos pela equipe do Saltão.", seo: seo("Guia da Serra do Itaqueri | Saltão", "Dicas e roteiros sobre cachoeiras, trilhas e camping na Serra do Itaqueri.") },
 };
+
+/* ---------------- Hospedagem em página única (landing) ---------------- */
+for (const c of categoriasProduto) {
+  if (c.documentId !== "cat-hosp") continue;
+  const loc = c.locale;
+  Object.assign(c, {
+    paginaUnica: true,
+    sobretitulo: tr(loc, "Durma no parque", "Stay in the park", "Duerme en el parque"),
+    tituloDestaque: tr(loc, "acorde no meio da mata.", "wake up in the forest.", "despierta en el bosque."),
+    fotosIntro: [fCampEntardecer, fAptosVA],
+    faq: tr(
+      loc,
+      [faq("Preciso reservar com antecedência?", "Recomendamos reservar online, principalmente em feriados e fins de semana, para garantir a vaga."), faq("A hospedagem inclui o day use?", "Sim, quem se hospeda aproveita as áreas do day use durante a estadia (texto de exemplo)."), faq("Posso levar meu animal de estimação?", "Regras sobre animais a confirmar (texto de exemplo).")],
+      [faq("Do I need to book in advance?", "We recommend booking online, especially on holidays and weekends, to secure your spot.")],
+      [faq("¿Necesito reservar con anticipación?", "Recomendamos reservar en línea, sobre todo en feriados y fines de semana, para asegurar tu lugar.")],
+    ),
+    secoes: [
+      {
+        __component: "blocks.experiencias" as const,
+        sobretitulo: tr(loc, "Durante a estadia", "During your stay", "Durante la estadía"),
+        titulo: tr(loc, "O parque inteiro para você", "The whole park for you", "Todo el parque para ti"),
+        itens: [
+          { imagem: fTrilha, icone: "trilha" as const, titulo: tr(loc, "Cachoeiras e trilhas", "Waterfalls and trails", "Cascadas y senderos"), texto: tr(loc, "Comece o dia no poço da cachoeira de 75 m.", "Start the day at the 75 m waterfall pool.", "Empieza el día en la poza de la cascada de 75 m."), link: LINKS[loc].cachoeira },
+          { imagem: fPorcao, icone: "talheres" as const, titulo: tr(loc, "Restaurante", "Restaurant", "Restaurante"), texto: tr(loc, "Comida caseira sem precisar sair do parque.", "Home-style food without leaving the park.", "Comida casera sin salir del parque."), link: LINKS[loc].restaurante },
+          { imagem: fFogueira, icone: "fogueira" as const, titulo: tr(loc, "Noites de fogueira", "Campfire nights", "Noches de fogata"), texto: tr(loc, "Roda de conversa e céu estrelado.", "Good company under starry skies.", "Charla y cielo estrellado."), link: LINKS[loc].camping },
+          { imagem: fPorDoSol, icone: "sol" as const, titulo: tr(loc, "Pôr do sol", "Sunset", "Atardecer"), texto: tr(loc, "O fim de tarde mais bonito da serra.", "The most beautiful evening in the hills.", "El atardecer más lindo de la sierra."), link: LINKS[loc].conheca },
+        ],
+      },
+      { __component: "blocks.avaliacoes" as const, titulo: tr(loc, "Quem dormiu no parque recomenda", "What guests say", "Lo que dicen los huéspedes"), avaliacaoIds: ["av-1", "av-2", "av-3", "av-4"] },
+      {
+        __component: "blocks.galeria" as const,
+        sobretitulo: tr(loc, "Da manhã à noite", "From morning to night", "De la mañana a la noche"),
+        titulo: tr(loc, "Como é ficar no Saltão", "What staying at Saltão feels like", "Cómo es quedarse en Saltão"),
+        fotos: [fCampNoite, fPocoCeu, fQuarto, fSlack, fPorDoSolLaranja],
+      },
+      {
+        __component: "blocks.chamada" as const,
+        sobretitulo: tr(loc, "Sua noite no parque", "Your night in the park", "Tu noche en el parque"),
+        titulo: tr(loc, "Escolha a data e venha dormir", "Pick a date and come stay", "Elige la fecha y ven a dormir"),
+        tituloDestaque: tr(loc, "perto da cachoeira.", "near the waterfall.", "cerca de la cascada."),
+        texto: tr(loc, "Apartamentos e camping com reserva online.", "Rooms and camping booked online.", "Habitaciones y camping con reserva online."),
+        imagem: fQuedaLarga,
+        cta: { rotulo: L[loc].reservar, tipo: "link" as const, url: "https://reservas.saltao.com.br/reservar" },
+        ctaSecundario: { rotulo: tr(loc, "Falar no WhatsApp", "Chat on WhatsApp", "Hablar por WhatsApp"), tipo: "whatsapp" as const },
+      },
+    ],
+  });
+}
 
 export const fixtures: Conteudo = { global, home, guiaHome, produtos, categoriasProduto, artigos, categoriasGuia, autores, avaliacoes, institucionais, atendimento };

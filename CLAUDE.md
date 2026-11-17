@@ -33,6 +33,7 @@ Cores do logo oficial (`packages/ui/marca/saltao-logo-original.pdf`): azul Salt�
 
 ## Templates e campos
 7 templates (`apps/site/src/templates`): Home, Listagem de produtos, Produto/pacote, Listagem do blog, Artigo, Institucional por blocos, FAQ/Contato. Cada campo do painel = um bloco visual. Rotas montadas em `src/lib/routes.ts` a partir do painel (slugs traduzidos). A build falha se houver URL duplicada.
+- **Landing de categoria (página única):** categoria com `paginaUnica` (ex.: Hospedagem) vira uma landing (`LandingTpl`, rota própria em `pages/[categoria]/` e `pages/[idioma]/[categoria]/`): abertura com até 2 fotos, H1 + destaque, resposta direta e menu âncora; uma seção por produto (âncora = slug, fotos, `destaques` com ícone, o que inclui, preço "a partir de", Reservar direto na plataforma); depois `secoes` (mesmos blocos visuais da home, via `components/Secoes.astro`) e FAQ. Produtos dessa categoria não têm página própria: `indice.link("produto")` devolve `/categoria/#slug` e o schema de cada produto fica na landing. CSS: abertura no template; seções em `styles/landing.css` + `styles/home-abaixo.css`, no corpo.
 - Menu: `Global.menuPrincipal`; item com `subitens` vira grupo com submenu (`<details name>` exclusivo, sem JS). Sem menu no painel, `Cabecalho.astro` monta 5 grupos: O Saltão, Experiências, Hospedagem, Guia, Atendimento.
 
 ## SEO / GEO / AEO

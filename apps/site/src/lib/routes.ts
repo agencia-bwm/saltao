@@ -75,6 +75,8 @@ export function montarIndice(c: Conteudo): Indice {
   const avaliacoes = new Map(c.avaliacoes.map((a) => [a.documentId, a]));
 
   const rotas: Rota[] = [];
+  /** Produtos de categorias em página única → caminho da landing com âncora. */
+  const ancoras = new Map<string, string>();
 
   for (const locale of LOCALES) {
     const ui = t(locale);
@@ -102,6 +104,11 @@ export function montarIndice(c: Conteudo): Indice {
       const cat = cats.get(k(prod.categoriaId, locale));
       if (!cat) throw new Error(`Produto "${prod.titulo}" (${locale}) sem categoria publicada neste idioma.`);
       const catPath = join(locale, cat.slug);
+      // Categoria em página única: o produto é uma seção da landing (âncora = slug), sem página própria.
+      if (cat.paginaUnica) {
+        ancoras.set(`prod:${prod.documentId}|${locale}`, `${catPath}#${prod.slug}`);
+        continue;
+      }
       const path = join(locale, cat.slug, prod.slug);
       rotas.push({
         kind: "produto",
@@ -205,7 +212,7 @@ export function montarIndice(c: Conteudo): Indice {
   }
 
   const prefixoKind: Record<Rota["kind"], string> = { home: "home", "categoria-produto": "cat", produto: "prod", guia: "guia", artigo: "art", institucional: "inst", atendimento: "at" };
-  const porChaveLocale = new Map(rotas.map((r) => [`${r.chave}|${r.locale}`, r.path]));
+  const porChaveLocale = new Map([...rotas.map((r) => [`${r.chave}|${r.locale}`, r.path] as const), ...ancoras]);
 
   return {
     conteudo: c,
@@ -217,4 +224,9 @@ export function montarIndice(c: Conteudo): Indice {
     avaliacao: (id) => avaliacoes.get(id),
     link: (kind, id, l) => porChaveLocale.get(`${prefixoKind[kind]}:${id}|${l}`),
   };
+}
+
+/** Rotas de categorias em página única (landing) — geradas por pages/[categoria]/ e pages/[idioma]/[categoria]/. */
+export function rotasLanding(idx: Indice) {
+  return idx.rotas.filter((r): r is Extract<Rota, { kind: "categoria-produto" }> => r.kind === "categoria-produto" && !!r.doc.paginaUnica);
 }

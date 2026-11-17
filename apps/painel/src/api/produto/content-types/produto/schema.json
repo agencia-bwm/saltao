@@ -219,6 +219,17 @@
         }
       }
     },
+    "destaques": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.icone-rotulo",
+      "max": 6,
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
     "seo": {
       "type": "component",
       "repeatable": false,

@@ -1,8 +1,8 @@
 de,para
 # RASCUNHO a partir do menu do site atual (13/11/2026). Confirmar e completar com o crawl + export do Search Console (fase 2).
 # Mantidas com a mesma URL (sem 301): /cachoeira-saltao/ e /restaurante-saltao/.
-/camping/,/hospedagem/camping/
-/apartamentos/,/hospedagem/apartamentos/
+/camping/,/hospedagem/
+/apartamentos/,/hospedagem/
 /contato/,/duvidas-e-contato/
 /pacotes/consciencia-negra/,/monte-sua-experiencia/
 /pacotes/reveillon/,/monte-sua-experiencia/

@@ -95,6 +95,66 @@
         }
       }
     },
+    "paginaUnica": {
+      "type": "boolean",
+      "default": false,
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "sobretitulo": {
+      "type": "string",
+      "maxLength": 60,
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "tituloDestaque": {
+      "type": "string",
+      "maxLength": 60,
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "fotosIntro": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.image-alt",
+      "max": 2,
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "secoes": {
+      "type": "dynamiczone",
+      "components": [
+        "blocks.essencia",
+        "blocks.vitrine",
+        "blocks.experiencias",
+        "blocks.destaques-produtos",
+        "blocks.fatos",
+        "blocks.avaliacoes",
+        "blocks.galeria",
+        "blocks.texto",
+        "blocks.faq",
+        "blocks.chamada",
+        "blocks.cta-produto",
+        "blocks.mapa-estatico"
+      ],
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
     "seo": {
       "type": "component",
       "repeatable": false,
