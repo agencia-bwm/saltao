@@ -33,8 +33,10 @@ interface Props {
   dlPagina?: Record<string, unknown>[];
   /** Imagem LCP pedida já no <head> (AVIF, mesmas URLs do <Foto prioridade>): o navegador não espera o HTML chegar até ela. */
   preload?: { img: Img; larguras: number[]; sizes: string; proporcao?: number };
+  /** false: a página desenha as migalhas (ex.: dentro do hero); o BreadcrumbList continua no schema. */
+  migalhasNoTopo?: boolean;
 }
-const { locale, path, alternates, breadcrumbs, seo, indice, imagem, ogTipo = "website", jsonld = [], dlPagina = [], preload } = Astro.props;
+const { locale, path, alternates, breadcrumbs, seo, indice, imagem, ogTipo = "website", jsonld = [], dlPagina = [], preload, migalhasNoTopo = true } = Astro.props;
 const pre = preload ? await getImage({ src: preload.img.src as ImageMetadata, ...medidas(preload.img, preload.larguras, preload.proporcao), fit: preload.proporcao ? "cover" : undefined, format: "avif", quality: QUALIDADE.prioridade }) : null;
 const ui = t(locale);
 const g = indice.conteudo.global[locale] ?? indice.conteudo.global.pt;
@@ -108,7 +110,7 @@ const privacidade = indice.link("institucional", "inst-privacidade", locale) ?? 
   <body>
     <a class="skip-link" href="#conteudo">{ui.pularConteudo}</a>
     <Cabecalho rota={{ locale, path, alternates }} indice={indice} />
-    <Migalhas itens={breadcrumbs} />
+    {migalhasNoTopo && <Migalhas itens={breadcrumbs} />}
     <main id="conteudo">
       <slot />
     </main>

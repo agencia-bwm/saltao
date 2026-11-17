@@ -2,13 +2,15 @@
 import type { Migalha } from "../lib/routes";
 interface Props {
   itens: Migalha[];
+  /** Texto branco, para usar sobre foto escura. */
+  claro?: boolean;
 }
-const { itens } = Astro.props;
+const { itens, claro = false } = Astro.props;
 ---
 
 {
   itens.length > 1 && (
-    <nav aria-label="Breadcrumb" class="migalhas container">
+    <nav aria-label="Breadcrumb" class:list={["migalhas", { container: !claro, claro }]}>
       <ol>
         {itens.map((m, i) =>
           i === itens.length - 1 ? (
@@ -25,6 +27,15 @@ const { itens } = Astro.props;
 }
 
 <style>
+  .claro,
+  .claro a,
+  .claro li {
+    color: var(--color-on-deep);
+  }
+  .migalhas.claro {
+    padding-top: 0;
+    margin-bottom: var(--space-5);
+  }
   .migalhas {
     font-size: var(--fs-100);
     padding-top: var(--space-4);
