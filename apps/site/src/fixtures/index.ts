@@ -338,6 +338,8 @@ artigos[0].relacionadosIds = ["art-3", "art-2"];
 const avaliacoes: Conteudo["avaliacoes"] = [
   { documentId: "av-1", nomeAutor: "Visitante de exemplo", nota: 5, texto: "Avaliação de exemplo para testar o layout. Será substituída por avaliações reais com link da fonte.", data: "2026-10-01", fonte: "Google", urlFonte: "https://www.google.com/maps" },
   { documentId: "av-2", nomeAutor: "Outro visitante de exemplo", nota: 4, texto: "Segundo texto de exemplo para o bloco de avaliações em destaque.", data: "2026-09-15", fonte: "TripAdvisor", urlFonte: "https://www.tripadvisor.com.br/" },
+  { documentId: "av-3", nomeAutor: "Terceiro visitante de exemplo", nota: 5, texto: "Terceiro texto de exemplo, no lugar de uma avaliação real sobre a cachoeira e o day use.", data: "2026-08-30", fonte: "Google", urlFonte: "https://www.google.com/maps" },
+  { documentId: "av-4", nomeAutor: "Quarto visitante de exemplo", nota: 5, texto: "Quarto texto de exemplo, no lugar de uma avaliação real sobre o camping e os quiosques.", data: "2026-08-12", fonte: "Google", urlFonte: "https://www.google.com/maps" },
 ];
 
 /* ---------------- Páginas institucionais ---------------- */
@@ -587,7 +589,7 @@ const home = Object.fromEntries(
               { chave: tr(loc, "churrasqueiras", "barbecue grills", "parrillas"), valor: "102" },
             ],
           },
-          { __component: "blocks.avaliacoes" as const, titulo: tr(loc, "Quem visitou recomenda", "What visitors say", "Lo que dicen los visitantes"), avaliacaoIds: ["av-1", "av-2"] },
+          { __component: "blocks.avaliacoes" as const, titulo: tr(loc, "Quem visitou recomenda", "What visitors say", "Lo que dicen los visitantes"), avaliacaoIds: ["av-1", "av-2", "av-3", "av-4"] },
           {
             __component: "blocks.galeria" as const,
             sobretitulo: tr(loc, "Por dentro do parque", "Inside the park", "Dentro del parque"),
