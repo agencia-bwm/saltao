@@ -69,7 +69,7 @@ export interface Tabela {
 
 /* ---------- Home (layout nov/2026) ---------- */
 /** Ícones desenhados em components/Icone.astro — mesma lista do gerador de schemas do painel. */
-export const ICONES = ["folha", "sol", "cachoeira", "trilha", "familia", "escudo", "barraca", "cama", "talheres", "fogueira", "churrasqueira", "mapa", "coracao", "estrela", "chuveiro", "tomada", "carro", "cafe"] as const;
+export const ICONES = ["folha", "sol", "cachoeira", "trilha", "familia", "escudo", "barraca", "cama", "talheres", "fogueira", "churrasqueira", "mapa", "coracao", "estrela", "chuveiro", "tomada", "carro", "cafe", "mensagem", "duvida"] as const;
 export type Icone = (typeof ICONES)[number];
 export interface LinkRotulo {
   rotulo: string;
@@ -117,6 +117,8 @@ export type Block =
       icone?: Icone;
       texto: string;
       fotos: Img[];
+      /** Link do Google Maps: mostra o cartão de mapa no lugar das fotos. */
+      linkMapa?: string;
       destaques: { icone: Icone; rotulo: string }[];
       listaTitulo?: string;
       lista?: string[];
@@ -243,10 +245,15 @@ export interface PaginaAtendimento extends Doc {
   titulo: string;
   slug: string;
   respostaDireta: string;
-  tipo: "faq-contato" | "minha-reserva";
+  /** "central" = landing de Atendimento: Fale conosco, Dúvidas, Minha reserva e as seções (ex.: Como chegar). */
+  tipo: "faq-contato" | "minha-reserva" | "central";
   grupos: { tituloGrupo: string; itens: Faq[] }[];
   mostrarFormulario: boolean;
   textoConsentimento: RichText;
+  sobretitulo?: string;
+  tituloDestaque?: string;
+  fotosIntro?: Img[];
+  secoes?: Block[];
   seo: Seo;
 }
 
@@ -259,6 +266,9 @@ export interface Home extends Doc {
 export interface GuiaHome extends Doc {
   titulo: string;
   respostaDireta: string;
+  sobretitulo?: string;
+  tituloDestaque?: string;
+  fotosIntro?: Img[];
   seo: Seo;
 }
 

@@ -1,0 +1,16 @@
+---
+/** Guia em português (/guia/): listagens (GuiaTpl, no padrão das landings) e artigos. Rota própria para o CSS do Guia não ir para as outras páginas. */
+import type { GetStaticPaths } from "astro";
+import { indice } from "../../lib/cms";
+import { rotasGuia } from "../../lib/routes";
+import GuiaTpl from "../../templates/GuiaTpl.astro";
+import ArtigoTpl from "../../templates/ArtigoTpl.astro";
+
+export const getStaticPaths = (async () => rotasGuia(await indice(), "pt")) satisfies GetStaticPaths;
+
+const idx = await indice();
+const rota = idx.rotas.find((r) => r.chave === Astro.props.chave && r.locale === "pt")!;
+---
+
+{rota.kind === "guia" && <GuiaTpl rota={rota} indice={idx} />}
+{rota.kind === "artigo" && <ArtigoTpl rota={rota} indice={idx} />}

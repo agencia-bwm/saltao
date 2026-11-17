@@ -4,22 +4,20 @@
  * Assim os slugs traduzidos vêm do Strapi e a build falha se houver URL duplicada.
  * A home tem rota própria (pages/index.astro e pages/[idioma]/index.astro): o CSS dela,
  * mais pesado, fica só na home em vez de entrar inline em todas as páginas. Pelo mesmo motivo, as
- * categorias em página única (landing) têm rota própria: pages/[categoria]/ e pages/[idioma]/[categoria]/.
+ * landings e o Guia têm rota própria (pages/guia/…); as: pages/[categoria]/ e pages/[idioma]/[categoria]/.
  */
 import type { GetStaticPaths } from "astro";
 import { indice } from "../lib/cms";
-import { ehLanding } from "../lib/routes";
+import { ehGuia, ehLanding } from "../lib/routes";
 import type { Rota } from "../lib/routes";
 import ListagemTpl from "../templates/ListagemTpl.astro";
 import ProdutoTpl from "../templates/ProdutoTpl.astro";
-import GuiaTpl from "../templates/GuiaTpl.astro";
-import ArtigoTpl from "../templates/ArtigoTpl.astro";
 import InstitucionalTpl from "../templates/InstitucionalTpl.astro";
 import AtendimentoTpl from "../templates/AtendimentoTpl.astro";
 
 export const getStaticPaths = (async () => {
   const idx = await indice();
-  return idx.rotas.filter((rota) => rota.kind !== "home" && !ehLanding(rota)).map((rota) => ({
+  return idx.rotas.filter((rota) => rota.kind !== "home" && !ehLanding(rota) && !ehGuia(rota)).map((rota) => ({
     params: { path: rota.path.replace(/^\/|\/$/g, "") || undefined },
     props: { chave: rota.chave, locale: rota.locale },
   }));
@@ -32,7 +30,5 @@ const rota = idx.rotas.find((r) => r.chave === chave && r.locale === locale) as 
 
 {rota.kind === "categoria-produto" && <ListagemTpl rota={rota} indice={idx} />}
 {rota.kind === "produto" && <ProdutoTpl rota={rota} indice={idx} />}
-{rota.kind === "guia" && <GuiaTpl rota={rota} indice={idx} />}
-{rota.kind === "artigo" && <ArtigoTpl rota={rota} indice={idx} />}
 {rota.kind === "institucional" && <InstitucionalTpl rota={rota} indice={idx} />}
 {rota.kind === "atendimento" && <AtendimentoTpl rota={rota} indice={idx} />}

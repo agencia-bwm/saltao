@@ -1,0 +1,94 @@
+---
+/** Formulário de contato (envia para a plataforma). LGPD: consentimento não pré-marcado + link da política; honeypot anti-spam. */
+import type { Locale, RichText as RT } from "../lib/types";
+import { RESERVAS_URL } from "../lib/config";
+import { t } from "../lib/i18n";
+import RichText from "./RichText.astro";
+
+interface Props {
+  locale: Locale;
+  origem: string;
+  consentimento: RT;
+  privacidade?: string;
+  tituloPrivacidade: string;
+}
+const { locale, origem, consentimento, privacidade, tituloPrivacidade } = Astro.props;
+const ui = t(locale);
+---
+
+<form class="form" method="post" action={`${RESERVAS_URL}/api/contato`}>
+  <input type="hidden" name="lang" value={locale} />
+  <input type="hidden" name="origem" value={origem} />
+  {/* honeypot anti-spam: escondido de pessoas, bots preenchem */}
+  <div class="hp" aria-hidden="true">
+    <label>
+      Website <input name="website" tabindex="-1" autocomplete="off" />
+    </label>
+  </div>
+  <label>
+    {ui.nome}
+    <input name="nome" required autocomplete="name" maxlength="120" />
+  </label>
+  <label>
+    {ui.email}
+    <input name="email" type="email" required autocomplete="email" maxlength="160" />
+  </label>
+  <label>
+    {ui.telefone}
+    <input name="telefone" type="tel" autocomplete="tel" maxlength="30" />
+  </label>
+  <label>
+    {ui.mensagem}
+    <textarea name="mensagem" required rows="5" maxlength="2000"></textarea>
+  </label>
+  <label class="consentimento">
+    <input type="checkbox" name="consentimento" value="sim" required />
+    <span>
+      <RichText conteudo={consentimento} />
+      {privacidade && <a href={privacidade}>{tituloPrivacidade}</a>}
+    </span>
+  </label>
+  <button class="btn btn-reservar" type="submit" data-dl='{"event":"generate_lead","method":"formulario"}'>
+    {ui.enviar}
+  </button>
+</form>
+
+<style>
+  .form {
+    display: grid;
+    gap: var(--space-4);
+  }
+  .form label {
+    display: grid;
+    gap: var(--space-1);
+    font-weight: 600;
+  }
+  input,
+  textarea {
+    font: inherit;
+    padding: var(--space-3);
+    border: 1px solid var(--color-text-muted);
+    border-radius: var(--radius-sm);
+    min-height: 44px;
+    background: var(--color-bg);
+  }
+  .consentimento {
+    grid-template-columns: auto 1fr;
+    align-items: start;
+    font-weight: 400 !important;
+    font-size: var(--fs-100);
+  }
+  .consentimento input {
+    min-height: 0;
+    width: 1.25rem;
+    height: 1.25rem;
+    margin-top: 0.2rem;
+  }
+  .consentimento :global(p) {
+    margin: 0 0 var(--space-1);
+  }
+  .hp {
+    position: absolute;
+    left: -9999px;
+  }
+</style>

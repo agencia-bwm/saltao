@@ -1,0 +1,163 @@
+---
+/**
+ * Cartão de localização (fachada do mapa): fundo azul-poço com curvas de nível, pino e chamada.
+ * Sem iframe e sem JS (regra: mapa nunca embutido no carregamento): o clique abre o Google Maps em nova aba,
+ * então nada de cookies de terceiros na página. Usado no setor "Como chegar" (campo linkMapa do blocks.setor).
+ */
+import type { Locale } from "../lib/types";
+import Icone from "./Icone.astro";
+
+interface Props {
+  href: string;
+  nome: string;
+  local: string;
+  locale: Locale;
+}
+const { href, nome, local, locale } = Astro.props;
+const T: Record<Locale, { abrir: string; nota: string; maps: string }> = {
+  pt: { abrir: "Clique para abrir o mapa", nota: "O Google Maps abre em uma nova aba, com a rota até o parque.", maps: "Abrir no Google Maps" },
+  en: { abrir: "Click to open the map", nota: "Google Maps opens in a new tab with directions to the park.", maps: "Open in Google Maps" },
+  es: { abrir: "Haz clic para abrir el mapa", nota: "Google Maps se abre en una nueva pestaña con la ruta al parque.", maps: "Abrir en Google Maps" },
+};
+const tx = T[locale];
+---
+
+<a class="mc" href={href} target="_blank" rel="noopener" data-dl='{"event":"click_directions","method":"mapa"}' aria-label={`${tx.maps}: ${nome}, ${local}`}>
+  <svg class="mc-curvas" viewBox="0 0 620 464" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">
+    <g fill="none" stroke="currentColor" stroke-width="1.2">
+      <path d="M0 30C90 10 150 60 250 40S420-5 520 30 600 20 620 10" />
+      <path d="M0 80C80 60 160 110 260 85S430 40 530 75 600 70 620 60" />
+      <path d="M0 135C70 110 170 160 270 130S420 95 500 130 590 135 620 120" />
+      <path d="M0 330C80 300 150 360 250 340S390 300 470 330 580 380 620 360" />
+      <path d="M0 395C90 370 170 420 270 400S430 360 520 395 590 420 620 410" />
+      <path d="M0 450C100 430 180 470 280 455S440 420 540 450 600 460 620 455" />
+      <ellipse cx="440" cy="270" rx="200" ry="120" />
+      <ellipse cx="440" cy="270" rx="140" ry="82" />
+      <ellipse cx="440" cy="270" rx="80" ry="46" />
+      <path d="M0 200C60 180 110 230 170 215S240 170 260 200" />
+      <path d="M0 260C50 245 100 290 160 280S230 245 240 270" />
+    </g>
+  </svg>
+  <span class="mc-centro">
+    <span class="mc-pino"><Icone nome="pin" tamanho={30} /></span>
+    <span class="mc-botao">{tx.abrir}</span>
+    <span class="mc-nota">{tx.nota}</span>
+  </span>
+  <span class="mc-rodape">
+    <span class="mc-nome"><strong>{nome}</strong><small>{local}</small></span>
+    <span class="mc-maps">{tx.maps} <Icone nome="seta" tamanho={16} /></span>
+  </span>
+</a>
+
+<style>
+  .mc {
+    position: relative;
+    isolation: isolate;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-width: 0;
+    min-height: 22rem;
+    overflow: hidden;
+    padding: var(--space-5);
+    border-radius: var(--radius-lg) var(--radius-arco) var(--radius-lg) var(--radius-lg);
+    background: var(--brand-poco);
+    color: var(--color-on-deep);
+    text-decoration: none;
+    box-shadow: 0 22px 46px -26px rgb(15 39 68 / 0.6);
+  }
+  @media (min-width: 40rem) {
+    .mc {
+      aspect-ratio: 4 / 3;
+    }
+  }
+  .mc-curvas {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    width: 100%;
+    height: 100%;
+    color: var(--brand-azul-claro);
+    opacity: 0.35;
+    transition: opacity 0.3s ease;
+  }
+  .mc:hover .mc-curvas {
+    opacity: 0.5;
+  }
+  .mc-centro {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-4);
+    text-align: center;
+  }
+  .mc-pino {
+    display: grid;
+    place-items: center;
+    width: 4.5rem;
+    height: 4.5rem;
+    border-radius: var(--radius-md);
+    background: var(--color-primary);
+    color: var(--color-on-primary);
+    /* Dois halos em degrau, como na referência. */
+    box-shadow:
+      0 0 0 0.75rem color-mix(in srgb, var(--color-primary) 35%, transparent),
+      0 0 0 1.5rem color-mix(in srgb, var(--color-primary) 18%, transparent);
+    margin-bottom: var(--space-3);
+  }
+  .mc-botao {
+    padding: var(--space-3) var(--space-5);
+    border: 1px solid color-mix(in srgb, var(--color-on-deep) 55%, transparent);
+    border-radius: var(--radius-md);
+    background: color-mix(in srgb, var(--color-on-deep) 14%, transparent);
+    font-weight: var(--fw-forte);
+    font-size: var(--fs-300);
+    transition: background-color 0.2s ease;
+  }
+  .mc:hover .mc-botao {
+    background: color-mix(in srgb, var(--color-on-deep) 24%, transparent);
+  }
+  .mc-nota {
+    max-width: 24rem;
+    font-size: var(--fs-100);
+    color: var(--color-on-deep-muted);
+  }
+  .mc-rodape {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: var(--space-4);
+    flex-wrap: wrap;
+  }
+  .mc-nome {
+    display: grid;
+    line-height: 1.2;
+  }
+  .mc-nome strong {
+    font-size: var(--fs-300);
+  }
+  .mc-nome small {
+    color: var(--brand-azul-claro);
+    font-weight: var(--fw-forte);
+    letter-spacing: 0.04em;
+  }
+  .mc-maps {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-weight: var(--fw-forte);
+    font-size: var(--fs-100);
+  }
+  .mc:focus-visible {
+    outline: 3px solid var(--color-focus);
+    outline-offset: 4px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .mc-curvas,
+    .mc-botao {
+      transition: none;
+    }
+  }
+</style>

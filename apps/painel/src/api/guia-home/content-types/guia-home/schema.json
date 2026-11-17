@@ -36,6 +36,35 @@
         }
       }
     },
+    "sobretitulo": {
+      "type": "string",
+      "maxLength": 60,
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "tituloDestaque": {
+      "type": "string",
+      "maxLength": 60,
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "fotosIntro": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.image-alt",
+      "max": 2,
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
     "seo": {
       "type": "component",
       "repeatable": false,

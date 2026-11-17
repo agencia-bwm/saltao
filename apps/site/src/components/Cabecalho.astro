@@ -34,7 +34,6 @@ if (!menu.length) {
     const x = cats.find((k) => k.documentId === id);
     return x ? { rotulo: x.titulo, href: indice.link("categoria-produto", x.documentId, locale)! } : null;
   };
-  const so = (xs: (Link | null)[]) => xs.filter((x): x is Link => x !== null);
   // Hospedagem: a categoria (visão geral) + cada acomodação.
   const hosp = cats.find((k) => k.documentId === "cat-hosp");
   // Em página única (landing), Hospedagem vira link direto para a própria landing.
@@ -58,7 +57,7 @@ if (!menu.length) {
     hosp ? { rotulo: hosp.titulo.split(/\s+(e|and|y)\s+/)[0], filhos: hospFilhos } : { rotulo: "", filhos: [] },
     direto(pagina("institucional", "inst-estrutura")),
     ...(indice.porPath.has(guiaPath(locale)) ? [{ rotulo: ui.guiaCurto, href: guiaPath(locale), filhos: [] }] : []),
-    { rotulo: ui.grupoAtendimento, filhos: so([pagina("atendimento", "at-faq"), pagina("institucional", "inst-como-chegar"), pagina("atendimento", "at-minha-reserva")]) },
+    direto(pagina("atendimento", "at-central"), ui.grupoAtendimento),
   ];
   // Grupo com um só filho vira link direto.
   menu = grupos.filter((x) => x.href || x.filhos.length).map((x) => (x.filhos.length === 1 ? { rotulo: x.rotulo, href: x.filhos[0].href, filhos: [] } : x));

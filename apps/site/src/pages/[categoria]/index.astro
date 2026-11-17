@@ -5,6 +5,7 @@ import { indice } from "../../lib/cms";
 import { rotasLanding } from "../../lib/routes";
 import LandingTpl from "../../templates/LandingTpl.astro";
 import LandingPaginaTpl from "../../templates/LandingPaginaTpl.astro";
+import LandingAtendimentoTpl from "../../templates/LandingAtendimentoTpl.astro";
 
 export const getStaticPaths = (async () => {
   const idx = await indice();
@@ -19,3 +20,4 @@ const rota = rotasLanding(idx).find((r) => r.chave === Astro.props.chave && r.lo
 
 {rota.kind === "categoria-produto" && <LandingTpl rota={rota} indice={idx} />}
 {rota.kind === "institucional" && <LandingPaginaTpl rota={rota} indice={idx} />}
+{rota.kind === "atendimento" && <LandingAtendimentoTpl rota={rota} indice={idx} />}

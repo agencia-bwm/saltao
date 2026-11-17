@@ -1,0 +1,47 @@
+---
+/** Consulta de reserva: código + e-mail, enviados à plataforma (GET), que mostra voucher e opções. */
+import type { Locale } from "../lib/types";
+import { RESERVAS_URL } from "../lib/config";
+import { t } from "../lib/i18n";
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const ui = t(locale);
+---
+
+<form class="form" method="get" action={`${RESERVAS_URL}/minha-reserva`}>
+  <input type="hidden" name="lang" value={locale} />
+  <label>
+    {ui.codigoReserva}
+    <input name="codigo" required autocomplete="off" inputmode="text" pattern="[A-Za-z0-9-]{4,20}" />
+  </label>
+  <label>
+    {ui.email}
+    <input name="email" type="email" required autocomplete="email" />
+  </label>
+  <button class="btn btn-reservar" type="submit">
+    {ui.consultarReserva}
+  </button>
+</form>
+
+<style>
+  .form {
+    display: grid;
+    gap: var(--space-4);
+  }
+  .form label {
+    display: grid;
+    gap: var(--space-1);
+    font-weight: 600;
+  }
+  input {
+    font: inherit;
+    padding: var(--space-3);
+    border: 1px solid var(--color-text-muted);
+    border-radius: var(--radius-sm);
+    min-height: 44px;
+    background: var(--color-bg);
+  }
+</style>

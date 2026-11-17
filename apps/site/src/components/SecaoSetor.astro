@@ -8,6 +8,7 @@
 import type { Icone as NomeIcone, Img, Locale } from "../lib/types";
 import Foto from "./Foto.astro";
 import Icone from "./Icone.astro";
+import MapaCartao from "./MapaCartao.astro";
 
 export interface Acao {
   rotulo: string;
@@ -24,6 +25,8 @@ interface Props {
   titulo: string;
   texto: string;
   fotos: Img[];
+  /** Cartão de mapa no lugar das fotos (setor "Como chegar"). */
+  mapa?: { href: string; nome: string; local: string };
   destaques?: { icone: NomeIcone; rotulo: string }[];
   listaTitulo?: string;
   lista?: string[];
@@ -35,8 +38,8 @@ interface Props {
   sangria?: boolean;
   locale: Locale;
 }
-const { id, rotuloTopo, iconeTopo, titulo, texto, fotos, destaques = [], listaTitulo, lista = [], acoes, nota, invertido = false, fundo, sangria = false, locale } = Astro.props;
-const [f1, f2, f3, ...mais] = fotos;
+const { id, rotuloTopo, iconeTopo, titulo, texto, fotos, mapa, destaques = [], listaTitulo, lista = [], acoes, nota, invertido = false, fundo, sangria = false, locale } = Astro.props;
+const [f1, f2, f3, ...mais] = mapa ? [] : fotos;
 const MAIS: Record<string, string> = { pt: "Mais fotos", en: "More photos", es: "Más fotos" };
 const SETAS: Record<string, [string, string]> = { pt: ["Foto anterior", "Próxima foto"], en: ["Previous photo", "Next photo"], es: ["Foto anterior", "Foto siguiente"] };
 ---
@@ -44,6 +47,7 @@ const SETAS: Record<string, [string, string]> = { pt: ["Foto anterior", "Próxim
 <section id={id} class:list={["lp-produto", `lp-fundo-${fundo}`, { "lp-invertido": invertido, sangria }]} aria-labelledby={`titulo-${id}`}>
   <div class="container lp-produto-grade">
     <div class:list={["lp-produto-fotos", { "lp-1foto": !f2 }]}>
+      {mapa && <MapaCartao {...mapa} locale={locale} />}
       {
         f1 && (
           <div class="lp-pf lp-pf1">

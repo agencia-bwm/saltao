@@ -1,0 +1,160 @@
+---
+/**
+ * Central de Atendimento (página de atendimento com tipo "central"): tudo numa landing só, no padrão das outras —
+ * Fale conosco (canais + formulário), Dúvidas (grupos de FAQ), Minha reserva (consulta) e as seções do painel
+ * (ex.: setor Como chegar e chamada final). Rota própria, junto das outras landings.
+ */
+import type { Rota, Indice } from "../lib/routes";
+import type { Block } from "../lib/types";
+import { linkWhatsApp } from "../lib/config";
+import { noFaq, noWebPage } from "../lib/schema";
+import { ancora } from "../lib/cta";
+import { LARGURAS_HERO_LANDING } from "../lib/foto";
+import { t } from "../lib/i18n";
+import Base from "../layouts/Base.astro";
+import HeroLanding, { type AncoraLanding } from "../components/HeroLanding.astro";
+import Secoes from "../components/Secoes.astro";
+import FaqLista from "../components/FaqLista.astro";
+import FormContato from "../components/FormContato.astro";
+import FormReserva from "../components/FormReserva.astro";
+import Icone from "../components/Icone.astro";
+import cssAbaixo from "../styles/home-abaixo.css?url";
+import cssLanding from "../styles/landing.css?url";
+
+interface Props {
+  rota: Extract<Rota, { kind: "atendimento" }>;
+  indice: Indice;
+}
+const { rota, indice } = Astro.props;
+const { doc, locale } = rota;
+const ui = t(locale);
+const g = indice.conteudo.global[locale] ?? indice.conteudo.global.pt!;
+const privacidade = indice.link("institucional", "inst-privacidade", locale) ?? indice.link("institucional", "inst-privacidade", "pt");
+const rotaPriv = privacidade ? indice.porPath.get(privacidade) : undefined;
+const tituloPrivacidade = rotaPriv && rotaPriv.kind === "institucional" ? rotaPriv.doc.titulo : "Política de Privacidade";
+
+const T: Record<string, Record<string, string>> = {
+  pt: { nav: "Nesta página", fale: "Fale conosco", faleSub: "WhatsApp, telefone e e-mail", faleTexto: "Tire dúvidas, peça orçamento para grupos ou fale com a equipe do parque pelo canal que preferir.", duvidas: "Dúvidas frequentes", duvidasSub: "Ingressos, regras e mais", reserva: "Minha reserva", reservaSub: "Voucher e alterações", reservaTexto: "Consulte sua reserva, baixe o voucher ou peça alteração informando o código e o e-mail usados na compra.", form: "Ou mande uma mensagem" },
+  en: { nav: "On this page", fale: "Contact us", faleSub: "WhatsApp, phone and e-mail", faleTexto: "Ask questions, request a group quote or talk to the park team on the channel you prefer.", duvidas: "FAQ", duvidasSub: "Tickets, rules and more", reserva: "My booking", reservaSub: "Voucher and changes", reservaTexto: "Check your booking, download the voucher or request a change with your booking code and e-mail.", form: "Or send us a message" },
+  es: { nav: "En esta página", fale: "Contáctanos", faleSub: "WhatsApp, teléfono y e-mail", faleTexto: "Resuelve dudas, pide presupuesto para grupos o habla con el equipo del parque por el canal que prefieras.", duvidas: "Preguntas frecuentes", duvidasSub: "Entradas, reglas y más", reserva: "Mi reserva", reservaSub: "Voucher y cambios", reservaTexto: "Consulta tu reserva, descarga el voucher o pide un cambio con el código y el e-mail de la compra.", form: "O envíanos un mensaje" },
+};
+const tx = T[locale];
+
+const secoes: Block[] = doc.secoes ?? [];
+const ultima = secoes.at(-1);
+const chamadaFinal = ultima?.__component === "blocks.chamada" ? [ultima] : [];
+const meio = chamadaFinal.length ? secoes.slice(0, -1) : secoes;
+const setores = meio.filter((b): b is Extract<Block, { __component: "blocks.setor" }> => b.__component === "blocks.setor");
+const fotos = (doc.fotosIntro ?? []).slice(0, 2);
+
+const ancoras: AncoraLanding[] = [
+  { href: "#fale-conosco", rotulo: tx.fale, sub: tx.faleSub, icone: "mensagem" },
+  ...(doc.grupos.length ? [{ href: "#duvidas", rotulo: tx.duvidas, sub: tx.duvidasSub, icone: "duvida" as const }] : []),
+  ...setores.map((b) => ({ href: `#${ancora(b.titulo)}`, rotulo: b.titulo, sub: b.destaques[0]?.rotulo, icone: b.icone ?? ("mapa" as const) })),
+  { href: "#minha-reserva", rotulo: tx.reserva, sub: tx.reservaSub, icone: "calendario" },
+];
+const faqs = [...doc.grupos.flatMap((gr) => gr.itens), ...secoes.flatMap((b) => (b.__component === "blocks.faq" ? b.itens : []))];
+const tel = g.telefone.replace(/[^\d+]/g, "");
+---
+
+<Base
+  {...rota}
+  indice={indice}
+  imagem={fotos[0]}
+  preload={fotos[0] ? { img: fotos[0], larguras: LARGURAS_HERO_LANDING, sizes: "100vw" } : undefined}
+  migalhasNoTopo={!fotos[0]}
+  jsonld={[noWebPage(rota.path, doc.titulo, doc.respostaDireta, locale, "ContactPage"), noFaq(faqs, rota.path)].filter((n) => n !== null)}
+>
+  {
+    fotos[0] ? (
+      <HeroLanding titulo={doc.titulo} tituloDestaque={doc.tituloDestaque} sobretitulo={doc.sobretitulo} resposta={doc.respostaDireta} fotos={fotos} migalhas={rota.breadcrumbs} ancoras={ancoras} rotuloAncoras={tx.nav} />
+    ) : (
+      <header class="container section">
+        <h1>{doc.titulo}</h1>
+        <p class="lead">{doc.respostaDireta}</p>
+      </header>
+    )
+  }
+
+  <link rel="stylesheet" href={cssAbaixo} />
+  <link rel="stylesheet" href={cssLanding} />
+
+  <!-- Fale conosco: canais em cartões + formulário. -->
+  <section id="fale-conosco" class="lp-produto lp-fundo-ceu" aria-labelledby="titulo-fale-conosco">
+    <div class="container lp-produto-grade">
+      <div class="lp-produto-info">
+        <p class="sobretitulo"><Icone nome="mensagem" tamanho={18} /> {doc.titulo}</p>
+        <h2 id="titulo-fale-conosco">{tx.fale}</h2>
+        <p class="lp-produto-texto">{tx.faleTexto}</p>
+        <ul class="at-canais">
+          <li>
+            <a href={linkWhatsApp(g.whatsapp, g.whatsappMensagemPadrao)} rel="noopener" target="_blank" data-dl='{"event":"generate_lead","method":"whatsapp_atendimento"}'>
+              <span class="bolha"><Icone nome="mensagem" tamanho={24} /></span>
+              <span><strong>WhatsApp</strong><small>{ui.whatsapp}</small></span>
+            </a>
+          </li>
+          <li>
+            <a href={`tel:${tel}`} data-dl='{"event":"click_phone"}'>
+              <span class="bolha"><Icone nome="telefone" tamanho={24} /></span>
+              <span><strong>{ui.telefone}</strong><small>{g.telefone}</small></span>
+            </a>
+          </li>
+          <li>
+            <a href={`mailto:${g.email}`}>
+              <span class="bolha"><Icone nome="email" tamanho={24} /></span>
+              <span><strong>{ui.email}</strong><small>{g.email}</small></span>
+            </a>
+          </li>
+        </ul>
+      </div>
+      {
+        doc.mostrarFormulario && (
+          <div class="at-cartao">
+            <h3>{tx.form}</h3>
+            <FormContato locale={locale} origem={rota.path} consentimento={doc.textoConsentimento} privacidade={privacidade} tituloPrivacidade={tituloPrivacidade} />
+          </div>
+        )
+      }
+    </div>
+  </section>
+
+  {
+    doc.grupos.length > 0 && (
+      <section id="duvidas" class="container at-duvidas" aria-labelledby="titulo-duvidas">
+        <p class="sobretitulo">{doc.titulo}</p>
+        <h2 id="titulo-duvidas">{tx.duvidas}</h2>
+        <div class="at-grupos">
+          {doc.grupos.map((gr, i) => (
+            <FaqLista itens={gr.itens} titulo={gr.tituloGrupo} id={`grupo-${i}`} />
+          ))}
+        </div>
+      </section>
+    )
+  }
+
+  <div class="container secoes lp-secoes">
+    <Secoes blocos={meio} indice={indice} locale={locale} />
+  </div>
+
+  <!-- Minha reserva: consulta pela plataforma. -->
+  <section id="minha-reserva" class="lp-produto lp-fundo-branco" aria-labelledby="titulo-minha-reserva">
+    <div class="container lp-produto-grade">
+      <div class="lp-produto-info">
+        <p class="sobretitulo"><Icone nome="calendario" tamanho={18} /> {doc.titulo}</p>
+        <h2 id="titulo-minha-reserva">{tx.reserva}</h2>
+        <p class="lp-produto-texto">{tx.reservaTexto}</p>
+      </div>
+      <div class="at-cartao">
+        <FormReserva locale={locale} />
+      </div>
+    </div>
+  </section>
+
+  <div class="container secoes lp-secoes">
+    <Secoes blocos={chamadaFinal} indice={indice} locale={locale} idBase={meio.length} />
+  </div>
+</Base>
+
+<script>
+  import "../scripts/carrossel";
+</script>

@@ -57,7 +57,6 @@ import fCafeBoloSrc from "../assets/fotos/gastronomia/cafe-da-manha-bandeja-bolo
 import fSolarSrc from "../assets/fotos/estrutura/energia-solar-paineis.jpg";
 import fKidsEscorregadorSrc from "../assets/fotos/estrutura/salao-kids-escorregador-vertical.jpg";
 import fKidsPlaySrc from "../assets/fotos/estrutura/salao-kids-playground-coberto.jpg";
-import mapaProvisorio from "../assets/placeholder/trilha.jpg";
 
 
 const T = "2026-11-13T12:00:00.000Z";
@@ -441,7 +440,7 @@ const institucionais: Conteudo["institucionais"] = [
         listaTitulo: "Para aproveitar melhor",
         lista: ["Calçado com boa aderência", "Protetor solar e água", "Siga as orientações da equipe"],
         cta: { rotulo: "Reservar Day Use", tipo: "link", url: "https://reservas.saltao.com.br/reservar?produto=day-use" },
-        ctaSecundario: { rotulo: "Como chegar", tipo: "link", url: "/como-chegar/" },
+        ctaSecundario: { rotulo: "Como chegar", tipo: "link", url: "/atendimento/#como-chegar" },
       },
       {
         __component: "blocks.fatos",
@@ -571,7 +570,7 @@ const institucionais: Conteudo["institucionais"] = [
           { imagem: fEscala, icone: "cachoeira", titulo: "Cachoeira Saltão", texto: "A queda de 75 m e as trilhas.", link: "/cachoeira-saltao/" },
           { imagem: fCampEntardecer, icone: "cama", titulo: "Hospedagem", texto: "Apartamentos e camping.", link: "/hospedagem/" },
           { imagem: fTrilha, icone: "escudo", titulo: "Segurança", texto: "Regras e cuidados no parque.", link: "/seguranca/" },
-          { imagem: fVale, icone: "mapa", titulo: "Como chegar", texto: "Rotas e distâncias.", link: "/como-chegar/" },
+          { imagem: fVale, icone: "mapa", titulo: "Como chegar", texto: "Rotas e distâncias.", link: "/atendimento/#como-chegar" },
         ],
       },
       {
@@ -608,19 +607,6 @@ const institucionais: Conteudo["institucionais"] = [
     seo: seo("Segurança | Saltão", "Regras e cuidados para visitar o Saltão com segurança."),
   },
   {
-    documentId: "inst-como-chegar",
-    locale: "pt",
-    updatedAt: T,
-    titulo: "Como chegar",
-    slug: "como-chegar",
-    respostaDireta: "Como chegar ao Saltão de carro saindo de Brotas, São Carlos e São Paulo. Distâncias e rotas a confirmar.",
-    secoes: [
-      { __component: "blocks.mapa-estatico", imagem: img(mapaProvisorio, "Mapa de localização do Saltão (imagem provisória)"), linkMaps: "https://maps.google.com/" },
-      { __component: "blocks.tabela", titulo: "Distâncias", cabecalho: ["Saindo de", "Distância"], linhas: [["Brotas", "a confirmar"], ["São Carlos", "a confirmar"], ["São Paulo", "a confirmar"]] },
-    ],
-    seo: seo("Como chegar ao Saltão", "Rotas e distâncias para chegar ao Saltão saindo de Brotas, São Carlos e São Paulo."),
-  },
-  {
     documentId: "inst-privacidade",
     locale: "pt",
     updatedAt: T,
@@ -634,33 +620,51 @@ const institucionais: Conteudo["institucionais"] = [
 
 const atendimento: Conteudo["atendimento"] = [
   {
-    documentId: "at-faq",
+    documentId: "at-central",
     locale: "pt",
     updatedAt: T,
-    titulo: "Dúvidas e Contato",
-    slug: "duvidas-e-contato",
-    respostaDireta: "Respostas para as perguntas mais comuns sobre ingressos, hospedagem, horários e regras do Saltão, e os canais de atendimento.",
-    tipo: "faq-contato",
+    titulo: "Atendimento",
+    slug: "atendimento",
+    respostaDireta: "Fale com o Saltão pelo WhatsApp, telefone ou e-mail, veja as dúvidas mais comuns, como chegar ao parque e consulte sua reserva — tudo nesta página.",
+    tipo: "central",
+    sobretitulo: "Estamos por aqui",
+    tituloDestaque: "a gente te ajuda a chegar.",
+    fotosIntro: [fVale, fCampFamilia],
     grupos: [
-      { tituloGrupo: "Ingressos e reservas", itens: [faq("Como compro o ingresso?", "Pelo botão Reservar, com pagamento por Pix ou cartão."), faq("Recebo um voucher?", "Sim, por e-mail, com QR Code para apresentar na portaria.")] },
-      { tituloGrupo: "No parque", itens: [faq("Posso levar comida?", "Regra a confirmar com o Saltão.")] },
+      { tituloGrupo: "Ingressos e reservas", itens: [faq("Como compro o ingresso?", "Pelo botão Reservar, com pagamento por Pix ou cartão."), faq("Recebo um voucher?", "Sim, por e-mail, com QR Code para apresentar na portaria."), faq("Onde encontro o código da reserva?", "No e-mail de confirmação, logo abaixo do QR Code.")] },
+      { tituloGrupo: "No parque", itens: [faq("Posso levar comida?", "Regra a confirmar com o Saltão."), faq("Tem estacionamento?", "Sim, dentro do parque (detalhes a confirmar).")] },
+    ],
+    secoes: [
+      {
+        __component: "blocks.setor",
+        sobretitulo: "Localização",
+        icone: "mapa",
+        titulo: "Como chegar",
+        texto: "O Saltão fica na Rodovia Ulisses Guimarães, km 23, em Itirapina (SP), na Serra do Itaqueri. O acesso é de carro, por estrada asfaltada até a entrada do parque.",
+        fotos: [],
+        linkMapa: "https://maps.google.com/?q=Saltão+Parque+de+Ecoturismo+Itirapina",
+        destaques: [
+          { icone: "carro", rotulo: "Acesso de carro" },
+          { icone: "mapa", rotulo: "Rod. Ulisses Guimarães, km 23" },
+        ],
+        listaTitulo: "Distâncias (a confirmar)",
+        lista: ["Brotas — a confirmar", "São Carlos — a confirmar", "São Paulo — a confirmar"],
+        cta: { rotulo: "Falar com a equipe", tipo: "whatsapp" },
+      },
+      {
+        __component: "blocks.chamada",
+        sobretitulo: "Tudo certo?",
+        titulo: "Agora é só escolher",
+        tituloDestaque: "o seu dia no Saltão.",
+        texto: "Reserve o Day Use, a hospedagem ou um quiosque direto na plataforma.",
+        imagem: fPocoCeu,
+        cta: { rotulo: "Reservar", tipo: "link", url: "https://reservas.saltao.com.br/" },
+        ctaSecundario: { rotulo: "Falar no WhatsApp", tipo: "whatsapp" },
+      },
     ],
     mostrarFormulario: true,
     textoConsentimento: p("Li e concordo com a Política de Privacidade e autorizo o uso dos meus dados para responder a este contato."),
-    seo: seo("Dúvidas e Contato | Saltão", "Perguntas frequentes e canais de atendimento do Saltão."),
-  },
-  {
-    documentId: "at-minha-reserva",
-    locale: "pt",
-    updatedAt: T,
-    titulo: "Minha reserva",
-    slug: "minha-reserva",
-    respostaDireta: "Consulte sua reserva, baixe o voucher ou peça alteração informando o código da reserva e o e-mail usado na compra.",
-    tipo: "minha-reserva",
-    grupos: [{ tituloGrupo: "Sobre sua reserva", itens: [faq("Onde encontro o código?", "No e-mail de confirmação, logo abaixo do QR Code.")] }],
-    mostrarFormulario: false,
-    textoConsentimento: [],
-    seo: seo("Minha reserva | Saltão", "Consulte sua reserva e baixe o voucher do Saltão."),
+    seo: seo("Atendimento | Saltão — contato, dúvidas e como chegar", "WhatsApp, telefone, e-mail, perguntas frequentes, como chegar e consulta de reserva do Saltão."),
   },
 ];
 
@@ -834,7 +838,7 @@ const home = Object.fromEntries(
 ) as Conteudo["home"];
 
 const guiaHome: Conteudo["guiaHome"] = {
-  pt: { documentId: "guia-home", locale: "pt", updatedAt: T, titulo: "Guia da Serra do Itaqueri", respostaDireta: "Dicas, roteiros e respostas sobre cachoeiras, trilhas, camping e passeios na Serra do Itaqueri, escritos pela equipe do Saltão.", seo: seo("Guia da Serra do Itaqueri | Saltão", "Dicas e roteiros sobre cachoeiras, trilhas e camping na Serra do Itaqueri.") },
+  pt: { documentId: "guia-home", locale: "pt", updatedAt: T, titulo: "Guia da Serra do Itaqueri", sobretitulo: "Dicas da equipe", tituloDestaque: "para aproveitar a serra.", fotosIntro: [fPorDoSolLaranja, fTrilha], respostaDireta: "Dicas, roteiros e respostas sobre cachoeiras, trilhas, camping e passeios na Serra do Itaqueri, escritos pela equipe do Saltão.", seo: seo("Guia da Serra do Itaqueri | Saltão", "Dicas e roteiros sobre cachoeiras, trilhas e camping na Serra do Itaqueri.") },
 };
 
 /* ---------------- Hospedagem em página única (landing) ---------------- */
