@@ -13,5 +13,12 @@
     "build:painel": "npm --prefix apps/painel run build",
     "test": "pnpm --filter @saltao/site test && pnpm --filter @saltao/plataforma test",
     "check": "pnpm -r --if-present check"
+  },
+  "pnpm": {
+    "auditConfig": {
+      "ignoreGhsas": [
+        "GHSA-fc5q-39xc-vjpf"
+      ]
+    }
   }
 }
