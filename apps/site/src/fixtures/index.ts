@@ -4,7 +4,7 @@
  * Em produção o conteúdo vem sempre do painel (Strapi).
  */
 import type { Conteudo, Faq, Img, Locale, RichText, Seo } from "../lib/types";
-import fHeroSrc from "../assets/fotos/cachoeira-saltao/cachoeira-saltao-mata-visitantes.jpg";
+import fHeroSrc from "../assets/fotos/cachoeira-saltao/cachoeira-saltao-paredao-visitantes-poco.jpg";
 import fCachMolduraSrc from "../assets/fotos/cachoeira-saltao/cachoeira-saltao-moldura-arvores.jpg";
 import fCach2Src from "../assets/fotos/cachoeira-2/cachoeira-2-queda-larga-poco.jpg";
 import fCach2PanSrc from "../assets/fotos/cachoeira-2/cachoeira-2-poco-panoramica.jpg";
@@ -42,7 +42,7 @@ const T = "2026-11-13T12:00:00.000Z";
 const img = (src: Img["src"], alt: string): Img => ({ src, alt });
 
 /* Fotos reais (lote 1, 14/11/2026) — alt vem de docs/fotos-catalogo.csv */
-const fHero = img(fHeroSrc, "Cachoeira do Saltão vista de longe, cercada de mata nativa, com visitantes na base");
+const fHero = img(fHeroSrc, "Cachoeira do Saltão caindo 75 metros pelo paredão de rocha alaranjada, com mata nos dois lados e visitantes no poço");
 const fCachMoldura = img(fCachMolduraSrc, "Cachoeira do Saltão emoldurada por árvores, com céu azul");
 const fCach2 = img(fCach2Src, "Segunda cachoeira do parque, queda larga sobre rochas com poço amplo");
 const fCach2Pan = img(fCach2PanSrc, "Vista frontal da segunda cachoeira do parque e seu poço");
@@ -510,7 +510,8 @@ const home = Object.fromEntries(
           titulo: h.titulo,
           tituloDestaque: h.destaque,
           respostaDireta: L[loc].heroResp,
-          imagem: img(fHeroSrc, tr(loc, fHero.alt, "Saltão's 75 m waterfall surrounded by native forest, with visitors at its base", "Cascada de 75 m de Saltão rodeada de bosque nativo, con visitantes en la base")),
+          imagem: img(fHeroSrc, tr(loc, fHero.alt, "Saltão's 75 m waterfall dropping down an orange rock wall, with forest on both sides and visitors at the pool", "Cascada de 75 m de Saltão cayendo por la pared de roca anaranjada, con bosque a los lados y visitantes en la poza")),
+          queda: { xTopo: 51.25, xBase: 51.98, topo: 6.8, base: 90.8, larguraTopo: 2.7, larguraBase: 6.5 },
           cta: { rotulo: L[loc].reservar, tipo: "link" as const, url: "https://reservas.saltao.com.br/reservar" },
           selo: h.selo,
           cardRotulo: h.card,

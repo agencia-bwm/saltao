@@ -59,6 +59,8 @@ components = {
     "menu-item": ("Item de menu", "bulletList", {"rotulo": s(True, 40), "link": s(maxLength=300), "subitens": comp("shared.menu-subitem", True, max=8)}),
     "menu-subitem": ("Subitem de menu", "bulletList", {"rotulo": s(True, 60), "link": s(True, 300)}),
     "grupo-faq": ("Grupo de perguntas", "question", {"tituloGrupo": s(True, 100), "itens": comp("shared.faq-item", True)}),
+    # Queda animada sobre a foto do hero: posição da queda em % da foto (0–100). Ver QuedaAnimada.astro.
+    "queda-animada": ("Queda d'água animada", "play", {k: {"type": "decimal", "required": True, "min": 0, "max": 100} for k in ["xTopo", "xBase", "topo", "base", "larguraTopo", "larguraBase"]}),
     # Home (layout nov/2026): link com rótulo, ícone + rótulo e card com foto.
     "link": ("Link com rótulo", "link", {"rotulo": s(True, 40), "link": s(True, 300)}),
     "icone-rotulo": ("Ícone com rótulo", "star", {"icone": enum(ICONES, True), "rotulo": s(True, 40)}),
@@ -66,7 +68,7 @@ components = {
   },
   "blocks": {
     # tituloDestaque = fim do H1, em azul claro. cardProduto = card flutuante sobre a foto (desktop).
-    "hero": ("Hero", "landscape", {"sobretitulo": s(maxLength=60), "titulo": s(True, 90), "tituloDestaque": s(maxLength=60), "respostaDireta": text(True, 300), "imagem": comp("shared.image-alt", req=True), "cta": comp("shared.cta"), "selo": s(maxLength=120), "cardRotulo": s(maxLength=40), "cardProduto": rel("oneToOne", PROD)}),
+    "hero": ("Hero", "landscape", {"sobretitulo": s(maxLength=60), "titulo": s(True, 90), "tituloDestaque": s(maxLength=60), "respostaDireta": text(True, 300), "imagem": comp("shared.image-alt", req=True), "cta": comp("shared.cta"), "selo": s(maxLength=120), "cardRotulo": s(maxLength=40), "cardProduto": rel("oneToOne", PROD), "queda": comp("shared.queda-animada")}),
     "essencia": ("Essência (mosaico + ícones)", "layer", {"sobretitulo": s(maxLength=60), "titulo": s(True, 90), "tituloDestaque": s(maxLength=40), "texto": text(True, 600), "fotos": comp("shared.image-alt", True, req=True, min=1, max=3), "itens": comp("shared.icone-rotulo", True, max=4)}),
     "vitrine": ("Vitrine (1 card grande + 2)", "apps", {"sobretitulo": s(maxLength=60), "titulo": s(True, 90), "texto": text(False, 300), "atalhos": comp("shared.link", True, max=5), "itens": comp("shared.card-foto", True, req=True, min=1, max=3), "linkTodos": comp("shared.link")}),
     "experiencias": ("Experiências (4 cards)", "grid", {"sobretitulo": s(maxLength=60), "titulo": s(True, 90), "linkTodos": comp("shared.link"), "itens": comp("shared.card-foto", True, req=True, min=1, max=4)}),
