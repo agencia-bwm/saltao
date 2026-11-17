@@ -12,6 +12,7 @@
   --brand-azul-escuro: #244a75;   /* derivado: textos e fundos fortes (9,1:1) */
   --brand-ceu: #eaf4fc;           /* derivado do azul claro: topo das páginas */
   --brand-poco: #0f2744;          /* derivado do azul escuro: fundo do poço (rodapé) */
+  --brand-abismo: #081a30;        /* mais escuro que o poço: barras e divisórias do rodapé */
 
   --color-bg: #ffffff;
   --color-surface: var(--brand-ceu);

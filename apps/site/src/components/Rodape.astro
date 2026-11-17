@@ -4,6 +4,8 @@ import type { Indice } from "../lib/routes";
 import { t } from "../lib/i18n";
 import { linkWhatsApp } from "../lib/config";
 import RichText from "./RichText.astro";
+import { homePath } from "../lib/routes";
+import logoBranco from "../assets/marca/logo-horizontal-branco.svg";
 
 interface Props {
   locale: Locale;
@@ -21,6 +23,22 @@ const CREDITOS: Record<Locale, { direitos: string; dev: string }> = {
   es: { direitos: "Todos los derechos reservados.", dev: "Desarrollado por" },
 };
 const cred = CREDITOS[locale];
+const FRASE: Record<Locale, string> = {
+  pt: "Cachoeira de 75 metros, day use e hospedagem na Serra do Itaqueri.",
+  en: "A 75-metre waterfall, day pass and lodging in the Serra do Itaqueri.",
+  es: "Cascada de 75 metros, pase de día y hospedaje en la Serra do Itaqueri.",
+};
+const NOMES_REDE: Record<string, string> = { instagram: "Instagram", facebook: "Facebook", youtube: "YouTube", tripadvisor: "Tripadvisor", tiktok: "TikTok" };
+const nomeRede = (r: string) => NOMES_REDE[r.toLowerCase()] ?? r.charAt(0).toUpperCase() + r.slice(1);
+/** Ícones das redes (24×24, cor do texto). Rede sem ícone usa o de link. */
+const ICONE_REDE: Record<string, string> = {
+  instagram: '<g fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/></g><circle cx="17.5" cy="6.5" r="1.3" fill="currentColor"/>',
+  facebook: '<path fill="currentColor" d="M13.5 22v-8.2h2.8l.4-3.3h-3.2V8.4c0-.9.3-1.6 1.6-1.6h1.7V3.9c-.3 0-1.3-.1-2.5-.1-2.5 0-4.2 1.5-4.2 4.3v2.4H7.3v3.3h2.8V22Z"/>',
+  youtube: '<path fill="currentColor" fill-rule="evenodd" d="M21.6 7.2a2.6 2.6 0 0 0-1.8-1.8C18.2 5 12 5 12 5s-6.2 0-7.8.4a2.6 2.6 0 0 0-1.8 1.8C2 8.8 2 12 2 12s0 3.2.4 4.8a2.6 2.6 0 0 0 1.8 1.8c1.6.4 7.8.4 7.8.4s6.2 0 7.8-.4a2.6 2.6 0 0 0 1.8-1.8c.4-1.6.4-4.8.4-4.8s0-3.2-.4-4.8ZM10 15V9l5.2 3Z"/>',
+  tripadvisor: '<g fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="7" cy="13.5" r="3.8"/><circle cx="17" cy="13.5" r="3.8"/><path d="M2.5 9.2C5 7.3 8.3 6.3 12 6.3s7 1 9.5 2.9"/></g><circle cx="7" cy="13.5" r="1.4" fill="currentColor"/><circle cx="17" cy="13.5" r="1.4" fill="currentColor"/>',
+  tiktok: '<path fill="currentColor" d="M16.6 3h-3.2v12.2a2.7 2.7 0 1 1-2.7-2.7c.3 0 .5 0 .8.1V9.3a6 6 0 1 0 5.1 5.9V9.1a7.4 7.4 0 0 0 4.4 1.4V7.3a4.4 4.4 0 0 1-4.4-4.3Z"/>',
+  link: '<path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/>',
+};
 const DIA: Record<Locale, Record<string, string>> = {
   pt: { Mo: "seg", Tu: "ter", We: "qua", Th: "qui", Fr: "sex", Sa: "sáb", Su: "dom" },
   en: { Mo: "Mon", Tu: "Tue", We: "Wed", Th: "Thu", Fr: "Fri", Sa: "Sat", Su: "Sun" },
@@ -43,9 +61,30 @@ const dias = (s: string) => s.replace(/Mo|Tu|We|Th|Fr|Sa|Su/g, (d) => DIA[locale
   </svg>
   {
     g && (
+      <div class="container rp-topo">
+        <a class="rp-logo" href={homePath(locale)}>
+          <img src={logoBranco.src} width="206" height="60" alt={`${g.nomeOficial} — ${ui.inicio}`} loading="lazy" decoding="async" />
+        </a>
+        <p class="rp-frase">{FRASE[locale]}</p>
+        {g.redesSociais.length > 0 && (
+          <ul class="rp-redes" aria-label={ui.seguirRedes}>
+            {g.redesSociais.map((r) => (
+              <li>
+                <a href={r.url} rel="noopener me" target="_blank" aria-label={nomeRede(r.rede)} title={nomeRede(r.rede)}>
+                  <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" set:html={ICONE_REDE[r.rede.toLowerCase()] ?? ICONE_REDE.link} />
+                </a>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+    )
+  }
+  {
+    g && (
       <div class="container colunas">
         <section>
-          <h2>{g.nomeOficial}</h2>
+          <h2>{ui.contato}</h2>
           <address>
             {g.endereco.rua}, {g.endereco.numero}
             <br />
@@ -71,7 +110,7 @@ const dias = (s: string) => s.replace(/Mo|Tu|We|Th|Fr|Sa|Su/g, (d) => DIA[locale
             ))}
           </ul>
         </section>
-        <section>
+        <section class="rp-paginas">
           <h2>Saltão</h2>
           <ul>
             {paginas.map((p) => (
@@ -86,20 +125,6 @@ const dias = (s: string) => s.replace(/Mo|Tu|We|Th|Fr|Sa|Su/g, (d) => DIA[locale
             </li>
           </ul>
         </section>
-        {g.redesSociais.length > 0 && (
-          <section>
-            <h2>{ui.seguirRedes}</h2>
-            <ul>
-              {g.redesSociais.map((r) => (
-                <li>
-                  <a href={r.url} rel="noopener me" target="_blank">
-                    {r.rede.charAt(0).toUpperCase() + r.rede.slice(1)}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </section>
-        )}
       </div>
     )
   }
@@ -159,10 +184,104 @@ const dias = (s: string) => s.replace(/Mo|Tu|We|Th|Fr|Sa|Su/g, (d) => DIA[locale
   .link-cookies:hover {
     color: var(--brand-azul-claro);
   }
+  /* Faixa de cima: logo branco, frase e redes. Barras em azul mais escuro que o fundo separam as faixas. */
+  .rp-topo {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-4) var(--space-6);
+    padding-bottom: var(--space-6);
+  }
+  .rp-logo {
+    display: block;
+    flex: none;
+  }
+  .rp-logo img {
+    display: block;
+    width: clamp(10.5rem, 18vw, 13rem);
+    height: auto;
+  }
+  .rp-frase {
+    flex: 1 1 16rem;
+    max-width: 30rem;
+    margin: 0;
+    color: var(--color-on-deep-muted);
+  }
+  .rp-redes {
+    display: flex;
+    gap: var(--space-3);
+    margin: 0;
+  }
+  @media (min-width: 48rem) {
+    .rp-redes {
+      margin-left: auto;
+    }
+  }
+  @media (max-width: 47.99rem) {
+    .colunas > section + section {
+      padding-top: var(--space-6);
+      border-top: 3px solid var(--brand-abismo);
+    }
+  }
+  .rp-redes li {
+    margin: 0;
+  }
+  .rodape .rp-redes a {
+    display: grid;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: 50%;
+    background: var(--brand-abismo);
+    color: #ffffff;
+    box-shadow: inset 0 0 0 1px rgb(160 201 232 / 0.18);
+    transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+  }
+  .rodape .rp-redes a:hover {
+    background: var(--brand-azul);
+    color: #ffffff;
+    transform: translateY(-2px);
+  }
+  .rodape .rp-redes a:focus-visible {
+    outline: 3px solid var(--color-focus);
+    outline-offset: 3px;
+  }
+  .rp-topo,
+  .colunas {
+    border-bottom: 3px solid var(--brand-abismo);
+  }
   .colunas {
     display: grid;
     gap: var(--space-6);
-    grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+    padding-block: var(--space-7);
+  }
+  .rp-paginas ul {
+    columns: 2 11rem;
+    column-gap: var(--space-6);
+  }
+  .rp-paginas li {
+    break-inside: avoid;
+  }
+  @media (min-width: 48rem) {
+    .colunas {
+      grid-template-columns: 1.1fr 0.8fr 1.6fr;
+      gap: 0;
+    }
+    /* Divisórias verticais entre as colunas, na mesma cor das barras. */
+    .colunas > section {
+      padding-inline: var(--space-6);
+    }
+    .colunas > section:first-child {
+      padding-left: 0;
+    }
+    .colunas > section + section {
+      border-left: 3px solid var(--brand-abismo);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .rodape .rp-redes a {
+      transition: none;
+    }
   }
   h2 {
     font-size: var(--fs-300);
@@ -198,9 +317,7 @@ const dias = (s: string) => s.replace(/Mo|Tu|We|Th|Fr|Sa|Su/g, (d) => DIA[locale
     flex-wrap: wrap;
     justify-content: space-between;
     gap: var(--space-2) var(--space-5);
-    margin-top: var(--space-7);
-    padding-top: var(--space-4);
-    border-top: 1px solid rgb(160 201 232 / 0.25);
+    padding-top: var(--space-5);
     color: var(--color-on-deep-muted);
   }
   .copy p {
