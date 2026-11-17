@@ -511,7 +511,6 @@ const home = Object.fromEntries(
           tituloDestaque: h.destaque,
           respostaDireta: L[loc].heroResp,
           imagem: img(fHeroSrc, tr(loc, fHero.alt, "Saltão's 75 m waterfall dropping down an orange rock wall, with forest on both sides and visitors at the pool", "Cascada de 75 m de Saltão cayendo por la pared de roca anaranjada, con bosque a los lados y visitantes en la poza")),
-          queda: { xTopo: 51.25, xBase: 51.98, topo: 6.8, base: 90.8, larguraTopo: 2.7, larguraBase: 6.5 },
           cta: { rotulo: L[loc].reservar, tipo: "link" as const, url: "https://reservas.saltao.com.br/reservar" },
           selo: h.selo,
           cardRotulo: h.card,
