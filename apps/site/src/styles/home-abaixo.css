@@ -184,10 +184,22 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.6s ease;
+  transition: filter 0.35s ease;
 }
-.vitrine .cartao:hover img {
-  transform: scale(1.04);
+/* Hover: só a foto escurece; título e texto continuam por cima.
+   A foto fica numa camada abaixo (z-index -1 dentro do card isolado), senão o filtro a desenharia sobre o texto. */
+.vitrine .cartao,
+.experiencias .exp {
+  isolation: isolate;
+}
+.vitrine .cartao > picture,
+.experiencias .exp > picture {
+  position: relative;
+  z-index: -1;
+}
+.vitrine .cartao:hover img,
+.vitrine .cartao:focus-within img {
+  filter: brightness(0.72);
 }
 .vitrine .cartao-texto {
   align-self: end;
@@ -340,10 +352,11 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.6s ease;
+  transition: filter 0.35s ease;
 }
-.experiencias .exp:hover img {
-  transform: scale(1.05);
+.experiencias .exp:hover img,
+.experiencias .exp:focus-within img {
+  filter: brightness(0.72);
 }
 .experiencias .selo-icone {
   position: absolute;
